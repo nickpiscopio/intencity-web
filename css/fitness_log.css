@@ -1,0 +1,79 @@
+@CHARSET "ISO-8859-1";
+.logContainer { position: relative; margin: 0 auto; height: auto; width: 28.75em; }
+.logContainer .title { width: auto; box-shadow: none; }
+#fitnessMean, #userEquipment, #saveRoutineWrapper, #saveRoutineContainer, #exerciseMean-myRoutineWrapper, .option_selected { display: none; }
+#exerciseList p { display: inline-block; color: #647082; }
+#equipmentList p { padding: .75em 0 .75em 0; }
+#button-exerciseLog-back { position: absolute; background-color: rgba(65, 64, 66, .25); padding: .75em .625em .563em .625em; border-radius: .188em 0 0 0; }
+	#button-exerciseLog-back:hover, .equipmentLineItem:hover, .routineDay:hover { background-color: rgba(48, 157, 219, .75); }
+#fitnessLogTitle h1 { display: inline; margin-left: 0; }
+#fitnessLogTitle { margin: 0; width: auto; font-size: .75em; padding: .5em 0; min-height: 2.5em; }
+#fitnessLogTomorrow { margin-top: .25em; }
+#fitnessHeader h1 { float: left; margin-top: .35em; color: #F6F6FF; }
+.logNames { padding-left: 4em; padding-right: 7.55em; }
+.logWeight, .logAmount, .logDifficulty { padding-left: .5em; padding-right: .5em; }
+.fitnessLogInput-name { width: 80%; margin-left: .75em; margin-top: 0; margin-bottom: 0; text-align: left; border: 0; color: #647082; padding: .75em 0 0 0; display: inline-block; background-color: #F6F6FF; }
+.fitnessLogInput-weight, .fitnessLogInput-amount, .fitnessLogDifficulty { width: 4em; margin-right: .063em; ; font-weight: 300; }
+#mobileRow input { font-size: .875em; }
+.fitnessLogInput-amount, #saveRoutine-name, .exclusionList-dropDown, .fitnessLogDifficulty { margin-left: .625em; }
+.fitnessLogInput-weight, .fitnessLogInput-amount, #saveRoutine-name, .exclusionList-dropDown { padding-bottom: .25em; background-color: #F6F6FF; text-align: center; border: 0; border-bottom: .075em solid #647082; color: #647082; }
+.fitnessLogInput-difficulty { background-position: 1.64em .6em; width: 2.5em; margin-left: .188em; }
+.fitnessLogDifficulty { padding-bottom: .25em; background-color: #F6F6FF; text-align: center; border: 0; color: #647082; }
+.fitnessLogInput-amount-dropDown { background-position: 2.5em .6em; width: 3.4em; }
+.fitnessLog-alignLeft { margin-left: .75em; }
+.fitnessLog-alignRight { margin-right: .75em; float: right; }
+#myRoutine-dropDown { background-position: 90% .45em; width: 40%; text-align: center; color: #F6F6FF; }
+#exerciseMean-myRoutine { margin: .125em 0 0 0; background-color: rgba(100, 112, 130, .55); text-align: right; color: #F6F6FF; }
+	#exerciseMean-myRoutine p, #exerciseMean-myRoutine select, #exerciseMean-myRoutine button { display: inline; }
+#loader-fitnessLog { margin: -1em 0 -1em -.75em; position: relative; top: 1.25em; left: 50%; }
+#mobileRow select { font-size: .875em; font-weight: 300; }
+#exerciseMean-myRoutine p, #button-myRoutine { width: 25%; }
+#exerciseMean-myRoutine p { font-weight: 400; }
+#button-myRoutine { background-color: rgba(0,0,0,0); }
+	#button-myRoutine:hover { background-color: #309DDB; border-bottom-right-radius: .188em; }
+#saveRoutine-dropDown { background-position: 0 .45em; width: 1em; }
+#logContainer form { width: 100%; }
+#button-existingExercise-overwriteWrapper { margin-top: .75em; }
+#newRoutine { background-color: #ffffff; width: 100%; }
+.equipmentLineItem { text-align: center; cursor: pointer; }
+.exerciseLineItem, .equipmentLineItem { background-color: #F6F6FF; margin: .125em 0 0 0; color: #647082;}
+.button-removeExercise { margin: .75em .75em 0 .75em; display: inline-block; float: right; }
+#equipmentList .selected, #routineDays .selected { background-color: #309DDB; color: #F6F6FF; }
+#routineDays .selected, .routineDay:hover { color: #F6F6FF; }
+.actionElements { margin: 0 0 0 auto; color: #647082; display: inline-block; }
+#mobileRow { display: block; padding-bottom: .75em; text-align: center; font-weight: 300; }
+	#mobileRow p { font-size: .875em; }
+#routineDays { text-align: center; background-color: rgba(100, 112, 130, .25); }
+	#routineDays p { display: inline; }
+.routineDay { padding: .5em; cursor: pointer; }
+#saveRoutineContainer input { width: 50%; text-align: center; background-color: rgba(100, 112, 130, 0); margin-top: -.6em; /* margin-left: 1.3em; */ }
+#saveRoutineContainer #saveRoutineNameFields { text-align: center; background-color: rgba(100, 112, 130, .25); padding-bottom: .5em; }
+#fitness_goal_recommendations { display: none; }
+.fitness_goal_recommendations { margin-top: .125em; background-color: #F6F6FF; color: #647082; padding: .75em; text-align: left; white-space: normal; }
+#recommended_weight, #recommended_reps, #recommended_time, #recommended_cardio { display: inline; }
+.fitnessGoals { background-color: #F6F6FF; padding: .75em 0 .75em 0; margin: .125em 0 0 0; text-align: center; }
+#recommended_parameters { margin-bottom: 0.188em; }
+#dialog-fitnessGoal .selected { background-color: #309DDB; color: #F6F6FF; }
+#dialog-fitnessGoal li { font-weight: 400; }
+#welcome p { text-align: left }
+#question { padding-bottom: 0; }
+#loader-button-saveRoutine { top: 1.5em; }
+.exercise-info img { margin-bottom: -.25em; }
+.exercise-info { margin: .75em 0 auto .75em; color: #647082; display: inline-block; }
+#fitnessTypeInfo { display: none; position: absolute; right: .688em; top: .688em; }
+#button-gainWeight { margin-top: .75em; }
+
+@-moz-document url-prefix()
+{
+	#button-exerciseLog-back { background-color: rgba(65, 64, 66, .25); padding: .75em .625em .625em .625em; border-radius: .188em 0 0 0; }
+	.fitnessLogInput-difficulty { width: auto; }
+	.fitnessLogInput-amount-dropDown { width: 3.438em; }
+}
+
+@media only screen and (max-width: 959px)
+{	
+	.fitnessLogInput-weight, .fitnessLogInput-amount { margin: -.05em .25em auto 0; }
+	.logContainer { width: 92%; }
+	.fitnessLogInput-name { display: inline-block; margin-left: .75em; width: 70%; }
+	#weightProperties { margin-right: 3%; }
+}

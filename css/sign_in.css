@@ -1,0 +1,58 @@
+@CHARSET "US-ASCII";
+#getStartedWrapper { width: 100%; margin-top: 3em; padding-bottom: 2em; text-align: center; }
+#getStartedMobile { width: 100%; padding: .5em 0 3em 0; text-align: center; }
+	#getStartedMobile a { padding: 0 .5em }
+	#getStartedMobile img { height: 2em }
+#signInHeader a { float: right; }
+#btnGetStarted { background-color: rgba(48, 157, 219, .75); padding-left: 4em; padding-right: 4em; }
+.callout { margin: 1em; width: 45%;}
+.calloutLeft{float: left;}
+.calloutRight{float: right;}
+#btnDemo { font-size: .75em; padding: 1.15em 0 1.15em 0; }
+.callout img { float: left; margin-right: 1em; }
+.callout h1, .callout p { color: #647082; padding-bottom: .125em;}
+.callout h1 { font-size: 1.25em; line-height: 1em;}
+#heroWrapper { text-align: center; }
+#heroLogo { display: block; margin: 0 auto; padding: 2em 0 2em 0; }
+.termsOfUse { display: none; height: 6em; overflow-y: scroll; margin-top: .8em; }
+#signIn input, #register input { text-align: center; }
+#signIn #wrapper-signInSubmit, #register #wrapper-registerSubmit { margin-top: .75em; }
+.termsLink:hover { color: #309DDB; background-color: #ffffff; }
+#terms { padding-top: 1em; font-size: .9em; font-weight: 300; }
+	#terms input { width: auto; margin-right: .25em; }
+.termsLink { color: #414042; padding: 0; }
+.error-email, .termsOfUse p { margin-top: 1em; }
+#firstName, #signInEmail { margin-top: .4em; }
+.termsOfUse p { text-align: left; }
+.termsOfUse .container { margin-top: 13%; }
+#register .container .column, .termsOfUse .container .columns { margin-left: 0; }
+#signIn #forgotPassword { font-size: .75em; margin-top: .5em; }
+#signIn a { color: #647082; }
+	#signIn a:hover { color: #309DDB; background-color: #ffffff; padding: 0; }
+#btnSignIn, #btnDemo { color: #F6F6FF; }
+#btnSignIn { padding: .75em 1.25em .75em 1.25em; margin-right: .5em; }
+#btnDemo { padding: .75em 1.25em .75em 1.25em; margin-left: .5em; }
+.rememberUser {display: inline-block; width: auto; margin-right: .313em; vertical-align: middle;}
+#rememberText {display: inline-block; font-size: .9em;}
+#header-mobileApp { text-align: center; margin-top: 1.5em; color: #647082; }
+#mobileAppHR { width: 30em; background: rgba(65, 64, 66,.25); height: .063em; border-style: none; }
+a { outline: none; }
+
+@media only screen and (max-width: 767px)
+{
+	#signInHeader { margin: .8em .8em 0 .8em; }
+	#btnSignIn, #btnDemo { margin: 0; border-top-left-radius: .188em; border-top-right-radius: .188em; clear: both; }
+	#btnDemo { position: absolute; }
+	.callout { width: 90%; }
+	.calloutRight{float: left;}
+}
+
+@media only screen and (max-width: 660px)
+{
+	#mobileAppHR { width: 90% }
+}
+
+@media only screen and (max-width: 375px) 
+{
+	#heroLogo { width: 80%; height: auto; }
+}

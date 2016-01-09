@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Intencity</title>
+		<link rel="shortcut icon" href="images/favicon.ico">
+
+		<!--Google Font | Roboto -->
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+
+		<!-- CSS File -->
+		<link rel="stylesheet" type="text/css" href="css/browser_not_supported.css" />			
+	</head>
+
+	<body>
+		<img src="images/web/logo.png"/>
+		
+		<h1>Oops! 404 Error :(</h1>
+
+		<p>We cannot seem to find the page you've requested.<p>
+
+		<p>Please follow the link below to to go back to:</p>
+		
+		<a href="http://www.intencityapp.com">IntencityApp.com</a>
+
+	</body>
+
+</html>

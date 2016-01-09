@@ -1,0 +1,298 @@
+@CHARSET "ISO-8859-1";
+#header { position: absolute; top: 0; background-color: #309ddb; width: 100%; height: 3.125em; box-shadow: .063em .063em rgba(000, 000, 000, .25); z-index: 1; }
+#header a, #menu-image { border: none; }
+#intencityLogo { display: block; background-color: #ffffff; padding: .5em 1.094em .5em 1.094em; position: relative; box-shadow: .063em .063em rgba(000, 000, 000, .25); border-bottom-left-radius: .25em; border-bottom-right-radius: .25em; float: left; }
+#search { height: 3.125em; text-align: center; display: none; }
+	#search img { margin-left: -28.688em; height: 30%; padding-top: 1em; }
+#header form { display: inline-block; vertical-align: top; }
+#searchBox { text-align: left; z-index: 5; vertical-align: top; border: 0 solid; background-color: rgba(0, 0, 0, .25); color: #F6F6FF; margin: .5em 0 0 -30.188em; width: 27.25em; padding: .5em 0 .5em 1.5em; }
+#loader-search { position: relative; margin-top: -2.125em; left: 41.875em; }
+/* WebKit browsers */
+#searchBox::-webkit-input-placeholder { color: #F6F6FF; }
+/* Mozilla Firefox 4 to 18 */
+#searchBox:-moz-placeholder { color: #F6F6FF; }
+/* Mozilla Firefox 19+ */
+#searchBox::-moz-placeholder { color: #F6F6FF; }
+/* Internet Explorer 10+ */
+#searchBox:-ms-input-placeholder { color: #F6F6FF; }
+#menu-button { float: right; margin-top: .85em; }
+#menu { display: none; }
+/* USER SECTION */
+#userHeader { position: relative; top: 5em; }
+/* FOOTER */
+#footer { position: fixed; bottom: 0; right: 0; background-color: #414042; width: 100%; line-height: 3.125em; height: 3.125em; display: inline; text-align: center; }
+	#footer a { color: #F6F6FF; opacity: .5; position: relative; text-align: center; font-size: .75em; font-weight: 300; padding: 0 2em 0 2em; }
+		#footer a:hover { color: #FFFFFF; opacity: 1; position: relative; }
+copyright { color: #F6F6FF; }
+/* COLUMNS */
+#leftColumn { width: 13.75em; position: relative; display: inline-block; vertical-align: top; height: auto; margin: auto; margin-bottom: 3em; }
+#centerColumn { position: relative; top: 0; display: inline-block; width: 28.75em; vertical-align: top; height: auto; margin: 0 1.25em; padding-bottom: 5em }
+#rightColumn { width: 13.75em; display: inline-block; margin: auto; vertical-align: top; height: auto; text-align: center; }
+#leftColumn h2 { display: block; }
+#error-feedback { display: none; color: #ff0000; font-weight: 400; }
+#feedback textarea { height: 5em; width: 92%; margin-bottom: .75em; }
+#loader-button-removeExercise-forToday { top: 2.25em; }
+#display-userInfo { display: inline-block; margin-bottom: 1.25em; height: auto; float: none; margin-right: 0; }
+#follow_user { font-size: .8em; font-weight: 300; padding-top: .25em }
+	#follow_user:hover { text-decoration: underline; }
+#public-userPicture { float: left; height: 3.125em; width: 3.125em; display: inline-block; padding-right: .25em; }
+#display-userInfo h2 { display: inline-block; vertical-align: top; float: left; color: #414042; }
+#display-userInfo a { display: block; }
+#pointsDescription p, #pointsDescription h2, #pointsDescription ul { text-align: left; }
+#pointsDescription p { margin-top: 0; }
+#pointsDescription #description { margin-top: .75em; }
+#exclusionList h1 { text-align: center; }
+.exclusion-remove { display: inline-block; margin-right: 3%; margin-left: 1%; }
+.exclusion-name { display: inline-block; width: 65%; margin: 0; border: none; margin-top: .188em; background-color: #F6F6FF; }
+#exclusionRules { display: inline-block; float: right; margin-right: 1%; margin-top: .92em; width: 8.063em; background-position: 7.25em .6em; }
+#exclusionBody { margin: .109em auto; background-color: #F6F6FF; }
+#exclusionList #background { padding: .625em .188em 0; }
+#exclusionButton-add { margin-top: .188em; margin-bottom: 0; }
+#follow, #media { margin-bottom: .625em; }
+#follow h2, #media h2 { font-size: 1em; font-weight: 400; }
+#followHeader, #mediaHeader { margin-bottom: .625em; }
+#followingHeader, #photoHeader { text-align: left; display: inline-block; }
+#followerHeader, #videoHeader { text-align: right; display: inline-block; float: right; }
+#followersPictures, #followingPictures, #videoPictures, #photoPictures { display: inline-block; height: auto; width: 103%; margin: auto auto .625em auto; text-align: center; }
+.follow-picture, .media-picture { height: 4.125em; width: 4.125em; margin-right: 2%; margin-bottom: .625em; }
+#followingMobileDropdown, #followerMobileDropdown, #photoMobileDropdown, #videoMobileDropdown { position: relative; left: 50%; margin-left: -9.9em; width: 19.688em; }
+#followerMobileDropdown #popup_content, #followingMobileDropdown #popup_content, #followingMobileDropdown, #photoMobileDropdown, #videoMobileDropdown #popup_content, #photoMobileDropdown #popup_content { display: block; }
+#mobileFollowing-picture, #followerMobileDropdown, #photoHeader-mobile, #videoHeader-mobile, #mobileFollower-picture, #photoMobileDropdown .close, #videoMobileDropdown, #videoMobileDropdown .close, #mobilePhoto-picture, #mobileVideo-picture, #followHeader-mobile, #followingMobileDropdown .close, #followerMobileDropdown .close { display: none; }
+#menu { position: absolute; top: 4em; height: 15em; width: 100%; right: 0; z-index: 2; }
+#menuToggler { width: 100%; height: 100%; top: 0; bottom: 0; right: 0; margin-left: -25%; position: fixed; z-index: -1; }
+#editProfile { background-color: rgba(48, 157, 219, .725); color: rgb(246, 246, 255); display: block; position: absolute; padding: .2em .55em; top: 3.3em; font-size: .75em; }
+	#editProfile:hover { background-color: rgba(48, 157, 219, 1); }
+#button-profilePic { display: none; }
+#exercise_review_settings p { display: inline-block; }
+#settings { margin-top: 1.25em; width: 100%; }
+	#settings #user_settings a { margin-right: .75em; font-weight: 300; }
+	#settings .button, #settings .listItem { background-color: rgba(100, 112, 130, .25); color: #647082; overflow: hidden; }
+	#settings .button, #settings #current_equipment_settings .button { color: #F6F6FF; background-color: rgba(100, 112, 130, .55); }
+	#settings .button { margin-bottom: 0; margin-top: .125em; outline: none; }
+.hoverable { padding: .5em; cursor: pointer; display: inline-block; }
+#user_settings .selected { background-color: #309DDB; color: #F6F6FF; }
+#user_settings .hoverable:hover, #user_settings .multiHoverable:hover, .equipmentLineItem:hover, #dialog-deleteAccount .button:hover, #settings .button:hover{ background-color: rgba(48, 157, 219, .75); color: #F6F6FF; }
+#arrow-menu { position: relative; float: right; /* IMPLEMENTING when we have notifications top: -9.7em; right: -3.5em; */ top: -12.5em; right: -.4em;}
+#menuContainer { /* IMPLEMENTING when we have notifications width: 23.125em; */ width: 3.25em; float: right; background-color: #FFFFFF; border-radius: .188em; padding: .75em; z-index: 3; }
+#menu-notifications { float: left; width: 80%; height: 11em; }
+	#menu-notifications h2 { text-align: center; padding: 0 0 .75em 0; }
+#notifications h3, .notification-posted { font-size: .875em; }
+.notification-time { font-size: .75em; }
+#container-profileImage, #container-settings, #menu-nav { float: right; text-align: center; display: block; }
+#menu-nav .menu-icon { display: block; padding: 0 .75em 0 .75em; }
+#container-settings { display: block; padding: .75em .19em .75em .19em; }
+#container-logOut { padding-bottom: .125em; }
+#menu-profileImage { height: 3.125em; width: auto; }
+.darkGrey { color: #414042; }
+#container-profileImageP, #container-settingsP, #container-logOutP { font-size: .75em; }
+#container-profileImage, #container-settings, #container-logOut { color: #FFFFFF; }
+#container-info, #container-feedback, #container-rate, #container-like, #mobile-menu-logOut, #mobile-menu-settings { display: none; }
+#notifications { margin-left: -.75em; position: relative; top: auto; }
+.notification-container { margin-bottom: .188em; background-color: #F6F6FF; color: #647082; padding: .75em 0 .75em .813em; width: 100%; margin-right: 0; margin-left: 0; }
+.notification-layout { margin-left: 0; margin-right: .813em; }
+.notification-posted, .notification-poster { display: inline; }
+#navContainer { margin: auto; height: auto; width: 28.75em; position: relative; }
+	#navContainer hr { background: #647082; height: .063em; border-style: none; }
+#hrTop { margin: 1.25em 0 0 0; border-bottom-style: none; border-left-style: none; border-right-style: none; }
+#navbarTop { height: auto; }
+	#navbarTop h1 { display: none; text-align: center; }
+	#navbarTop img { margin-left: .625em; }
+		#navbarTop img:hover, #navbarBottom img:hover { background-color: rgba(48, 157, 219, .75); }
+#newsFeedWeb { display: inline-block; padding: .5em; }
+#fitnessLogWeb { display: inline-block; padding: .438em; }
+#navbarBottom { margin-bottom: 1.25em; }
+	#navbarBottom h2 { color: #414042; display: none; text-align: center; }
+	#navbarBottom h1 { color: #414042; display: inline-block; margin-top: .438em; }
+	#navbarBottom img { margin-left: .625em; float: left; background-color: rgba(65, 64, 66, .2); }
+#iconProgressWeb { padding: .313em; }
+#iconInjuryMobile, #iconTimerMobile, #iconProgressMobile, #fitnessLogMobile, #newsFeedMobile, #hrBottom { height: 1.875em; display: none; }
+#iconInjuryWeb { display: inline-block; padding: .438em .5em; width: 1.688em; }
+#iconTimerWeb { display: inline-block; padding: .438em .5em; }
+#bottomIcon { display: block; text-align: right; margin-top: -2.375em; }
+#mobileBottom { text-align: right; z-index: 1; height: 3.125em;}
+#mobileFitnessLog { width: auto; display: inline-block; margin-left: auto; }
+#mobileNewsFeed { width: auto; display: inline-block; margin-left: auto; margin-right: auto; }
+#fitnessText { display: inline-block; text-align: left; }
+.buttonLayout { display: block; margin: auto; }
+#mobileProgress, #mobileTimer, #mobileInjury { display: inline-block; }
+#selectAll {margin-right: .75em; margin-top: -1.063em;}
+#deselectAll {margin-right: .75em; display: none; margin-top: -1.063em;}
+.chitikaAdContainer{background-color: #FFFFFF}
+#adblocked{color: #647082; margin-left: 0; margin-right: 0;}
+@-moz-document url-prefix() { #bottomIcon }
+{  }
+#actions p { margin-left: .313em; margin-right: .313em; }
+.feedbackOverflow .settings_leftColumn, .feedbackOverflow .settings_centerColumn, .approved_adminOverflow .settings_leftColumn, #add_exerciseHeader { margin-left: 0; margin-top: .563em; margin-right: 0; }
+#actions form { margin-left: .063em; }
+#status form, #status form select { display: inline-block; }
+#status form select { background-position: 10em .563em; width: 10.938em; }
+.notes textarea { padding: 0; width: 99.5%; }
+#notes { width: 100%; margin-bottom: 0; }
+.actionsBody { margin-right: .75em; overflow: hidden; }
+#feedbackOverflow #reportedReasons { margin-top: .75em; }
+#reportedReasons p, #actions p, #feedback_reported_user #popup_content p, .notes textarea, #approvedDescription p, #approved_exercises_admin #popup_content p { margin-top: 0.188em; }
+#actions input { width: auto; }
+.report_radioButton, .report_suspendUser, .report_removeUser, .report_removeContent, #actions p, #status h1 { display: inline-block; }
+#approvedDescription, #approvedDirections { width: 100%; }
+.media_reported { width: 28.5em; }
+#routine, #approvedExercise { width: 13.75em; position: inherit; height: auto; vertical-align: top; margin: 0 auto 1.875em; }
+#routineHeader, #approvedHeader { margin-left: auto; margin-right: auto; width: auto; text-align: center; font-weight: 400; padding: .75em; }
+.routine-body, .approvedExercise-body { margin-top: .125em; background-color: #F6F6FF; color: #647082; }
+.approvedExercise-body p { padding: .75em; text-align: left; white-space: normal; }
+#approvedExercise-close { float: right; margin: -1em 0.5em 0 0; }
+.routine-name, .approvedExercise-name { width: 10em; height: 1em; background-color: #F6F6FF; border: 0; text-align: left; padding: .75em 0 .75em .625em; }
+#routine, .routine-info, #approvedExercise { display: none; }
+.routine-info { text-align: left; padding: 0 0 .75em 1em; }
+.routine-delete, .routine-copy { padding: .75em .625em .75em 0; right: 0; position: absolute; }
+#routineAdd { margin: 0; }
+#approvedExercise-submissionContainer .listItem { background-color: rgba(100, 112, 130, .25); text-align: center; }
+.listItemInput { padding: 0; }
+.selectInput { padding: .75em 0; }
+.listItem input { background-color: rgba(100, 112, 130, 0); border: 0; width: 88%; text-align: center; }
+#fitnessType { background-position: 5.625em .65em; width: 6.5em; }
+#button-getExerciseVideo { width: 60%; background-color: rgba(100, 112, 130, .3); }
+#container-selectExercise { margin-top: .125em; }
+	#container-selectExercise p { padding: .75em 0 .5em 0; }
+	#container-selectExercise button { margin-bottom: .75em; }
+#button-getExerciseVideo:hover { background-color: #309DDB; }
+#routineDropdown, #approvedDropdown, #routineDropdown #popup_content, #approvedDropdown #popup_content, 
+#routineDropdown .close, #approvedDropdown .close, #mobileRoutines, #mobileApproved, #routineDropdown #routineHeader, 
+#approvedDropdown #approvedHeader, #approvedExercise-submissionContainer, #button-exerciseVideo { display: none; }
+#routineDropdown, #approvedDropdown { display: inline-block; width: 100%; }
+#mobileTop-scrolling { display: block; overflow: hidden; width: auto; white-space: normal; vertical-align: top; }
+#loader-button-removeRoutine, #loader-button-copyRoutine { top: 2.2em; }
+#loader-button-addRoutine { top: 1.3em; }
+#submitExercise { margin-top: .125em; }
+#search-results { display: none; width: 100%; position: absolute; text-align: center; }
+#search-resultPopup video { width: 100%; height: 100%; margin-top: .25em; }
+#search-resultBody { background-color: rgb(255, 255, 255); z-index: 15; position: relative; top: 2.95em; display: inline-block; margin-left: -.725em; width: 28.5em; box-shadow: .063em .063em .125em rgba(65, 64, 66, .25); }
+#loader-search-resultPopup { position: absolute; }
+.searchResult-item { background-color: #F6F6FF; margin-bottom: .188em; text-align: left; padding: .75em .75em .75em .625em; cursor: pointer; }
+.searchResult-add { float: right; }
+#search-resultPopup h3 { font-size: .75em; padding: .25em; }
+.searchResult-exercise { display: inline-block; }
+#resultsNotFound { width: 100%; position: absolute; text-align: center; top: 3.75em; font-size: .845em; color: #647082; z-index: 5; padding: .5em 0; background-color: rgba(246, 246, 255, .85); display: none; }
+#search-resultPopup h2 { text-align: left; margin-top: -.9em; margin-bottom: .15em; }
+#mistakeFound { text-align: right; margin-top: .75em; font-size: .9em; font-weight: 400; }
+
+@media only screen and (max-width: 959px)
+{
+	#userHeader { top: 4em; }
+	#intencityLogo { display: none; }
+	#search { height: 3.125em; text-align: left; margin-left: .75em; }
+		#search img { height: auto; margin-left: -16em; padding-top: 0.75em; }
+	#searchBox { width: 14em; background-color: rgb(48, 157, 219); margin: .5em 0 0 0; }
+	#menu-button { margin-right: .75em; }
+	#footer { display: none; }
+	#leftColumn { width: 92%; display: block; height: auto; top: auto; margin: auto; vertical-align: middle; }
+	#centerColumn { display: block; width: auto; position: relative; height: auto; vertical-align: middle; margin: auto; padding-bottom: 10em }
+	#rightColumn { position: fixed; bottom: 0; width: 100%; height: 3.125em; background-color: #000000; }
+	#leftColumn h2 { display: inline-block; }
+	#loader-search { left: 14em; }
+	#feedback textarea { width: 90%; }
+	#display-userInfo h2 { margin-top: 0; }
+	#display-userInfo { float: left; margin-right: 1.625em; }
+	#follow, #media, #followingMobileDropdown #followPictures, #followerMobileDropdown #followPictures, #photoMobileDropdown #photoPictures, #videoMobileDropdown #videoPictures { display: inline-block; }
+	#follow h2, #media h2 { font-size: .6em; font-weight: 300; display: block; }
+	#followPictures, #videoPictures, #photoPictures { display: none; }
+	#mobileFollowing-picture, #mobileFollower-picture, #mobilePhoto-picture, #mobileVideo-picture { display: inline-block; height: 2.5em; margin-bottom: .1em; }
+	#followerHeader, #videoHeader { float: none; }
+	#followerHeader, #followingHeader, #videoHeader, #photoHeader { text-align: center; vertical-align: middle; margin: auto .313em; }
+	#followingMobileDropdown, #followerMobileDropdown, #photoMobileDropdown, #videoMobileDropdown { text-align: center; border-radius: .188em; display: none; left: 0; height: auto; margin-left: 0; background-color: #ffffff; width: 100%; position: fixed; z-index: 21; top: .8em;}
+	#followersPictures, #followingPictures, #photoPictures, #videoPictures { white-space: normal; height: auto; padding-top: .625em; }
+	#followerMobileDropdown .close, #followingMobileDropdown .close, #followerMobileDropdown #popup_content, #followingMobileDropdown #popup_content, #followHeader-mobile, #photoMobileDropdown .close, #videoMobileDropdown .close, #photoHeader-mobile, #videoHeader-mobile { display: block; }
+	#followingMobileDropdown #popup_content, #followerMobileDropdown #popup_content, #photoMobileDropdown #popup_content, #videoMobileDropdown #popup_content { margin: 0 .75em; }
+	#followingMobileDropdown #background, #followerMobileDropdown #background, #photoMobileDropdown #background, #videoMobileDropdown #background { padding: .625em .188em 0; }
+	#menu { position: fixed; top: 0; height: 100%; width: 75%; right: -75%; }
+	#editProfile { top: 2.25em; right: .05em; }
+	#menuContainer { padding: 0; }
+	#menu-notifications h2 { width: auto; color: #F6F6FF; font-size: 1.27em; }
+	#title { position: absolute; background-color: #414042; right: 0; top: 0; box-shadow: .063em .063em rgba(000, 000, 000, .25); }
+	#title, #menuContainer { width: 100%; }
+	#menuContainer { position: absolute; height: 100%; border-radius: 0; box-shadow: none; background-color: #647082; }
+	#arrow-menu { display: none; }
+	#container-settings { float: left; }
+	#container-profileImageP, #container-settingsP, #container-logOutP, #container-settings, #menu-logOut { display: none; }
+	#container-info, #container-feedback, #container-rate, #container-like, #mobile-menu-logOut { display: inline; }
+	#mobile-menu-settings { display: block; position: relative; z-index: 1; left: .75em; }
+	#container-profileImage { position: absolute; top: 0; right: .75em; }
+	#mobile-menu-settings, #container-profileImage { padding: .5em; }
+	#menu-notifications h2 { padding: .75em; }
+	#menu-nav { position: absolute; bottom: 3.125em; width: 100%; padding: .75em 0 .75em 0; }
+		#menu-nav .menu-icon, #container-logOut { display: inline; }
+		#menu-nav .menu-icon { padding: 0 .75em; }
+	.menu-icon img, #container-profileImage img { height: 2em; width: auto; }
+	#notifications { height: 100%; width: 100%; margin-left: 0; position: absolute; top: 3.313em; }
+	#menu-notifications { width: 100%; }
+	.notification-layout { margin-left: .813em; margin-right: .813em; }
+	.notification-container { padding: .75em 0; margin-left: .188em; margin-right: .188em; width: auto; }
+	#menuToggler { margin-left: 0; }
+	#navbarBottom h1 { display: none; }
+	#navbarTop img:hover, #navbarBottom img:hover { background-color: rgba(246, 246, 255, .0); }
+	#navbarTop { height: 5em; position: fixed; bottom: 3.125em; width: 100%; background-color: #414042; z-index: 1; }
+	#navbarBottom img { background-color: #FFFFFF; margin-left: auto; margin-right: auto; float: none; }
+	#mobileNewsFeed { margin-right: 12%; margin-top: .375em; vertical-align: top; }
+	#mobileFitnessLog { margin-left: 12%; margin-top: .594em; vertical-align: top; }
+	#navbarTop img { background-color: rgba(0, 0, 0, 0); margin-left: auto; }
+	#mobileBottom { width: 100%; height: 6.25em; text-align: center; margin-left: auto; margin-right: auto; }
+	#newsFeedBottom { width: 3.875em; }
+	#fitnessLogBottom { width: 3.875em; display: inline-block; }
+	#navbarBottom { height: auto; width: auto; margin: auto; text-align: center; }
+	.buttonLayout { display: block; margin: auto; float: right; }
+	#bottomIcon { display: inline; text-align: center; margin: auto; }
+	#iconInjuryMobile { display: inline-block; background-color: #ffffff; margin: .688em 0 .156em 0; }
+	#iconTimerMobile { display: inline-block; padding: .688em 0 .125em 0; }
+	#iconTimerWeb, #iconInjuryWeb, #iconProgressWeb, #newsFeedWeb, #fitnessLogWeb { display: none; }
+	#fitnessLogMobile, #newsFeedMobile { display: inline-block; }
+	#iconProgressMobile { display: inline-block; padding: .688em 0 .125em 0; }
+	#navbarBottom h2 { color: rgba(100, 112, 130, .8); text-align: center; display: inline-block; font-size: .55em; font-weight: 300; }
+	#navbarTop h1 { text-align: center; display: inline-block; font-size: .55em; font-weight: 300; }
+	#navContainer { margin: auto; height: auto; width: auto; position: relative; }
+	.newsFeedMobile { height: 2.438em; width: 2.438em; padding: .4em .5em .1em .5em; }
+	.fitnessLogMobile { height: 2.5em; width: 2.5em; padding: .1em .438em .1em .438em; }
+	#injuryMobile { height: 5.625em; width: 3.125em; text-align: center; }
+	#progressMobile { height: 5.625em; width: 3.125em; float: left; text-align: center; }
+	#timerMobile { height: 5.625em; width: 3.125em; text-align: center; }
+	#mobileTimer { width: auto; height: 4.375em; display: inline-block; text-align: center; margin-left: 11%; margin-right: 11%; }
+	#mobileInjury { width: auto; height: 4.375em; display: inline-block; margin-left: auto; margin-right: .625em; }
+	#hrBottom { margin: auto; display: block; border-bottom-style: none; border-left-style: none; border-right-style: none; }
+	#mobileProgress { width: auto; height: 4.375em; display: inline-block; margin-left: 0313em; margin-right: auto; }
+	#hrTop { margin: 0; }
+	#routineHeader h1, #approvedHeader h1 { font-weight: 300; font-size: .6em; white-space: normal; }
+	#routineDropdown, #approvedDropdown { display: none; position: absolute; margin: auto; z-index: 21; left: 0; width: 100%; position: fixed; top: .8em;}
+	#routineDropdown { top: 3.875em; }
+		#routineDropdown h1, #approvedDropdown h1 { font-size: 1em; font-weight: 400; }
+		#routineDropdown #popup_content, #approvedDropdown #popup_content { margin: 0 .75em; text-align: center; }
+		#routineDropdown #routineHeader, #routineDropdown #popup_content, #approvedDropdown #approvedHeader, #approvedDropdown #popup_content { display: block; }
+		#routineDropdown .close, #approvedDropdown .close { display: inline-block; z-index: 23; }
+	#background { background-color: #ffffff; padding: .188em; box-shadow: .063em .063em rgba(000, 000, 000, .25); }
+	#container-routine .actionElements, #container-approvedExercises .actionElements, 
+		#routineBody .actionElements, .approvedExercise-body .actionElements, #approvedExercise .actionElements, #routineHeader .actionElements { display: inline-block; }
+	#routine, #approvedExercise { vertical-align: middle; /* text-align: center; */ margin: auto .313em; }
+	#approvedExercise #mobileRoutines { margin-bottom: .625em; }
+	#routine #mobileRoutines { margin-bottom: .438em; margin-top: .625em; }
+	#mobileRoutines, #mobileApproved { display: block; height: auto; text-align: center; }
+	#mobileRoutines img { width: 3.188em; }
+	#mobileApproved img { height: 2.5em; }
+	#approvedExercise #approvedHeader, #routine #routineHeader { background-color: #ffffff; padding: 0; color: #e0e3e6; font-weight: 400; }
+	#routineShell { text-align: center; width: 92%; }
+	#routine, #approvedExercise, #routineBody .actionElements, .approvedExercise-body .actionElements, #approvedExercise .actionElements, #routineHeader .actionElements { width: 3.375em; vertical-align: top; }
+	#routineHeader, #routineDelete , #approvedHeader { margin-bottom: 0; padding: .75em 0; }
+	#routineDelete { text-align: right; margin-right: .25em; }
+	#routineHeader #routineDelete { padding: 0; }
+	#mobile { width: 92%; margin: auto; }
+	#mobileTop-scrolling { display: compact; overflow-x: auto; width: auto; white-space: nowrap; vertical-align: top; }
+	#search-results { text-align: left; }
+	#search-resultBody { margin-left: 0; margin-right: 0; left: .75em; width: 75%; top: 3.188em; }
+	#adblocked{color: #F6F6FF; margin-left: .75em; margin-right: .75em; font-size: .875em; margin-top: .5em;}
+}
+
+@media only screen and (max-width: 405px)
+{
+	#menu-nav .menu-icon { padding: 0 .5em;	}
+}
+
+@media only screen and (max-width: 364px)
+{
+	#menu-nav .menu-icon { padding: 0 .25em; }
+}
