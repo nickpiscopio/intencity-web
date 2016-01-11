@@ -1,11 +1,12 @@
 <title>Intencity</title>
 <meta name="robots" content="index,follow">
-<meta name="description" content="Intencity is a free social application that helps the user with their everyday fitness goals. 
-								  It is an application that was built with the user in mind and contains robust features to motivate and prevent injuries." />
+<meta name="description" content="Intencity is a free social application that helps users with their everyday fitness goals. 
+								  It is an application built with the user in mind containing robust features to motivate and prevent injuries." />
 <meta name="keywords" content="Nick, Piscopio, Nick Piscopio, Nicholas, Nicholas Piscopio, Chris, Christopher, Christopher Piscopio, Chris Piscopio, Intencity, IntencityApp, Intencity App, 
 							   Intensity, IntesityApp, Intensity App, Fitness, Fitness Log, Fitness Guru, Get In Shape, Exercise App, Exercise, Exercise Application, theBasementTechnologies, 
 						   	   theBasement, Technology, Basement">
 <meta name="author" content="IntencityApp.com">
+<meta itemprop="image" content="/images/web/logo_facebook.png">
 <meta name="dcterms.rights" content="&copy; 2014 All Rights Reserved. IntencityApp.com">
 <meta name="dcterms.dateCopyrighted" content="2014">
 <meta charset="UTF-8">
@@ -14,7 +15,7 @@
 	<meta http-equiv="refresh" content="0;URL=browser_not_supported.html">
 <![endif]-->
 
-<!-- Mobile Specific Metas -->
+<!-- Mobile Specific Meta -->
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
