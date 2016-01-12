@@ -16,6 +16,12 @@ $(document).ready(function()
 			var confirmEmail = $('#confirmEmail').val();
 			var password = $('#password').val();
 			var confirmPassword = $('#confirmPassword').val();
+
+			var toReplace = /\+/g;
+			var replaceWith = '%2B';
+
+			email = email.replace(toReplace, replaceWith);
+			confirmEmail = confirmEmail.replace(toReplace, replaceWith);
 			
 			var dataString = 'first_name='+ firstName + '&last_name=' + lastName + '&email=' + email + '&password=' + password;
 			

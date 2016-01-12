@@ -2,7 +2,7 @@
 	/**
 	 * This file creates a new account only if the email hasn't already been used.
 	 * 
-	 * URL GET EXAMPLE		http://intencityapp.com/services/account.php?first_name=Nick&last_name=Piscopio&email=nick.piscopio@gmail.com&password=hello123&account_type=a
+	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/account.php?first_name=John&last_name=Smith&email=john.smith@gmail.com&password=hello123&account_type=n
 	 * 						This example does not work when we are using $_POST. We ARE using $_POST.
 	 */
 
@@ -30,7 +30,7 @@
 	//Capitalizes the value recieved from the beta_access variable from the URL.
 	$accountType = strtoupper($_POST['account_type']);
 	
-	//Makes the account normal if it can't figure out what account type the user should be.
+	//Makes the account a trial if it can't figure out what account type the user should be.
 	if($accountType != ACCOUNT_ADMIN && $accountType != ACCOUNT_BETA && $accountType != ACCOUNT_NORMAL)
 	{
 		$accountType = ACCOUNT_TRIAL;
