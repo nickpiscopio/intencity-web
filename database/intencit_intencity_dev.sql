@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 15, 2016 at 01:35 PM
+-- Generation Time: Jan 17, 2016 at 12:03 PM
 -- Server version: 5.5.47-cll
 -- PHP Version: 5.4.31
 
@@ -172,6 +172,17 @@ SET futureMuscleGroup = (SELECT MuscleGroupRoutine.DisplayName
 SELECT currentMuscleGroup, futureMuscleGroup;
 
 end$$
+
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getEquipment`(IN `email` VARCHAR(75))
+SELECT Equipment.EquipmentName, 
+	CASE 
+    	WHEN UserEquipment.Email != 'NULL' THEN 'true'
+	END AS HasEquipment
+FROM Equipment
+LEFT JOIN UserEquipment
+	ON UserEquipment.EquipmentName = Equipment.EquipmentName && UserEquipment.Email = email
+WHERE Equipment.EquipmentName != 'NULL'
+GROUP BY Equipment.EquipmentName$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercise`(IN `email` VARCHAR(75))
 begin
@@ -746,7 +757,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `ExerciseDifficulty` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5363 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5367 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -2445,7 +2456,11 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5359, 'nick.piscopio@gmail.com', '2016-01-14', '14:54:10', 'Push-Up Hold', NULL, 10, NULL, 8),
 (5360, 'nick.piscopio@gmail.com', '2016-01-14', '14:54:10', 'Push-Up Hold', NULL, 10, NULL, 9),
 (5361, 'nick.piscopio@gmail.com', '2016-01-14', '14:54:10', 'Push-Up Hold', NULL, 10, NULL, 9),
-(5362, 'nick.piscopio@gmail.com', '2016-01-14', '15:07:13', 'Dumbbell Press', 40, 10, NULL, 8);
+(5362, 'nick.piscopio@gmail.com', '2016-01-14', '15:07:13', 'Dumbbell Press', 40, 10, NULL, 8),
+(5363, 'cpiscopio@gmail.com', '2016-01-15', '19:53:14', 'Cable Twisting Overhead Press', NULL, 0, NULL, 10),
+(5364, 'cpiscopio@gmail.com', '2016-01-15', '19:57:31', 'Shoulder Press', 25, 5, NULL, 5),
+(5365, 'cpiscopio@gmail.com', '2016-01-15', '20:01:03', 'Shrug', 50, 10, NULL, 4),
+(5366, 'cpiscopio@gmail.com', '2016-01-15', '20:08:28', 'Split Leg Push Press', 20, 6, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -2460,7 +2475,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3898 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3901 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -4860,7 +4875,10 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (3894, 'nick.piscopio@gmail.com', '2016-01-15', 'Biceps'),
 (3895, 'nick.piscopio@gmail.com', '2016-01-15', 'Forearms'),
 (3896, 'nick.piscopio@gmail.com', '2016-01-15', 'Abs'),
-(3897, 'nick.piscopio@gmail.com', '2016-01-15', 'Obliques');
+(3897, 'nick.piscopio@gmail.com', '2016-01-15', 'Obliques'),
+(3898, 'cpiscopio@gmail.com', '2016-01-15', 'Traps'),
+(3899, 'cpiscopio@gmail.com', '2016-01-15', 'Neck'),
+(3900, 'cpiscopio@gmail.com', '2016-01-15', 'Shoulders');
 
 -- --------------------------------------------------------
 
@@ -5979,7 +5997,7 @@ CREATE TABLE IF NOT EXISTS `Following` (
   `Following` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
 
 --
 -- Dumping data for table `Following`
@@ -5989,7 +6007,11 @@ INSERT INTO `Following` (`ID`, `Email`, `Following`) VALUES
 (30, 'dev@gmail.com', 'nick.piscopio@gmail.com'),
 (31, 'nick.piscopio@gmail.com', 'cpiscopio@gmail.com'),
 (32, 'dev@gmail.com', 'cpiscopio@gmail.com'),
-(33, 'nick.piscopio@gmail.com', 'ccorbi2004@yahoo.com');
+(33, 'nick.piscopio@gmail.com', 'ccorbi2004@yahoo.com'),
+(34, 'nick.piscopio@gmail.com', 'christina.lim14@gmail.com'),
+(35, 'nick.piscopio@gmail.com', 'cxr933@psu.edu'),
+(36, 'nick.piscopio@gmail.com', 'dev 12345@gmail.com'),
+(37, 'nick.piscopio@gmail.com', 'nick.piscopio 123@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -7403,7 +7425,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-01-15', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$7Cenx8jQwqUU0.mZjBWOKOy6ONKvinG5Zvo8OMYH48IUknZO44x3i', 'dViDrRljgy6h8HXy', 'A', 2830, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-01-17', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$7Cenx8jQwqUU0.mZjBWOKOy6ONKvinG5Zvo8OMYH48IUknZO44x3i', 'dViDrRljgy6h8HXy', 'A', 2840, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -7510,7 +7532,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3173 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3278 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -7518,13 +7540,11 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
 
 INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (2891, 'ccorbi2004@yahoo.com', 'Cable Pull'),
-(2728, 'nick.piscopio@gmail.com', 'Treadmill'),
-(2727, 'nick.piscopio@gmail.com', 'Step'),
-(2726, 'nick.piscopio@gmail.com', 'Roman Chair'),
-(2725, 'nick.piscopio@gmail.com', 'Pull Up Bar'),
-(2724, 'nick.piscopio@gmail.com', 'Pull Down Machine'),
-(2723, 'nick.piscopio@gmail.com', 'Preacher Curl Machine'),
-(2721, 'nick.piscopio@gmail.com', 'Leg Extension Machine'),
+(3277, 'nick.piscopio@gmail.com', 'Barbell'),
+(3276, 'nick.piscopio@gmail.com', 'Treadmill'),
+(3275, 'nick.piscopio@gmail.com', 'Step'),
+(3274, 'nick.piscopio@gmail.com', 'Squat Machine'),
+(3273, 'nick.piscopio@gmail.com', 'Shoulder Press Machine'),
 (1762, 'test@test.gov', 'Barbell'),
 (1763, 'test@test.gov', 'Bench'),
 (1764, 'test@test.gov', 'Bench Rack'),
@@ -7577,13 +7597,11 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (1830, 'teddy_zandvliet@hotmail.com', 'Dumbbells'),
 (1831, 'teddy_zandvliet@hotmail.com', 'Pull Up Bar'),
 (1923, 'cpiscopio@gmail.com', 'Bench'),
-(2722, 'nick.piscopio@gmail.com', 'Preacher Curl Bench'),
-(2720, 'nick.piscopio@gmail.com', 'Leg Curl Machine'),
-(2719, 'nick.piscopio@gmail.com', 'Exercise Box'),
-(2718, 'nick.piscopio@gmail.com', 'Dumbbells'),
-(2717, 'nick.piscopio@gmail.com', 'Chair'),
-(2716, 'nick.piscopio@gmail.com', 'Bike'),
-(2715, 'nick.piscopio@gmail.com', 'Bench Rack'),
+(3272, 'nick.piscopio@gmail.com', 'Roman Chair'),
+(3271, 'nick.piscopio@gmail.com', 'Pull Up Bar'),
+(3270, 'nick.piscopio@gmail.com', 'Pull Down Machine'),
+(3269, 'nick.piscopio@gmail.com', 'Preacher Curl Machine'),
+(3268, 'nick.piscopio@gmail.com', 'Preacher Curl Bench'),
 (1924, 'cpiscopio@gmail.com', 'Bench Rack'),
 (1925, 'cpiscopio@gmail.com', 'Bike'),
 (1926, 'cpiscopio@gmail.com', 'Cable Pull'),
@@ -7604,28 +7622,19 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (1941, 'cpiscopio@gmail.com', 'Step'),
 (1942, 'cpiscopio@gmail.com', 'Treadmill'),
 (1944, 'julienajbjerg@gmail.com', 'Dumbbells'),
-(1945, 'dev@gmail.com', 'Barbell'),
-(1946, 'dev@gmail.com', 'Bench'),
-(1947, 'dev@gmail.com', 'Bench Rack'),
-(1948, 'dev@gmail.com', 'Bike'),
-(1949, 'dev@gmail.com', 'Cable Pull'),
-(1950, 'dev@gmail.com', 'Cable Row Machine'),
-(1951, 'dev@gmail.com', 'Chair'),
-(1952, 'dev@gmail.com', 'Dumbbells'),
-(1953, 'dev@gmail.com', 'Elliptical'),
-(1954, 'dev@gmail.com', 'Exercise Box'),
-(1955, 'dev@gmail.com', 'Leg Curl Machine'),
-(1956, 'dev@gmail.com', 'Leg Extension Machine'),
-(1957, 'dev@gmail.com', 'Leg Press Machine'),
-(1958, 'dev@gmail.com', 'Preacher Curl Bench'),
-(1959, 'dev@gmail.com', 'Preacher Curl Machine'),
-(1960, 'dev@gmail.com', 'Pull Down Machine'),
-(1961, 'dev@gmail.com', 'Pull Up Bar'),
-(1962, 'dev@gmail.com', 'Roman Chair'),
-(1963, 'dev@gmail.com', 'Shoulder Press Machine'),
-(1964, 'dev@gmail.com', 'Squat Machine'),
-(1965, 'dev@gmail.com', 'Step'),
-(1966, 'dev@gmail.com', 'Treadmill'),
+(3267, 'nick.piscopio@gmail.com', 'Leg Press Machine'),
+(3266, 'nick.piscopio@gmail.com', 'Leg Extension Machine'),
+(3265, 'nick.piscopio@gmail.com', 'Leg Curl Machine'),
+(3264, 'nick.piscopio@gmail.com', 'Exercise Box'),
+(3263, 'nick.piscopio@gmail.com', 'Dumbbells'),
+(3259, 'nick.piscopio@gmail.com', 'Bike'),
+(3260, 'nick.piscopio@gmail.com', 'Cable Pull'),
+(3261, 'nick.piscopio@gmail.com', 'Cable Row Machine'),
+(3262, 'nick.piscopio@gmail.com', 'Chair'),
+(3258, 'nick.piscopio@gmail.com', 'Bench Rack'),
+(3175, 'dev@gmail.com', 'Roman Chair'),
+(3174, 'dev@gmail.com', 'Treadmill'),
+(3173, 'dev@gmail.com', 'Cable Pull'),
 (1969, 'shatwon123.sa@gmail.com', 'Barbell'),
 (1970, 'shatwon123.sa@gmail.com', 'Chair'),
 (1971, 'shatwon123.sa@gmail.com', 'Dumbbells'),
@@ -7759,8 +7768,7 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (2411, 'halendang@gmail.com', 'Leg Press Machine'),
 (2412, 'halendang@gmail.com', 'Preacher Curl Bench'),
 (2413, 'halendang@gmail.com', 'Preacher Curl Machine'),
-(2714, 'nick.piscopio@gmail.com', 'Bench'),
-(2713, 'nick.piscopio@gmail.com', 'Barbell'),
+(3257, 'nick.piscopio@gmail.com', 'Bench'),
 (2234, 'madamo444@gmail.com', 'Elliptical'),
 (2235, 'madamo444@gmail.com', 'Exercise Box'),
 (2236, 'madamo444@gmail.com', 'Leg Curl Machine'),
