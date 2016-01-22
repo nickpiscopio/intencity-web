@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 20, 2016 at 01:29 PM
+-- Generation Time: Jan 22, 2016 at 02:46 PM
 -- Server version: 5.5.47-cll
 -- PHP Version: 5.4.31
 
@@ -405,6 +405,17 @@ LEFT JOIN Following
 WHERE Following.Email = email OR User.Email = email
 ORDER BY User.EarnedPoints DESC$$
 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjurtPreventionWorkouts`(IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))
+SELECT Exercise.ExerciseName 
+FROM Exercise
+INNER JOIN MuscleGroup
+	ON MuscleGroup.ExerciseName = Exercise.ExerciseName
+WHERE Exercise.Type = type && MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
+													FROM MuscleGroupRoutine
+													WHERE MuscleGroupRoutine.DisplayName = displayName)
+GROUP BY Exercise.ExerciseName
+LIMIT 20$$
+
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getIntencityRaffleWinner`()
 begin
 
@@ -731,7 +742,7 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
 
 --
 -- Dumping data for table `Badge`
@@ -740,7 +751,30 @@ CREATE TABLE IF NOT EXISTS `Badge` (
 INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (2, 'nick.piscopio@gmail.com', 1453305499772, 'Finisher'),
 (3, 'nick.piscopio@gmail.com', 1453305499772, 'Finisher2'),
-(4, 'dev+1234@gmail.com', 1453305499772, 'Finisher2');
+(4, 'dev+1234@gmail.com', 1453305499772, 'Finisher2'),
+(5, 'dev@gmail.com', 1453324850816, 'Finisher'),
+(6, 'dev@gmail.com', 1453326148087, 'Finisher'),
+(7, 'dev@gmail.com', 1453326161593, 'Finisher'),
+(8, 'dev@gmail.com', 1453326173482, 'Finisher'),
+(9, 'dev@gmail.com', 1453326211545, 'Finisher'),
+(10, 'dev@gmail.com', 1453326225587, 'Finisher'),
+(11, 'dev@gmail.com', 1453326240287, 'Finisher'),
+(12, 'dev@gmail.com', 1453326251229, 'Finisher'),
+(13, 'dev@gmail.com', 1453479303048, 'Finisher'),
+(14, 'dev@gmail.com', 1453479307272, 'Finisher'),
+(15, 'dev@gmail.com', 1453479809317, 'Finisher'),
+(16, 'dev@gmail.com', 1453479891644, 'Finisher'),
+(17, 'dev@gmail.com', 1453479905214, 'Finisher'),
+(18, 'dev@gmail.com', 1453480917095, 'Finisher'),
+(19, 'dev@gmail.com', 1453482409079, 'Finisher'),
+(20, 'dev@gmail.com', 1453485836200, 'Finisher'),
+(21, 'dev@gmail.com', 1453485946818, 'Finisher'),
+(22, 'dev@gmail.com', 1453489098376, 'Finisher'),
+(23, 'dev@gmail.com', 1453490243948, 'Finisher'),
+(24, 'dev@gmail.com', 1453490978364, 'Finisher'),
+(25, 'dev@gmail.com', 1453491058207, 'Finisher'),
+(26, 'dev@gmail.com', 1453491472775, 'Finisher'),
+(27, 'dev@gmail.com', 1453491489395, 'Finisher');
 
 -- --------------------------------------------------------
 
@@ -790,7 +824,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5424 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5436 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -2550,7 +2584,19 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5420, 'cpiscopio@gmail.com', '2016-01-19', '19:56:31', 'Incline Dumbbell Press', 40, 5, NULL, 5, NULL),
 (5421, 'cpiscopio@gmail.com', '2016-01-19', '20:06:09', 'Push-Up', NULL, 10, NULL, 5, NULL),
 (5422, 'cpiscopio@gmail.com', '2016-01-19', '20:06:09', 'Push-Up', NULL, 10, NULL, 5, NULL),
-(5423, 'cpiscopio@gmail.com', '2016-01-19', '20:06:09', 'Push-Up', NULL, 10, NULL, 8, NULL);
+(5423, 'cpiscopio@gmail.com', '2016-01-19', '20:06:09', 'Push-Up', NULL, 10, NULL, 8, NULL),
+(5424, 'cpiscopio@gmail.com', '2016-01-21', '00:23:20', 'Butterfly Crunch', NULL, 10, NULL, 4, NULL),
+(5425, 'cpiscopio@gmail.com', '2016-01-21', '00:23:20', 'Butterfly Crunch', NULL, 10, NULL, 4, NULL),
+(5426, 'cpiscopio@gmail.com', '2016-01-21', '00:23:20', 'Butterfly Crunch', NULL, 10, NULL, 4, NULL),
+(5427, 'cpiscopio@gmail.com', '2016-01-21', '00:29:19', 'Lying Leg Raise', NULL, 10, NULL, 5, NULL),
+(5428, 'cpiscopio@gmail.com', '2016-01-21', '00:29:19', 'Lying Leg Raise', NULL, 10, NULL, 5, NULL),
+(5429, 'cpiscopio@gmail.com', '2016-01-21', '00:29:19', 'Lying Leg Raise', NULL, 10, NULL, 5, NULL),
+(5430, 'cpiscopio@gmail.com', '2016-01-21', '00:39:36', 'Reverse Crunch', NULL, 10, NULL, 4, NULL),
+(5431, 'cpiscopio@gmail.com', '2016-01-21', '00:39:36', 'Reverse Crunch', NULL, 10, NULL, 4, NULL),
+(5432, 'cpiscopio@gmail.com', '2016-01-21', '00:39:36', 'Reverse Crunch', NULL, 10, NULL, 4, NULL),
+(5433, 'cpiscopio@gmail.com', '2016-01-21', '00:47:16', 'Sprinter Crunch', NULL, 5, NULL, 5, NULL),
+(5434, 'cpiscopio@gmail.com', '2016-01-21', '00:47:16', 'Sprinter Crunch', NULL, 5, NULL, 5, NULL),
+(5435, 'cpiscopio@gmail.com', '2016-01-21', '00:47:16', 'Sprinter Crunch', NULL, 5, NULL, 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -2565,7 +2611,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4047 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4284 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -5114,7 +5160,244 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (4043, 'dev@gmail.com', '2016-01-20', 'Upper Outer Back'),
 (4044, 'dev@gmail.com', '2016-01-20', 'Upper Inner Back'),
 (4045, 'dev@gmail.com', '2016-01-20', 'Biceps'),
-(4046, 'dev@gmail.com', '2016-01-20', 'Forearms');
+(4046, 'dev@gmail.com', '2016-01-20', 'Forearms'),
+(4047, 'dev@gmail.com', '2016-01-20', 'Cardio'),
+(4048, 'dev@gmail.com', '2016-01-20', 'Upper Outer Back'),
+(4049, 'dev@gmail.com', '2016-01-20', 'Upper Inner Back'),
+(4050, 'dev@gmail.com', '2016-01-20', 'Biceps'),
+(4051, 'dev@gmail.com', '2016-01-20', 'Forearms'),
+(4052, 'dev@gmail.com', '2016-01-20', 'Abs'),
+(4053, 'dev@gmail.com', '2016-01-20', 'Obliques'),
+(4054, 'dev@gmail.com', '2016-01-20', 'Traps'),
+(4055, 'dev@gmail.com', '2016-01-20', 'Neck'),
+(4056, 'dev@gmail.com', '2016-01-20', 'Shoulders'),
+(4057, 'dev@gmail.com', '2016-01-20', 'Calves'),
+(4058, 'dev@gmail.com', '2016-01-20', 'Shins'),
+(4059, 'dev@gmail.com', '2016-01-20', 'Hamstrings'),
+(4060, 'dev@gmail.com', '2016-01-20', 'Quads'),
+(4061, 'dev@gmail.com', '2016-01-20', 'Glutes'),
+(4062, 'dev@gmail.com', '2016-01-20', 'Lower Back'),
+(4063, 'dev@gmail.com', '2016-01-20', 'Triceps'),
+(4064, 'dev@gmail.com', '2016-01-20', 'Chest'),
+(4065, 'dev@gmail.com', '2016-01-20', 'Cardio'),
+(4066, 'dev@gmail.com', '2016-01-20', 'Upper Outer Back'),
+(4067, 'dev@gmail.com', '2016-01-20', 'Upper Inner Back'),
+(4068, 'dev@gmail.com', '2016-01-20', 'Biceps'),
+(4069, 'dev@gmail.com', '2016-01-20', 'Forearms'),
+(4070, 'cpiscopio@gmail.com', '2016-01-21', 'Abs'),
+(4071, 'cpiscopio@gmail.com', '2016-01-21', 'Obliques'),
+(4072, 'dev@gmail.com', '2016-01-21', 'Abs'),
+(4073, 'dev@gmail.com', '2016-01-21', 'Obliques'),
+(4074, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4075, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4076, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4077, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4078, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4079, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4080, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4081, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4082, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4083, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4084, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4085, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4086, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4087, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4088, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4089, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4090, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4091, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4092, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4093, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4094, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4095, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4096, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4097, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4098, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4099, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4100, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4101, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4102, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4103, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4104, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4105, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4106, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4107, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4108, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
+(4109, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
+(4110, 'dev@gmail.com', '2016-01-22', 'Biceps'),
+(4111, 'dev@gmail.com', '2016-01-22', 'Forearms'),
+(4112, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
+(4113, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
+(4114, 'dev@gmail.com', '2016-01-22', 'Biceps'),
+(4115, 'dev@gmail.com', '2016-01-22', 'Forearms'),
+(4116, 'dev@gmail.com', '2016-01-22', 'Traps'),
+(4117, 'dev@gmail.com', '2016-01-22', 'Neck'),
+(4118, 'dev@gmail.com', '2016-01-22', 'Shoulders'),
+(4119, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4120, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4121, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4122, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4123, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4124, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4125, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4126, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4127, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
+(4128, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
+(4129, 'dev@gmail.com', '2016-01-22', 'Biceps'),
+(4130, 'dev@gmail.com', '2016-01-22', 'Forearms'),
+(4131, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4132, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4133, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4134, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4135, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4136, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4137, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4138, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4139, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4140, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4141, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4142, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4143, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4144, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4145, 'dev@gmail.com', '2016-01-22', 'Abs'),
+(4146, 'dev@gmail.com', '2016-01-22', 'Obliques'),
+(4147, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4148, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4149, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4150, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4151, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4152, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4153, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4154, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4155, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4156, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4157, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
+(4158, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
+(4159, 'dev@gmail.com', '2016-01-22', 'Biceps'),
+(4160, 'dev@gmail.com', '2016-01-22', 'Forearms'),
+(4161, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4162, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4163, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4164, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4165, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4166, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4167, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4168, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4169, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4170, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4171, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4172, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4173, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4174, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4175, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4176, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4177, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4178, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4179, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4180, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4181, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4182, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4183, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4184, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4185, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4186, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4187, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4188, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4189, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4190, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4191, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4192, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4193, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4194, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4195, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4196, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4197, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4198, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4199, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4200, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4201, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4202, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4203, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4204, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4205, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4206, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4207, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4208, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4209, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4210, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4211, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4212, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4213, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4214, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4215, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4216, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4217, 'dev@gmail.com', '2016-01-22', 'Abs'),
+(4218, 'dev@gmail.com', '2016-01-22', 'Obliques'),
+(4219, 'dev@gmail.com', '2016-01-22', 'Abs'),
+(4220, 'dev@gmail.com', '2016-01-22', 'Obliques'),
+(4221, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4222, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4223, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4224, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4225, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4226, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4227, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4228, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4229, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4230, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4231, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4232, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4233, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4234, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4235, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4236, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4237, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4238, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4239, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4240, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4241, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4242, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4243, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4244, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4245, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4246, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4247, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4248, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4249, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4250, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4251, 'dev@gmail.com', '2016-01-22', 'Calves'),
+(4252, 'dev@gmail.com', '2016-01-22', 'Shins'),
+(4253, 'dev@gmail.com', '2016-01-22', 'Hamstrings'),
+(4254, 'dev@gmail.com', '2016-01-22', 'Quads'),
+(4255, 'dev@gmail.com', '2016-01-22', 'Glutes'),
+(4256, 'dev@gmail.com', '2016-01-22', 'Lower Back'),
+(4257, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4258, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4259, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4260, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
+(4261, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
+(4262, 'dev@gmail.com', '2016-01-22', 'Biceps'),
+(4263, 'dev@gmail.com', '2016-01-22', 'Forearms'),
+(4264, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4265, 'dev@gmail.com', '2016-01-22', 'Abs'),
+(4266, 'dev@gmail.com', '2016-01-22', 'Obliques'),
+(4267, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4268, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4269, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4270, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
+(4271, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
+(4272, 'dev@gmail.com', '2016-01-22', 'Biceps'),
+(4273, 'dev@gmail.com', '2016-01-22', 'Forearms'),
+(4274, 'dev@gmail.com', '2016-01-22', 'Traps'),
+(4275, 'dev@gmail.com', '2016-01-22', 'Neck'),
+(4276, 'dev@gmail.com', '2016-01-22', 'Shoulders'),
+(4277, 'dev@gmail.com', '2016-01-22', 'Triceps'),
+(4278, 'dev@gmail.com', '2016-01-22', 'Chest'),
+(4279, 'dev@gmail.com', '2016-01-22', 'Cardio'),
+(4280, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
+(4281, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
+(4282, 'dev@gmail.com', '2016-01-22', 'Biceps'),
+(4283, 'dev@gmail.com', '2016-01-22', 'Forearms');
 
 -- --------------------------------------------------------
 
@@ -6233,16 +6516,14 @@ CREATE TABLE IF NOT EXISTS `Following` (
   `Following` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=51 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=66 ;
 
 --
 -- Dumping data for table `Following`
 --
 
 INSERT INTO `Following` (`ID`, `Email`, `Following`) VALUES
-(30, 'dev@gmail.com', 'nick.piscopio@gmail.com'),
 (31, 'nick.piscopio@gmail.com', 'cpiscopio@gmail.com'),
-(32, 'dev@gmail.com', 'cpiscopio@gmail.com'),
 (33, 'nick.piscopio@gmail.com', 'ccorbi2004@yahoo.com'),
 (34, 'nick.piscopio@gmail.com', 'christina.lim14@gmail.com'),
 (35, 'nick.piscopio@gmail.com', 'cxr933@psu.edu'),
@@ -6256,9 +6537,7 @@ INSERT INTO `Following` (`ID`, `Email`, `Following`) VALUES
 (43, 'User1453136452316@intencityapp.com', 'cpiscopio@gmail.com'),
 (44, 'User1453136470614@intencityapp.com', 'cpiscopio@gmail.com'),
 (45, 'User1453136470614@intencityapp.com', 'ccorbi2004@yahoo.com'),
-(47, 'dev@gmail.com', 'nick.piscopio+1234@gmail.com'),
-(50, 'dev@gmail.com', 'nspeelman@gmail.com'),
-(49, 'dev@gmail.com', 'dev+1234@gmail.com');
+(65, 'dev@gmail.com', 'nick.piscopio@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -7672,7 +7951,7 @@ CREATE TABLE IF NOT EXISTS `User` (
 --
 
 INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`, `EarnedFitnessPointsDate`, `FirstName`, `LastName`, `Password`, `CookieToken`, `AccountType`, `EarnedPoints`, `CanRecievePrizes`) VALUES
-(1, 'cpiscopio@gmail.com', '2014-01-19', '2015-10-28', 0, '2015-09-30', 'Christopher', 'Piscopio', '$2a$12$YO1H.Jv31vdQ3ZiwSja4WuGc3j2Odlf.GI3Ktk1YEOmiILbr.5elK', '8KU9xdrEle29Y7rq', 'A', 685, 0),
+(1, 'cpiscopio@gmail.com', '2014-01-19', '2015-10-28', 0, '2015-09-30', 'Christopher', 'Piscopio', '$2a$12$YO1H.Jv31vdQ3ZiwSja4WuGc3j2Odlf.GI3Ktk1YEOmiILbr.5elK', '8KU9xdrEle29Y7rq', 'A', 725, 0),
 (2, 'mpolon@ix.netcom.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Marty', 'Poloncarz', '$2a$12$ppzNtUMGjhTmz42NkJwyduV38OrkKs3GnQtr.N.FFsbWcbOsf6FfK', NULL, 'B', 0, 1),
 (3, 'luis.cielak@gmail.com', '2014-01-19', '2014-03-15', 0, '0000-00-00', 'Luis', 'Cielak', '$2a$12$Ef7bVePatxfIn9WA01WJ3ek2qNO90yqI5LW8js0tcLZ/iohycGkZi', NULL, 'B', 0, 1),
 (4, 'ccorbi2004@yahoo.com', '2014-01-19', '2014-09-26', 1, '0000-00-00', 'Chris', 'Corbi', '$2a$12$J9SAukQT8uk28gcLAb/smO./aroOO.giwOsBULGsSLoxjTtQFEc8i', NULL, 'B', 20, 1),
@@ -7743,7 +8022,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (132, 'mpryor2008@gmail.com', '2014-03-22', '2014-03-23', 0, NULL, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', NULL, 'N', 0, 1),
 (133, 'test@test.gov', '2014-03-23', '2014-03-23', 0, NULL, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', NULL, 'N', 0, 1),
 (134, 'julienajbjerg@gmail.com', '2014-03-24', '2014-06-13', 0, NULL, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'DfLuc1QeDyvBQcnr', 'N', 10, 1),
-(135, 'dev@gmail.com', '2014-03-25', '2016-01-12', 0, '2014-03-25', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 340, 1),
+(135, 'dev@gmail.com', '2014-03-25', '2016-01-12', 0, '2014-03-25', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 935, 1),
 (136, 'shatwon123.sa@gmail.com', '2014-03-26', '2014-03-26', 0, NULL, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', NULL, 'N', 0, 1),
 (137, 'appletest@gmail.com', '2014-03-27', '2014-03-27', 0, NULL, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', NULL, 'R', 0, 1),
 (142, 'beta@gmail.com', '2014-04-01', '2014-04-08', 1, NULL, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', NULL, 'D', 0, 1),
@@ -7795,7 +8074,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3542 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3759 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -7897,9 +8176,8 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (3261, 'nick.piscopio@gmail.com', 'Cable Row Machine'),
 (3262, 'nick.piscopio@gmail.com', 'Chair'),
 (3258, 'nick.piscopio@gmail.com', 'Bench Rack'),
-(3175, 'dev@gmail.com', 'Roman Chair'),
-(3174, 'dev@gmail.com', 'Treadmill'),
-(3173, 'dev@gmail.com', 'Cable Pull'),
+(3758, 'dev@gmail.com', 'Treadmill'),
+(3757, 'dev@gmail.com', 'Step'),
 (1969, 'shatwon123.sa@gmail.com', 'Barbell'),
 (1970, 'shatwon123.sa@gmail.com', 'Chair'),
 (1971, 'shatwon123.sa@gmail.com', 'Dumbbells'),
@@ -8334,7 +8612,27 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (3538, 'User1453136514537@intencityapp.com', 'Shoulder Press Machine'),
 (3539, 'User1453136514537@intencityapp.com', 'Squat Machine'),
 (3540, 'User1453136514537@intencityapp.com', 'Step'),
-(3541, 'User1453136514537@intencityapp.com', 'Treadmill');
+(3541, 'User1453136514537@intencityapp.com', 'Treadmill'),
+(3756, 'dev@gmail.com', 'Squat Machine'),
+(3755, 'dev@gmail.com', 'Shoulder Press Machine'),
+(3754, 'dev@gmail.com', 'Roman Chair'),
+(3753, 'dev@gmail.com', 'Pull Up Bar'),
+(3752, 'dev@gmail.com', 'Pull Down Machine'),
+(3751, 'dev@gmail.com', 'Preacher Curl Machine'),
+(3750, 'dev@gmail.com', 'Preacher Curl Bench'),
+(3749, 'dev@gmail.com', 'Leg Press Machine'),
+(3748, 'dev@gmail.com', 'Leg Extension Machine'),
+(3747, 'dev@gmail.com', 'Leg Curl Machine'),
+(3746, 'dev@gmail.com', 'Exercise Box'),
+(3745, 'dev@gmail.com', 'Elliptical'),
+(3744, 'dev@gmail.com', 'Dumbbells'),
+(3743, 'dev@gmail.com', 'Chair'),
+(3741, 'dev@gmail.com', 'Cable Pull'),
+(3742, 'dev@gmail.com', 'Cable Row Machine'),
+(3740, 'dev@gmail.com', 'Bike'),
+(3739, 'dev@gmail.com', 'Bench Rack'),
+(3738, 'dev@gmail.com', 'Bench'),
+(3737, 'dev@gmail.com', 'Barbell');
 
 -- --------------------------------------------------------
 
