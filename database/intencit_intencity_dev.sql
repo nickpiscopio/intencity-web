@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 22, 2016 at 02:46 PM
+-- Generation Time: Jan 25, 2016 at 03:55 PM
 -- Server version: 5.5.47-cll
 -- PHP Version: 5.4.31
 
@@ -55,6 +55,10 @@ Routine.ExerciseDay = DAYOFWEEK(NOW())
 ORDER BY Routine.ID ASC;
 
 end$$
+
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise`(IN `email` VARCHAR(75), IN `exerciseName` VARCHAR(50))
+INSERT INTO Exclusion (Exclusion.Email, Exclusion.ExcludeForever, Exclusion.ExclusionName, Exclusion.ExclusionType) 
+VALUES (email, 1, exerciseName, "E")$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser`(IN `email` VARCHAR(75), IN `id` INT)
 INSERT INTO Following (Following.Email, Following.Following) 
@@ -183,6 +187,11 @@ LEFT JOIN UserEquipment
 	ON UserEquipment.EquipmentName = Equipment.EquipmentName && UserEquipment.Email = email
 WHERE Equipment.EquipmentName != 'NULL'
 GROUP BY Equipment.EquipmentName$$
+
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExclusionList`(IN `email` VARCHAR(75))
+SELECT Exclusion.ExclusionName
+FROM Exclusion
+WHERE Exclusion.Email = email$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercise`(IN `email` VARCHAR(75))
 begin
@@ -405,7 +414,7 @@ LEFT JOIN Following
 WHERE Following.Email = email OR User.Email = email
 ORDER BY User.EarnedPoints DESC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjurtPreventionWorkouts`(IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjuryPreventionWorkouts`(IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))
 SELECT Exercise.ExerciseName 
 FROM Exercise
 INNER JOIN MuscleGroup
@@ -700,6 +709,15 @@ Update Settings SET Settings.FitnessType = NULL WHERE Settings.Email = email;
 
 end$$
 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAwards`()
+begin
+
+    DELETE FROM Badge;
+    
+    Update User SET User.EarnedPoints = 0;
+
+end$$
+
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchExercises`(IN `email` VARCHAR(75), IN `name` VARCHAR(50))
 SELECT Exercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
 FROM Exercise
@@ -742,39 +760,40 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=75 ;
 
 --
 -- Dumping data for table `Badge`
 --
 
 INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
-(2, 'nick.piscopio@gmail.com', 1453305499772, 'Finisher'),
-(3, 'nick.piscopio@gmail.com', 1453305499772, 'Finisher2'),
-(4, 'dev+1234@gmail.com', 1453305499772, 'Finisher2'),
-(5, 'dev@gmail.com', 1453324850816, 'Finisher'),
-(6, 'dev@gmail.com', 1453326148087, 'Finisher'),
-(7, 'dev@gmail.com', 1453326161593, 'Finisher'),
-(8, 'dev@gmail.com', 1453326173482, 'Finisher'),
-(9, 'dev@gmail.com', 1453326211545, 'Finisher'),
-(10, 'dev@gmail.com', 1453326225587, 'Finisher'),
-(11, 'dev@gmail.com', 1453326240287, 'Finisher'),
-(12, 'dev@gmail.com', 1453326251229, 'Finisher'),
-(13, 'dev@gmail.com', 1453479303048, 'Finisher'),
-(14, 'dev@gmail.com', 1453479307272, 'Finisher'),
-(15, 'dev@gmail.com', 1453479809317, 'Finisher'),
-(16, 'dev@gmail.com', 1453479891644, 'Finisher'),
-(17, 'dev@gmail.com', 1453479905214, 'Finisher'),
-(18, 'dev@gmail.com', 1453480917095, 'Finisher'),
-(19, 'dev@gmail.com', 1453482409079, 'Finisher'),
-(20, 'dev@gmail.com', 1453485836200, 'Finisher'),
-(21, 'dev@gmail.com', 1453485946818, 'Finisher'),
-(22, 'dev@gmail.com', 1453489098376, 'Finisher'),
-(23, 'dev@gmail.com', 1453490243948, 'Finisher'),
-(24, 'dev@gmail.com', 1453490978364, 'Finisher'),
-(25, 'dev@gmail.com', 1453491058207, 'Finisher'),
-(26, 'dev@gmail.com', 1453491472775, 'Finisher'),
-(27, 'dev@gmail.com', 1453491489395, 'Finisher');
+(47, 'nick.piscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(48, 'nick.piscopio@gmail.com', 1453733860779, 'Finisher'),
+(49, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(50, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(51, 'nick.piscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(52, 'nick.piscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(53, 'nick.piscopio@gmail.com', 1453733860779, 'Finisher'),
+(54, 'nick.piscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(55, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(56, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(57, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(58, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(59, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(60, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
+(61, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(62, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(63, 'nick.piscopio@gmail.com', 1453733860779, 'Finisher'),
+(64, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
+(65, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
+(66, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
+(67, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
+(68, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(69, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(70, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(71, 'nick.piscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(72, 'nick.piscopio@gmail.com', 1453733856440, 'Kept Swimming'),
+(74, 'halendang@gmail.com', 1453733856440, 'Kept Swimming');
 
 -- --------------------------------------------------------
 
@@ -824,7 +843,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5436 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5445 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -2596,7 +2615,16 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5432, 'cpiscopio@gmail.com', '2016-01-21', '00:39:36', 'Reverse Crunch', NULL, 10, NULL, 4, NULL),
 (5433, 'cpiscopio@gmail.com', '2016-01-21', '00:47:16', 'Sprinter Crunch', NULL, 5, NULL, 5, NULL),
 (5434, 'cpiscopio@gmail.com', '2016-01-21', '00:47:16', 'Sprinter Crunch', NULL, 5, NULL, 5, NULL),
-(5435, 'cpiscopio@gmail.com', '2016-01-21', '00:47:16', 'Sprinter Crunch', NULL, 5, NULL, 5, NULL);
+(5435, 'cpiscopio@gmail.com', '2016-01-21', '00:47:16', 'Sprinter Crunch', NULL, 5, NULL, 5, NULL),
+(5436, 'dev@gmail.com', '2016-01-24', '09:09:56', 'Depth Box Jump', 5, 10, NULL, 9, NULL),
+(5437, 'dev@gmail.com', '2016-01-24', '09:10:15', 'Depth Box Jump', NULL, 91, NULL, 10, NULL),
+(5438, 'dev@gmail.com', '2016-01-24', '09:18:08', 'Toe Raise', 5, 21, NULL, 9, NULL),
+(5439, 'dev@gmail.com', '2016-01-24', '09:18:08', 'Toe Raise', NULL, 10, NULL, 10, NULL),
+(5440, 'dev@gmail.com', '2016-01-24', '09:27:12', 'Single Leg Romanian Dead Lift', 5, 10, NULL, 9, NULL),
+(5441, 'dev@gmail.com', '2016-01-24', '09:27:20', 'Single Leg Romanian Dead Lift', NULL, 91, NULL, 10, NULL),
+(5442, 'dev@gmail.com', '2016-01-24', '09:27:44', 'Depth Box Jump', 5, 58, NULL, 9, 'null'),
+(5443, 'dev@gmail.com', '2016-01-24', '09:27:44', 'Depth Box Jump', NULL, 18, NULL, 10, ''),
+(5444, 'dev@gmail.com', '2016-01-25', '14:07:47', 'Butterfly Crunch', NULL, 0, NULL, 10, 'null');
 
 -- --------------------------------------------------------
 
@@ -2611,7 +2639,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4284 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4466 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -5397,7 +5425,190 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (4280, 'dev@gmail.com', '2016-01-22', 'Upper Outer Back'),
 (4281, 'dev@gmail.com', '2016-01-22', 'Upper Inner Back'),
 (4282, 'dev@gmail.com', '2016-01-22', 'Biceps'),
-(4283, 'dev@gmail.com', '2016-01-22', 'Forearms');
+(4283, 'dev@gmail.com', '2016-01-22', 'Forearms'),
+(4284, 'dev@gmail.com', '2016-01-23', 'Abs'),
+(4285, 'dev@gmail.com', '2016-01-23', 'Obliques'),
+(4286, 'dev@gmail.com', '2016-01-23', 'Traps'),
+(4287, 'dev@gmail.com', '2016-01-23', 'Neck'),
+(4288, 'dev@gmail.com', '2016-01-23', 'Shoulders'),
+(4289, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4290, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4291, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4292, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4293, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4294, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4295, 'dev@gmail.com', '2016-01-23', 'Triceps'),
+(4296, 'dev@gmail.com', '2016-01-23', 'Chest'),
+(4297, 'dev@gmail.com', '2016-01-23', 'Cardio'),
+(4298, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4299, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4300, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4301, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4302, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4303, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4304, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4305, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4306, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4307, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4308, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4309, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4310, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4311, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4312, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4313, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4314, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4315, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4316, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4317, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4318, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4319, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4320, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4321, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4322, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4323, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4324, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4325, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4326, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4327, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4328, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4329, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4330, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4331, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4332, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4333, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4334, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4335, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4336, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4337, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4338, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4339, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4340, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4341, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4342, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4343, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4344, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4345, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4346, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4347, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4348, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4349, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4350, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4351, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4352, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4353, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4354, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4355, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4356, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4357, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4358, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4359, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4360, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4361, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4362, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4363, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4364, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4365, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4366, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4367, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4368, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4369, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4370, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4371, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4372, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4373, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4374, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4375, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4376, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4377, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4378, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4379, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4380, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4381, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4382, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4383, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4384, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4385, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4386, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4387, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4388, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4389, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4390, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4391, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4392, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4393, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4394, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4395, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4396, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4397, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4398, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4399, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4400, 'dev@gmail.com', '2016-01-23', 'Calves'),
+(4401, 'dev@gmail.com', '2016-01-23', 'Shins'),
+(4402, 'dev@gmail.com', '2016-01-23', 'Hamstrings'),
+(4403, 'dev@gmail.com', '2016-01-23', 'Quads'),
+(4404, 'dev@gmail.com', '2016-01-23', 'Glutes'),
+(4405, 'dev@gmail.com', '2016-01-23', 'Lower Back'),
+(4406, 'dev@gmail.com', '2016-01-24', 'Calves'),
+(4407, 'dev@gmail.com', '2016-01-24', 'Shins'),
+(4408, 'dev@gmail.com', '2016-01-24', 'Hamstrings'),
+(4409, 'dev@gmail.com', '2016-01-24', 'Quads'),
+(4410, 'dev@gmail.com', '2016-01-24', 'Glutes'),
+(4411, 'dev@gmail.com', '2016-01-24', 'Lower Back'),
+(4412, 'dev@gmail.com', '2016-01-24', 'Calves'),
+(4413, 'dev@gmail.com', '2016-01-24', 'Shins'),
+(4414, 'dev@gmail.com', '2016-01-24', 'Hamstrings'),
+(4415, 'dev@gmail.com', '2016-01-24', 'Quads'),
+(4416, 'dev@gmail.com', '2016-01-24', 'Glutes'),
+(4417, 'dev@gmail.com', '2016-01-24', 'Lower Back'),
+(4418, 'dev@gmail.com', '2016-01-24', 'Calves'),
+(4419, 'dev@gmail.com', '2016-01-24', 'Shins'),
+(4420, 'dev@gmail.com', '2016-01-24', 'Hamstrings'),
+(4421, 'dev@gmail.com', '2016-01-24', 'Quads'),
+(4422, 'dev@gmail.com', '2016-01-24', 'Glutes'),
+(4423, 'dev@gmail.com', '2016-01-24', 'Lower Back'),
+(4424, 'dev@gmail.com', '2016-01-24', 'Calves'),
+(4425, 'dev@gmail.com', '2016-01-24', 'Shins'),
+(4426, 'dev@gmail.com', '2016-01-24', 'Hamstrings'),
+(4427, 'dev@gmail.com', '2016-01-24', 'Quads'),
+(4428, 'dev@gmail.com', '2016-01-24', 'Glutes'),
+(4429, 'dev@gmail.com', '2016-01-24', 'Lower Back'),
+(4430, 'dev@gmail.com', '2016-01-25', 'Triceps'),
+(4431, 'dev@gmail.com', '2016-01-25', 'Chest'),
+(4432, 'dev@gmail.com', '2016-01-25', 'Cardio'),
+(4433, 'dev@gmail.com', '2016-01-25', 'Upper Outer Back'),
+(4434, 'dev@gmail.com', '2016-01-25', 'Upper Inner Back'),
+(4435, 'dev@gmail.com', '2016-01-25', 'Biceps'),
+(4436, 'dev@gmail.com', '2016-01-25', 'Forearms'),
+(4437, 'dev@gmail.com', '2016-01-25', 'Abs'),
+(4438, 'dev@gmail.com', '2016-01-25', 'Obliques'),
+(4439, 'dev@gmail.com', '2016-01-25', 'Traps'),
+(4440, 'dev@gmail.com', '2016-01-25', 'Neck'),
+(4441, 'dev@gmail.com', '2016-01-25', 'Shoulders'),
+(4442, 'dev@gmail.com', '2016-01-25', 'Calves'),
+(4443, 'dev@gmail.com', '2016-01-25', 'Shins'),
+(4444, 'dev@gmail.com', '2016-01-25', 'Hamstrings'),
+(4445, 'dev@gmail.com', '2016-01-25', 'Quads'),
+(4446, 'dev@gmail.com', '2016-01-25', 'Glutes'),
+(4447, 'dev@gmail.com', '2016-01-25', 'Lower Back'),
+(4448, 'dev@gmail.com', '2016-01-25', 'Triceps'),
+(4449, 'dev@gmail.com', '2016-01-25', 'Chest'),
+(4450, 'dev@gmail.com', '2016-01-25', 'Cardio'),
+(4451, 'dev@gmail.com', '2016-01-25', 'Upper Outer Back'),
+(4452, 'dev@gmail.com', '2016-01-25', 'Upper Inner Back'),
+(4453, 'dev@gmail.com', '2016-01-25', 'Biceps'),
+(4454, 'dev@gmail.com', '2016-01-25', 'Forearms'),
+(4455, 'nick.piscopio@gmail.com', '2016-01-25', 'Traps'),
+(4456, 'nick.piscopio@gmail.com', '2016-01-25', 'Neck'),
+(4457, 'nick.piscopio@gmail.com', '2016-01-25', 'Shoulders'),
+(4458, 'nick.piscopio@gmail.com', '2016-01-25', 'Calves'),
+(4459, 'nick.piscopio@gmail.com', '2016-01-25', 'Shins'),
+(4460, 'nick.piscopio@gmail.com', '2016-01-25', 'Hamstrings');
+INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VALUES
+(4461, 'nick.piscopio@gmail.com', '2016-01-25', 'Quads'),
+(4462, 'nick.piscopio@gmail.com', '2016-01-25', 'Glutes'),
+(4463, 'nick.piscopio@gmail.com', '2016-01-25', 'Lower Back'),
+(4464, 'dev@gmail.com', '2016-01-25', 'Abs'),
+(4465, 'dev@gmail.com', '2016-01-25', 'Obliques');
 
 -- --------------------------------------------------------
 
@@ -6257,7 +6468,7 @@ CREATE TABLE IF NOT EXISTS `Exclusion` (
   `ExclusionType` char(1) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=446 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=508 ;
 
 --
 -- Dumping data for table `Exclusion`
@@ -6278,19 +6489,9 @@ INSERT INTO `Exclusion` (`ID`, `Email`, `ExcludeForever`, `ExclusionName`, `Excl
 (251, 'shatwon123.sa@gmail.com', 1, 'Depth Box Jump', 'E'),
 (252, 'shatwon123.sa@gmail.com', 1, 'Depth Box Jump', 'E'),
 (254, 'shatwon123.sa@gmail.com', 1, 'Depth Box Jump', 'E'),
-(392, 'nick.piscopio@gmail.com', 1, 'Seated Cable Row', 'E'),
 (390, 'nick.piscopio@gmail.com', 1, 'Pull Over', 'E'),
 (388, 'nick.piscopio@gmail.com', 1, 'Wide Pull-Up', 'E'),
-(391, 'nick.piscopio@gmail.com', 1, 'Cable Underhand Pull Down', 'E'),
-(262, 'nick.piscopio@gmail.com', 1, 'Side Crunch', 'E'),
-(271, 'nick.piscopio@gmail.com', 1, 'Muscle Up', 'E'),
-(404, 'nick.piscopio@gmail.com', 1, 'Push Press', 'E'),
-(401, 'nick.piscopio@gmail.com', 1, 'Cable Wide Seated Row', 'E'),
-(402, 'nick.piscopio@gmail.com', 1, 'Cable Seated High Row', 'E'),
-(403, 'nick.piscopio@gmail.com', 1, 'Cable Lying Row', 'E'),
-(358, 'dev@gmail.com', 1, 'Decline Back Extension', 'E'),
-(360, 'dev@gmail.com', 1, 'Leg Extension', 'E'),
-(400, 'nick.piscopio@gmail.com', 1, 'Cable Seated Twist', 'E');
+(271, 'nick.piscopio@gmail.com', 1, 'Muscle Up', 'E');
 
 -- --------------------------------------------------------
 
@@ -6516,7 +6717,7 @@ CREATE TABLE IF NOT EXISTS `Following` (
   `Following` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=66 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=67 ;
 
 --
 -- Dumping data for table `Following`
@@ -6525,10 +6726,6 @@ CREATE TABLE IF NOT EXISTS `Following` (
 INSERT INTO `Following` (`ID`, `Email`, `Following`) VALUES
 (31, 'nick.piscopio@gmail.com', 'cpiscopio@gmail.com'),
 (33, 'nick.piscopio@gmail.com', 'ccorbi2004@yahoo.com'),
-(34, 'nick.piscopio@gmail.com', 'christina.lim14@gmail.com'),
-(35, 'nick.piscopio@gmail.com', 'cxr933@psu.edu'),
-(36, 'nick.piscopio@gmail.com', 'dev 12345@gmail.com'),
-(37, 'nick.piscopio@gmail.com', 'nick.piscopio 123@gmail.com'),
 (38, 'User1453132260222@intencityapp.com', 'cpiscopio@gmail.com'),
 (39, 'User1453134766431@intencityapp.com', 'cpiscopio@gmail.com'),
 (40, 'User1453134766431@intencityapp.com', 'ccorbi2004@yahoo.com'),
@@ -6537,7 +6734,8 @@ INSERT INTO `Following` (`ID`, `Email`, `Following`) VALUES
 (43, 'User1453136452316@intencityapp.com', 'cpiscopio@gmail.com'),
 (44, 'User1453136470614@intencityapp.com', 'cpiscopio@gmail.com'),
 (45, 'User1453136470614@intencityapp.com', 'ccorbi2004@yahoo.com'),
-(65, 'dev@gmail.com', 'nick.piscopio@gmail.com');
+(65, 'dev@gmail.com', 'nick.piscopio@gmail.com'),
+(66, 'nick.piscopio@gmail.com', 'halendang@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -7951,15 +8149,15 @@ CREATE TABLE IF NOT EXISTS `User` (
 --
 
 INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`, `EarnedFitnessPointsDate`, `FirstName`, `LastName`, `Password`, `CookieToken`, `AccountType`, `EarnedPoints`, `CanRecievePrizes`) VALUES
-(1, 'cpiscopio@gmail.com', '2014-01-19', '2015-10-28', 0, '2015-09-30', 'Christopher', 'Piscopio', '$2a$12$YO1H.Jv31vdQ3ZiwSja4WuGc3j2Odlf.GI3Ktk1YEOmiILbr.5elK', '8KU9xdrEle29Y7rq', 'A', 725, 0),
+(1, 'cpiscopio@gmail.com', '2014-01-19', '2015-10-28', 0, '2015-09-30', 'Christopher', 'Piscopio', '$2a$12$YO1H.Jv31vdQ3ZiwSja4WuGc3j2Odlf.GI3Ktk1YEOmiILbr.5elK', '8KU9xdrEle29Y7rq', 'A', 325, 0),
 (2, 'mpolon@ix.netcom.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Marty', 'Poloncarz', '$2a$12$ppzNtUMGjhTmz42NkJwyduV38OrkKs3GnQtr.N.FFsbWcbOsf6FfK', NULL, 'B', 0, 1),
 (3, 'luis.cielak@gmail.com', '2014-01-19', '2014-03-15', 0, '0000-00-00', 'Luis', 'Cielak', '$2a$12$Ef7bVePatxfIn9WA01WJ3ek2qNO90yqI5LW8js0tcLZ/iohycGkZi', NULL, 'B', 0, 1),
-(4, 'ccorbi2004@yahoo.com', '2014-01-19', '2014-09-26', 1, '0000-00-00', 'Chris', 'Corbi', '$2a$12$J9SAukQT8uk28gcLAb/smO./aroOO.giwOsBULGsSLoxjTtQFEc8i', NULL, 'B', 20, 1),
-(5, 'halendang@gmail.com', '2014-01-19', '2014-05-29', 0, '2014-05-27', 'Halen', 'Dang', '$2a$12$sgK5DdyA7bwnHqJtaD0CYO7lOGLfqFgZNUsFEGk0Feiwk18K6LyMi', 'M704JmRSKOBwEOLl', 'B', 0, 1),
+(4, 'ccorbi2004@yahoo.com', '2014-01-19', '2014-09-26', 1, '0000-00-00', 'Chris', 'Corbi', '$2a$12$J9SAukQT8uk28gcLAb/smO./aroOO.giwOsBULGsSLoxjTtQFEc8i', NULL, 'B', 100, 1),
+(5, 'halendang@gmail.com', '2014-01-19', '2014-05-29', 0, '2014-05-27', 'Halen', 'Dang', '$2a$12$sgK5DdyA7bwnHqJtaD0CYO7lOGLfqFgZNUsFEGk0Feiwk18K6LyMi', 'M704JmRSKOBwEOLl', 'B', 255, 1),
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-01-17', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$7Cenx8jQwqUU0.mZjBWOKOy6ONKvinG5Zvo8OMYH48IUknZO44x3i', 'dViDrRljgy6h8HXy', 'A', 3140, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-01-24', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$7Cenx8jQwqUU0.mZjBWOKOy6ONKvinG5Zvo8OMYH48IUknZO44x3i', 'dViDrRljgy6h8HXy', 'A', 465, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -8014,53 +8212,53 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (124, 'rmrrodriguez@hotmail.com', '2014-03-18', '2014-03-18', 1, NULL, 'Rene', 'Rosales', '$2a$12$btR0FnWbhNDCfvQnZZRvwODkCZZV7m.nPNjIOV4ptuodCE8iMdwyK', NULL, 'N', 0, 1),
 (125, 'mattldglmut@gmail.com', '2014-03-19', '2014-03-19', 0, NULL, 'Matthew', 'Keyes', '$2a$12$77oB/UUBCW2BGDjHp4DrnuxOzSbhdXkKL7qLBNgH0YX54BvntwvuK', NULL, 'N', 0, 1),
 (138, 'kitcat0793@gmail.com', '2014-03-27', '2014-04-02', 0, '2014-03-29', 'Cathryn', 'Rizzuto', '$2a$12$HDIs0DTvuzNK6thgvgIgleH11gvbhioCFS1vS3Ge55OyfEZHjOIIO', '5PenuBufSicebV7Z', 'N', 0, 1),
-(127, 'madamo444@gmail.com', '2014-03-19', '2014-08-24', 1, NULL, 'Mike', 'Adamo', '$2a$12$ScUPNiRHM4CLblvP8Sj/tuixsu/C.zcKJtV1BMwPgollQmv5UBTxm', 'kv149l0SMk3pYUgQ', 'N', 10, 1),
+(127, 'madamo444@gmail.com', '2014-03-19', '2014-08-24', 1, NULL, 'Mike', 'Adamo', '$2a$12$ScUPNiRHM4CLblvP8Sj/tuixsu/C.zcKJtV1BMwPgollQmv5UBTxm', 'kv149l0SMk3pYUgQ', 'N', 0, 1),
 (128, 'christina.lim14@gmail.com', '2014-03-19', '2014-03-19', 0, NULL, 'Christina', 'Lim', '$2a$12$wNqNM.pRc7oRwbBLWRaVRejEJGAyaBSTEzK6.w1ZboeVNnTNe9tB.', NULL, 'N', 0, 1),
 (129, 'aymerick_landre@hotmail.com', '2014-03-20', '2014-03-20', 0, NULL, 'Aymerick', 'Landre', '$2a$12$Ut4w1Edj9NAYffjuMNm.JekSMrqoafUY.OaGlh4BpZcok9YHzn54m', NULL, 'N', 0, 1),
 (130, 'donnaadamo@optimum.net', '2014-03-21', '2014-03-21', 1, NULL, 'Donna', 'Adamo', '$2a$12$0fZDcN0b1fjoZJb3WyKiAep2kxotRW7A2Eij30Q0ucDJv9kTBjtiK', NULL, 'N', 0, 1),
 (131, 'liam.ot@hotmail.com', '2014-03-22', '2014-03-23', 1, NULL, 'Liam', 'O Tiarnaigh', '$2a$12$12VDnUJY.1QmsEXNvpK4WuwkaF413TDlXPKbTrtG2G7zZJLK4L1pG', NULL, 'N', 0, 1),
 (132, 'mpryor2008@gmail.com', '2014-03-22', '2014-03-23', 0, NULL, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', NULL, 'N', 0, 1),
 (133, 'test@test.gov', '2014-03-23', '2014-03-23', 0, NULL, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', NULL, 'N', 0, 1),
-(134, 'julienajbjerg@gmail.com', '2014-03-24', '2014-06-13', 0, NULL, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'DfLuc1QeDyvBQcnr', 'N', 10, 1),
-(135, 'dev@gmail.com', '2014-03-25', '2016-01-12', 0, '2014-03-25', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 935, 1),
+(134, 'julienajbjerg@gmail.com', '2014-03-24', '2014-06-13', 0, NULL, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'DfLuc1QeDyvBQcnr', 'N', 0, 1),
+(135, 'dev@gmail.com', '2014-03-25', '2016-01-12', 0, '2014-03-25', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 60, 1),
 (136, 'shatwon123.sa@gmail.com', '2014-03-26', '2014-03-26', 0, NULL, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', NULL, 'N', 0, 1),
 (137, 'appletest@gmail.com', '2014-03-27', '2014-03-27', 0, NULL, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', NULL, 'R', 0, 1),
 (142, 'beta@gmail.com', '2014-04-01', '2014-04-08', 1, NULL, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', NULL, 'D', 0, 1),
 (140, '123456@gmail.com', '2014-03-29', '2014-03-29', 0, NULL, 'Onkhung', 'Onkhung', '$2a$12$4/G.61TF0nuuveBN56djaeBThAXTi0GOkE0clkSVNAnsafTEyBDhW', NULL, 'N', 0, 1),
 (143, 'marlonestrada@kinal.org.gt', '2014-04-01', '2014-04-01', 1, NULL, 'Marlon', 'IvÃ¡n', '$2a$12$tSYoJ5xkqR0KJ7aHEqVS6.HQIWAHQN./dvYJnP.hTjCQ3MDikWAca', NULL, 'N', 0, 1),
-(337, 'nick.piscopio 123@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Piscdop', '$2a$12$9tQISuYnHAQk/XRJUoBVS.QxdYKyLId4kejM6s4xW2bgEw8bmroWC', NULL, 'T', 110, 1),
-(338, 'dev 12345@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Piscopio', '$2a$12$8LIUscEAeqZ8lkPbfZbFs.hpqo30Wm2.WMrBgRtWTZXjQAc98F3iO', NULL, 'T', 110, 1),
-(325, 'user1452625209155@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$2WM5UF9OkB3fkaKxFiZ4XeCwbZN7UTxoEmFx5SnYqJ6S5pUFDY/02', NULL, 'T', 100, 1),
-(326, 'user1452625722779@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$UqL1NKBDGe5eD8I3jEujQuuvf7QDfkA7ev9w1rYIyv1rYHNCVce7G', NULL, 'T', 100, 1),
-(327, 'user1452625764385@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$83bkTciyTx80DDw4Xn6I3OwJqUau31qUWBbB0sTrMIsxMzzhn0eIC', NULL, 'T', 100, 1),
-(328, 'user1452625873288@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$22StCBRjbpgRKoMnsFngr.9Pqra8RMD6W4J/LMddvgiD3.b7kARba', NULL, 'T', 100, 1),
-(329, 'de 1v@gmail.com', '2016-01-12', NULL, 1, NULL, 'Nick', 'Poscopi', '$2a$12$243Z8O1SN9K9LoeGkojMnexfkd9deE22Ptd1L6E2tfBHQ5kxX9OHu', NULL, 'N', 100, 1),
-(330, 'dev 3@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Pisdcopio', '$2a$12$IfzhwPrjmHo.uAAdtY6weuWBTh3uR9j46Wz1CYF2IZxBy4iCcN9pO', NULL, 'T', 110, 1),
-(331, 'dev 34@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nuick', 'Pisdfop[io', '$2a$12$POYlXI4gFkJO0Yi4F2Sk.OSRRyF.KLKDm4JLknjZCV/2EaNMU02QC', NULL, 'T', 110, 1),
-(332, 'nick 123@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Mial', 'Lskdf', '$2a$12$bVFjvrCA7lVtrKU9YDP5..1yiJRt9dtqkUfaGm13/0FHmg639.gfG', NULL, 'T', 110, 1),
-(333, 'test!@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Test', 'Qwckl;jdf', '$2a$12$DijEKotzAKy5scEUfbJgse0LC6ewNHXsQ8M/RsD1zI7F5VKiCKGwq', NULL, 'T', 110, 1),
-(334, 'john.smith@gmail.com', '2016-01-12', NULL, 1, NULL, 'John', 'Smith', '$2a$12$D1vr/2A1hkpRtqea0jPk1ObRl6u4rdV9IsfiT4vUXbYKBmPgjWCNm', NULL, 'N', 100, 1),
-(335, 'john.smith 123@gmail.com', '2016-01-12', NULL, 1, NULL, 'John', 'Smith', '$2a$12$csUJxxMapA31tVqkLQayAelTWhm1.OfUV7fAL4pdlMh5sxbWg.0vO', NULL, 'N', 100, 1),
-(336, 'john.smith+123@gmail.com', '2016-01-12', NULL, 1, NULL, 'John', 'Smith', '$2a$12$DNxyK/twqF3D6Wc.8eDrq.7Vl4FecOuRERv9FTA0us81uo9UmfTnW', NULL, 'N', 100, 1),
-(339, 'dev 123@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Pscop', '$2a$12$LkGoCfzgA43OqZ1yOBB9cu0q2Mhy9VSGzsA0z3L6hq3nyJFEhnddq', NULL, 'T', 110, 1),
-(340, 'dev+1234@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Piscopio', '$2a$12$nsdO338bFBOqjFYLovaPa.9uT.mU2pzVAuegNIW6bxrKBNz6.H.7S', NULL, 'T', 110, 1),
-(341, 'nick.piscopio 12@gmail.com', '2016-01-12', NULL, 1, NULL, 'Nixk', 'Piscopio', '$2a$12$HX.vZQKFL57bA0w0ORV92eH3bU22jy8Qx/sGGxfOQow6bXH64h23y', NULL, 'N', 100, 1),
-(342, 'user1452630628926@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$8NsAtWGJUOvwSjMKriPsDuLfwwaXa7Fu.5Ev3yEX/ygGW6b7V1whG', NULL, 'T', 100, 1),
-(343, 'nick.piscopio+1234@gmail.com', '2016-01-12', NULL, 1, NULL, 'Nick', 'Piwcopio', '$2a$12$BSjWOS7eWilc3QiQRk28UeY1QE3SRJeWozwT8jlUDgqUXvN3ODHFO', NULL, 'N', 100, 1),
-(344, 'user1452630956179@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$yRkRZu4Q1kCsB3rPqMpaquWX/zPZCp6MvS25d8LooWiW041hB1giC', NULL, 'T', 100, 1),
-(345, 'user1452697456965@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$jiR.7Yw7QJ2qnRB9ou20MuTfU6aVUrdCED9ZRzMDgt8jfC3CZ/A0W', NULL, 'T', 100, 1),
-(346, 'user1452698169783@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$rAANNpZ6mZhIHlnrk568eud.fMGMt14qjGJVNnAc8Cl/xdwALFY6e', NULL, 'T', 100, 1),
-(347, 'user1452699235337@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$.zzgaWBWonysxO/1aH.0Leroi.QsfTm3YZYjI3lJrr9kov3naGVd2', NULL, 'T', 100, 1),
-(348, 'nick.piscopio+1@gmail.com', '2016-01-13', NULL, 1, NULL, 'Hggb', 'Hyhh', '$2a$12$.Z7dpIUd166uAPzq1NgiI.yxnTAyMSiku4v1.xmgriRbpqh73Cbt6', NULL, 'N', 100, 1),
-(349, 'user1452701797725@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$mEZ945Em9t7p9nxQ3XYqmOCk.BVUIjtMIHKNwhz8sOL5xfsAQhdRK', NULL, 'T', 100, 1),
-(350, 'user1453123166460@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$UppjpOSrMHKhT3M5xhoq5uLVlmXcVJL6O9Cdv3FBRkfbC2XLuqyuO', NULL, 'T', 100, 1),
-(351, 'john.smiths12@gmail.com', '2016-01-18', NULL, 1, NULL, 'John', 'Smith', '$2a$12$OoitwecT9YN2EKcKz21JGuPExi16amVXnNjbDlUeDRDpJTSK0T5Ti', NULL, 'N', 100, 1),
-(352, 'user1453126570865@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$eeD7RwMP6s1x/ElrjbN1FOG280aPK4nKPCkXJXlXeGuMnzEN.pyY6', NULL, 'T', 100, 1),
-(353, 'user1453132260222@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$eK4avP0QdgBk1BxuP.5vC.gdEl0nuMq4CDrpPjXdJWJToCeqfNLra', NULL, 'T', 105, 1),
-(354, 'user1453134766431@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$vXTh71dfX4xdWTs5W4xPP.FBK68NjDq7FNvOvnBGpfYotNq9WmCp.', NULL, 'T', 110, 1),
-(355, 'user1453136452316@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$HQDNg3kACsxcl/qxp0q3XO0jhAVlMGV3m7dC41aM6RVZbQaGzfeAO', NULL, 'T', 105, 1),
-(356, 'user1453136470614@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$0qCWStBoOgayVOxZtwsvAOJEe.8VQHFuilzXNWwDB6SgbZLziTWdK', NULL, 'T', 105, 1),
-(357, 'user1453136514537@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$NEeCYKkBt5qV9VQ8Vbfi7esu8hD1aqtjhe/0kkaN1i56CeICatIqq', NULL, 'T', 105, 1);
+(337, 'nick.piscopio 123@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Piscdop', '$2a$12$9tQISuYnHAQk/XRJUoBVS.QxdYKyLId4kejM6s4xW2bgEw8bmroWC', NULL, 'T', 0, 1),
+(338, 'dev 12345@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Piscopio', '$2a$12$8LIUscEAeqZ8lkPbfZbFs.hpqo30Wm2.WMrBgRtWTZXjQAc98F3iO', NULL, 'T', 0, 1),
+(325, 'user1452625209155@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$2WM5UF9OkB3fkaKxFiZ4XeCwbZN7UTxoEmFx5SnYqJ6S5pUFDY/02', NULL, 'T', 0, 1),
+(326, 'user1452625722779@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$UqL1NKBDGe5eD8I3jEujQuuvf7QDfkA7ev9w1rYIyv1rYHNCVce7G', NULL, 'T', 0, 1),
+(327, 'user1452625764385@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$83bkTciyTx80DDw4Xn6I3OwJqUau31qUWBbB0sTrMIsxMzzhn0eIC', NULL, 'T', 0, 1),
+(328, 'user1452625873288@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$22StCBRjbpgRKoMnsFngr.9Pqra8RMD6W4J/LMddvgiD3.b7kARba', NULL, 'T', 0, 1),
+(329, 'de 1v@gmail.com', '2016-01-12', NULL, 1, NULL, 'Nick', 'Poscopi', '$2a$12$243Z8O1SN9K9LoeGkojMnexfkd9deE22Ptd1L6E2tfBHQ5kxX9OHu', NULL, 'N', 0, 1),
+(330, 'dev 3@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Pisdcopio', '$2a$12$IfzhwPrjmHo.uAAdtY6weuWBTh3uR9j46Wz1CYF2IZxBy4iCcN9pO', NULL, 'T', 0, 1),
+(331, 'dev 34@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nuick', 'Pisdfop[io', '$2a$12$POYlXI4gFkJO0Yi4F2Sk.OSRRyF.KLKDm4JLknjZCV/2EaNMU02QC', NULL, 'T', 0, 1),
+(332, 'nick 123@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Mial', 'Lskdf', '$2a$12$bVFjvrCA7lVtrKU9YDP5..1yiJRt9dtqkUfaGm13/0FHmg639.gfG', NULL, 'T', 0, 1),
+(333, 'test!@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Test', 'Qwckl;jdf', '$2a$12$DijEKotzAKy5scEUfbJgse0LC6ewNHXsQ8M/RsD1zI7F5VKiCKGwq', NULL, 'T', 0, 1),
+(334, 'john.smith@gmail.com', '2016-01-12', NULL, 1, NULL, 'John', 'Smith', '$2a$12$D1vr/2A1hkpRtqea0jPk1ObRl6u4rdV9IsfiT4vUXbYKBmPgjWCNm', NULL, 'N', 0, 1),
+(335, 'john.smith 123@gmail.com', '2016-01-12', NULL, 1, NULL, 'John', 'Smith', '$2a$12$csUJxxMapA31tVqkLQayAelTWhm1.OfUV7fAL4pdlMh5sxbWg.0vO', NULL, 'N', 0, 1),
+(336, 'john.smith+123@gmail.com', '2016-01-12', NULL, 1, NULL, 'John', 'Smith', '$2a$12$DNxyK/twqF3D6Wc.8eDrq.7Vl4FecOuRERv9FTA0us81uo9UmfTnW', NULL, 'N', 0, 1),
+(339, 'dev 123@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Pscop', '$2a$12$LkGoCfzgA43OqZ1yOBB9cu0q2Mhy9VSGzsA0z3L6hq3nyJFEhnddq', NULL, 'T', 0, 1),
+(340, 'dev+1234@gmail.com', '2016-01-12', '2016-01-12', 1, NULL, 'Nick', 'Piscopio', '$2a$12$nsdO338bFBOqjFYLovaPa.9uT.mU2pzVAuegNIW6bxrKBNz6.H.7S', NULL, 'T', 0, 1),
+(341, 'nick.piscopio 12@gmail.com', '2016-01-12', NULL, 1, NULL, 'Nixk', 'Piscopio', '$2a$12$HX.vZQKFL57bA0w0ORV92eH3bU22jy8Qx/sGGxfOQow6bXH64h23y', NULL, 'N', 0, 1),
+(342, 'user1452630628926@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$8NsAtWGJUOvwSjMKriPsDuLfwwaXa7Fu.5Ev3yEX/ygGW6b7V1whG', NULL, 'T', 0, 1),
+(343, 'nick.piscopio+1234@gmail.com', '2016-01-12', NULL, 1, NULL, 'Nick', 'Piwcopio', '$2a$12$BSjWOS7eWilc3QiQRk28UeY1QE3SRJeWozwT8jlUDgqUXvN3ODHFO', NULL, 'N', 0, 1),
+(344, 'user1452630956179@intencityapp.com', '2016-01-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$yRkRZu4Q1kCsB3rPqMpaquWX/zPZCp6MvS25d8LooWiW041hB1giC', NULL, 'T', 0, 1),
+(345, 'user1452697456965@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$jiR.7Yw7QJ2qnRB9ou20MuTfU6aVUrdCED9ZRzMDgt8jfC3CZ/A0W', NULL, 'T', 0, 1),
+(346, 'user1452698169783@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$rAANNpZ6mZhIHlnrk568eud.fMGMt14qjGJVNnAc8Cl/xdwALFY6e', NULL, 'T', 0, 1),
+(347, 'user1452699235337@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$.zzgaWBWonysxO/1aH.0Leroi.QsfTm3YZYjI3lJrr9kov3naGVd2', NULL, 'T', 0, 1),
+(348, 'nick.piscopio+1@gmail.com', '2016-01-13', NULL, 1, NULL, 'Hggb', 'Hyhh', '$2a$12$.Z7dpIUd166uAPzq1NgiI.yxnTAyMSiku4v1.xmgriRbpqh73Cbt6', NULL, 'N', 0, 1),
+(349, 'user1452701797725@intencityapp.com', '2016-01-13', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$mEZ945Em9t7p9nxQ3XYqmOCk.BVUIjtMIHKNwhz8sOL5xfsAQhdRK', NULL, 'T', 0, 1),
+(350, 'user1453123166460@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$UppjpOSrMHKhT3M5xhoq5uLVlmXcVJL6O9Cdv3FBRkfbC2XLuqyuO', NULL, 'T', 0, 1),
+(351, 'john.smiths12@gmail.com', '2016-01-18', NULL, 1, NULL, 'John', 'Smith', '$2a$12$OoitwecT9YN2EKcKz21JGuPExi16amVXnNjbDlUeDRDpJTSK0T5Ti', NULL, 'N', 0, 1),
+(352, 'user1453126570865@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$eeD7RwMP6s1x/ElrjbN1FOG280aPK4nKPCkXJXlXeGuMnzEN.pyY6', NULL, 'T', 0, 1),
+(353, 'user1453132260222@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$eK4avP0QdgBk1BxuP.5vC.gdEl0nuMq4CDrpPjXdJWJToCeqfNLra', NULL, 'T', 0, 1),
+(354, 'user1453134766431@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$vXTh71dfX4xdWTs5W4xPP.FBK68NjDq7FNvOvnBGpfYotNq9WmCp.', NULL, 'T', 0, 1),
+(355, 'user1453136452316@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$HQDNg3kACsxcl/qxp0q3XO0jhAVlMGV3m7dC41aM6RVZbQaGzfeAO', NULL, 'T', 0, 1),
+(356, 'user1453136470614@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$0qCWStBoOgayVOxZtwsvAOJEe.8VQHFuilzXNWwDB6SgbZLziTWdK', NULL, 'T', 0, 1),
+(357, 'user1453136514537@intencityapp.com', '2016-01-18', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$NEeCYKkBt5qV9VQ8Vbfi7esu8hD1aqtjhe/0kkaN1i56CeICatIqq', NULL, 'T', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -8074,7 +8272,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3759 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3974 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -8176,8 +8374,8 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (3261, 'nick.piscopio@gmail.com', 'Cable Row Machine'),
 (3262, 'nick.piscopio@gmail.com', 'Chair'),
 (3258, 'nick.piscopio@gmail.com', 'Bench Rack'),
-(3758, 'dev@gmail.com', 'Treadmill'),
-(3757, 'dev@gmail.com', 'Step'),
+(3973, 'dev@gmail.com', 'Treadmill'),
+(3972, 'dev@gmail.com', 'Step'),
 (1969, 'shatwon123.sa@gmail.com', 'Barbell'),
 (1970, 'shatwon123.sa@gmail.com', 'Chair'),
 (1971, 'shatwon123.sa@gmail.com', 'Dumbbells'),
@@ -8613,26 +8811,26 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (3539, 'User1453136514537@intencityapp.com', 'Squat Machine'),
 (3540, 'User1453136514537@intencityapp.com', 'Step'),
 (3541, 'User1453136514537@intencityapp.com', 'Treadmill'),
-(3756, 'dev@gmail.com', 'Squat Machine'),
-(3755, 'dev@gmail.com', 'Shoulder Press Machine'),
-(3754, 'dev@gmail.com', 'Roman Chair'),
-(3753, 'dev@gmail.com', 'Pull Up Bar'),
-(3752, 'dev@gmail.com', 'Pull Down Machine'),
-(3751, 'dev@gmail.com', 'Preacher Curl Machine'),
-(3750, 'dev@gmail.com', 'Preacher Curl Bench'),
-(3749, 'dev@gmail.com', 'Leg Press Machine'),
-(3748, 'dev@gmail.com', 'Leg Extension Machine'),
-(3747, 'dev@gmail.com', 'Leg Curl Machine'),
-(3746, 'dev@gmail.com', 'Exercise Box'),
-(3745, 'dev@gmail.com', 'Elliptical'),
-(3744, 'dev@gmail.com', 'Dumbbells'),
-(3743, 'dev@gmail.com', 'Chair'),
-(3741, 'dev@gmail.com', 'Cable Pull'),
-(3742, 'dev@gmail.com', 'Cable Row Machine'),
-(3740, 'dev@gmail.com', 'Bike'),
-(3739, 'dev@gmail.com', 'Bench Rack'),
-(3738, 'dev@gmail.com', 'Bench'),
-(3737, 'dev@gmail.com', 'Barbell');
+(3971, 'dev@gmail.com', 'Squat Machine'),
+(3970, 'dev@gmail.com', 'Shoulder Press Machine'),
+(3969, 'dev@gmail.com', 'Roman Chair'),
+(3968, 'dev@gmail.com', 'Pull Up Bar'),
+(3967, 'dev@gmail.com', 'Pull Down Machine'),
+(3966, 'dev@gmail.com', 'Preacher Curl Machine'),
+(3965, 'dev@gmail.com', 'Preacher Curl Bench'),
+(3964, 'dev@gmail.com', 'Leg Press Machine'),
+(3963, 'dev@gmail.com', 'Leg Extension Machine'),
+(3962, 'dev@gmail.com', 'Leg Curl Machine'),
+(3961, 'dev@gmail.com', 'Exercise Box'),
+(3960, 'dev@gmail.com', 'Elliptical'),
+(3959, 'dev@gmail.com', 'Dumbbells'),
+(3958, 'dev@gmail.com', 'Chair'),
+(3957, 'dev@gmail.com', 'Cable Row Machine'),
+(3956, 'dev@gmail.com', 'Cable Pull'),
+(3953, 'dev@gmail.com', 'Bench'),
+(3954, 'dev@gmail.com', 'Bench Rack'),
+(3955, 'dev@gmail.com', 'Bike'),
+(3952, 'dev@gmail.com', 'Barbell');
 
 -- --------------------------------------------------------
 

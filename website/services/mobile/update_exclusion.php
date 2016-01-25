@@ -9,7 +9,7 @@
  	 *		SUCCESS
  	 *		FAILURE
 	 * 
-	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_equipment.php?email=dev@gmail.com&inserts=Cable Pull,Treadmill,Roman Chair
+	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_exclusion.php?email=dev@gmail.com&inserts=Bicep Curl, Dead Lift
 	 * 
 	 */
 
@@ -25,20 +25,22 @@
 	$inserts = $_POST['inserts'];
 	
 	$insertQuery = "";
-
-	$insertQuery .= "DELETE FROM  " . TABLE_USER_EQUIPMENT . " WHERE " . COLUMN_EMAIL . "=" . "'" . $email . "'; ";
+	$insertQuery .= "DELETE FROM  " . TABLE_EXCLUSION . " WHERE " . COLUMN_EMAIL . "=" . "'" . $email . "'; ";
 
 	if (isset($inserts))
 	{
 		$inserts = explode(",", $inserts);
 
 		$insertTotal = count($inserts);
+
+		// echo $insertTotal;
 		
 		for($z = 0; $z < $insertTotal; $z++)
 		{
-			$insertQuery .= "INSERT INTO " . TABLE_USER_EQUIPMENT . " (" . COLUMN_EMAIL . ", " . COLUMN_EQUIPMENT_NAME . ") VALUES ('" . $email . "', '" . $inserts[$z] . "'); ";
+			$insertQuery .= "INSERT INTO " . TABLE_EXCLUSION . " (" . COLUMN_EMAIL . "," . COLUMN_EXCLUDE_FOREVER . ", " . COLUMN_EXCLUSION_NAME . ", " . COLUMN_EXCLUSION_TYPE . ") 
+								VALUES ('" . $email . "', 1, '" . $inserts[$z] . "', 'E'); ";
 		}
-	}
+	}	
 
 	$query = mysqli_multi_query($conn, $insertQuery);
 

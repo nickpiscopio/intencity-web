@@ -15,6 +15,7 @@
 	define("TABLE_EQUIPMENT", "Equipment");
 	define("TABLE_EXERCISE_NAME_VARIANT", "ExerciseNameVariant");
 	define("TABLE_MUSCLE", "Muscle");
+	define("TABLE_EXCLUSION", "Exclusion");
 	
 	//Constants for Column Names.
 	define("COLUMN_FIRST_NAME", "FirstName");
@@ -27,7 +28,9 @@
 	define("COLUMN_CREATED_DATE", "CreatedDate");
 	define("COLUMN_DATE", "Date");
 	define("COLUMN_TIME", "Time");
+	define("COLUMN_EXCLUSION_NAME", "ExclusionName");
 	define("COLUMN_EXCLUDE_FOREVER", "ExcludeForever");
+	define("COLUMN_EXCLUSION_TYPE", "ExclusionType");
 	define("COLUMN_EARNED_POINTS", "EarnedPoints");
 	define("COLUMN_SHOW_WELCOME", "ShowWelcome");
 	
