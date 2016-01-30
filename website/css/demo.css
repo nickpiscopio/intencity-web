@@ -88,8 +88,8 @@ h2
 .next
 {
 	position: absolute;
-	bottom: 1em;
-	right: 1em;
+	bottom: 0em;
+	right: 0em;
 	z-index: 99;
 }
 
@@ -221,26 +221,6 @@ h2
 	display: none;
 }
 
-#instagram:hover
-{
-   background-image: url('images/web/demo/social_media_instagram_hover.png');
-}
-
-#twitter:hover
-{
-   background-image: url('images/web/demo/social_media_twitter_hover.png');
-}
-
-#facebook:hover
-{
-   background-image: url('images/web/demo/social_media_facebook_hover.png');
-}
-
-#youtube:hover
-{
-   background-image: url('images/web/demo/social_media_youtube_hover.png');
-}
-
 @media only screen and (min-width: 767px)
 {
 	.hero
@@ -313,16 +293,8 @@ h2
 
 	#footer img
 	{
-	    padding: 1em .25em 3.25em .25em;
+	    padding: 1em .25em 1em .25em;
 	}
-
-	/*#footer p
-	{
-		display: inherit;
-		position: absolute;
-		bottom: .5em;	
-		width: 100%;	
-	}*/
 
 	.footerContent
 	{

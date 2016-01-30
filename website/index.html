@@ -61,6 +61,15 @@
 				descriptionDescriptions[1].innerHTML = descriptions[x];
 			}
 
+			function setChangeImageListener(identifier, imageName)
+			{
+				$(identifier + " img").hover(function() { 
+			            this.src = "images/web/demo/" + imageName + "_hover.png";
+			        }, function () {
+				        this.src = "images/web/demo/" + imageName + ".png";
+				    });
+			}
+
 			function initDisplay() {
 				
 				var length = images.length;
@@ -167,12 +176,13 @@
 
 	    <!-- Swiper -->
 	    <div class="swiper-container">
+
 	        <div id="swiper" class="swiper-wrapper"></div>
 
 	        <!-- Add Pagination -->
 	        <div class="swiper-pagination"></div>
 
-	        <img class="next" src="images/web/demo/button_next.png" alt="Next"/>
+	        <a class="next"><img src="images/web/demo/button_next.png" alt="Next"/></a>
 
 	    </div>
 
@@ -184,24 +194,31 @@
 	    	// initialize the display with all the pagers.
 	    	initDisplay();
 
-
-
 		    var swiper = new Swiper('.swiper-container', {
 		        pagination: '.swiper-pagination',
 		        nextButton: '.next',
 		        paginationClickable: true,
-		        onReachEnd: function(swiper)
+			    onTransitionStart: function(swiper)
 			    {
-			    	$('.swiper-pagination').hide();
+			    	if (swiper.activeIndex < images.length)
+			    	{
+			    		$('.swiper-pagination').show();
+			    		$('.next').show();
+			    	}
+			    	else
+			    	{
+			    		$('.swiper-pagination').hide();
 			    	$('.next').hide();
-			    	console.log("end");
+			    	}
 			    }
 		    });
 
+			setChangeImageListener('.next', 'button_next');
+		    setChangeImageListener('#instagram', 'social_media_instagram');
+		    setChangeImageListener('#twitter', 'social_media_twitter');
+		    setChangeImageListener('#facebook', 'social_media_facebook');		    
+		    setChangeImageListener('#youtube', 'social_media_youtube');		 
 
-
-
-		    // swiper.isEnd
     	</script>
 
 	</body>	
