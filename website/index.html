@@ -8,134 +8,201 @@
 		<![endif]-->
 		
 		<!-- Mobile Specific Metas -->
-		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1">
+		<!-- <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 		
 		<!-- CSS -->
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 		<link rel="stylesheet" type="text/css" href="css/demo.css">
+		<link rel="stylesheet" type="text/css" href="css/swiper.min.css">
 		<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500'>
+
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="js/swiper.jquery.min.js"></script>
 
 		<link rel="shortcut icon" href="images/favicon.ico">
 
 		<script type = "text/javascript">
-          function displayNextImage(){
-              x = (x === images.length - 1) ? 0 : x + 1;
-              document.getElementById("heroImg").src = images[x];
-              var descriptionTitles = document.getElementsByClassName("descriptionTitle");
-              var descriptionDescriptions = document.getElementsByClassName("descriptionDescription");
 
-              descriptionTitles[0].innerHTML = titles[x];
-              descriptionTitles[1].innerHTML = titles[x];
-              descriptionDescriptions[0].innerHTML = descriptions[x];
-              descriptionDescriptions[1].innerHTML = descriptions[x];
-          }
+			var images = [], x = -1;
+			images[0] = "images/web/demo/intencity_demo_hero.png";
+			images[1] = "images/web/demo/intencity_demo_fitness_guru.png";
+			images[2] = "images/web/demo/intencity_demo_directions.png";
+			images[3] = "images/web/demo/intencity_demo_fitness_log.png";
+			images[4] = "images/web/demo/intencity_demo_rankings.png";
 
-          // function displayPreviousImage() {
-          //     x = (x <= 0) ? images.length - 1 : x - 1;
-          //     document.getElementById("img").src = images[x];
-          // }
+			var titles = [], x = -1;
+			titles[0] = "Intencity";
+			titles[1] = "Fitness Guru";
+			titles[2] = "Get Directions";
+			titles[3] = "Log Your Progress";
+			titles[4] = "Rankings";
 
-          function startTimer() {
+			var descriptions = [], x = -1;
+			descriptions[0] = "A fitness app designed to help you achieve your fitness goals.";
+			descriptions[1] = "Take the guesswork out of your workout, and let Intencity decide your routine.";
+			descriptions[2] = "Get step-by-step directions on how to do each exercise.";
+			descriptions[3] = "Let Intencity remember your last set, so you can get back to your goal.";
+			descriptions[4] = "Have a friendly fitness competition with your friends.";
+
+			function startTimer() {
               setInterval(displayNextImage, 6000);
-          }
+          	}
 
-          var images = [], x = -1;
-          images[0] = "images/web/demo/intencity_demo_hero.png";
-          images[1] = "images/web/demo/intencity_demo_fitness_guru.png";
-          images[2] = "images/web/demo/intencity_demo_directions.png";
-          images[3] = "images/web/demo/intencity_demo_fitness_log.png";
-          images[4] = "images/web/demo/intencity_demo_rankings.png";
+			function displayNextImage() {
+				x = (x === images.length - 1) ? 0 : x + 1;
+				document.getElementById("heroImg").src = images[x];
+				var descriptionTitles = document.getElementsByClassName("descriptionTitle");
+				var descriptionDescriptions = document.getElementsByClassName("descriptionDescription");
 
-          var titles = [], x = -1;
-          titles[0] = "Intencity";
-          titles[1] = "Fitness Guru";
-          titles[2] = "Get Directions";
-          titles[3] = "Log Your Progress";
-          titles[4] = "Rankings";
+				descriptionTitles[0].innerHTML = titles[x];
+				descriptionTitles[1].innerHTML = titles[x];
+				descriptionDescriptions[0].innerHTML = descriptions[x];
+				descriptionDescriptions[1].innerHTML = descriptions[x];
+			}
 
-          var descriptions = [], x = -1;
-          descriptions[0] = "A fitness app designed to help you achieve your fitness goals.";
-          descriptions[1] = "Take the guesswork out of your workout, and let Intencity decide your routine.";
-          descriptions[2] = "Get step-by-step directions on how to do each exercise.";
-          descriptions[3] = "Let Intencity remember your last set, so you can get back to your goal.";
-          descriptions[4] = "Have a friendly fitness competition with your friends.";
+			function initDisplay() {
+				
+				var length = images.length;
+				for (var i = 0; i < length; i++)
+				{
+					$('#swiper').append('<div id="swiper' + i + '" class="swiper-slide">' +
 
-      </script>
+											'<div class="container">' +
 
-	</head>	
-	<body onload = "startTimer()">
+												'<div id="descriptionMobile">' +
+
+													'<h1 class="descriptionTitle">' + titles[i] + '</h1>' +
+
+													'<p class="descriptionDescription">' + descriptions[i] + '</p>' +
+
+												'</div>	' +
+
+												'<div id="hero" class="hero">' +
+
+													'<img id="heroImg"src="' + images[i] + '" alt="' + titles[i] + '"/>' +
+
+													'<p>Intencity v2.0 on Android</p>' +
+
+												'</div>' +
+
+												'<div class="hero">' +
+													
+													'<div id="descriptionContainer">' +
+
+														'<div id="description">' +
+															'<h1 class="descriptionTitle">' + titles[i] + '</h1>' +
+
+															'<p class="descriptionDescription">' + descriptions[i] + '</p>' +
+														'</div>' +
+														
+													'</div>' +
+													
+												'</div>' +
+
+											'</div>' +
+
+										'</div>');
+				}
+
+				$('#swiper').append('<div id="swiper' + i + '" class="swiper-slide">' +
+
+											'<div id="webAppContainer" class="shadow">' +
+												'<div class="container">' +
+													
+													'<a id="webApp" class="rightFloat" href="http://www.intencityapp.com/sign_in.php">GO TO WEB APP (v1.0)</a>' +
+
+												'</div>' +
+											'</div>' +
+
+											'<div id="footer" class="shadow">' +
+
+												'<div class="container">' +
+
+													'<p class="footerContent left">&copy; Intencity 2016. All Rights Reserved.</p>' +
+
+													'<div class="footerContent right">' +
+														'<a id="instagram" href="https://www.instagram.com/intencityapp/" target="_blank"><img src="images/web/demo/social_media_instagram.png" alt="Intencity Instagram"/></a>'+
+														'<a id="twitter" href="https://twitter.com/intencityapp" target="_blank"><img src="images/web/demo/social_media_twitter.png" alt="Intencity Twitter"/></a>'+
+														'<a id="facebook" href="https://www.facebook.com/IntencityApp/" target="_blank"><img src="images/web/demo/social_media_facebook.png" alt="Intencity Facebook"/></a>'+
+														'<a id="youtube" href="https://www.youtube.com/channel/UC6zhYNKLYNidkvjvMq4Vamg" target="_blank"><img src="images/web/demo/social_media_youtube.png" alt="Intencity YouTube"/></a>'+
+													'</div>'+												
+
+												'</div>'+
+
+											'</div>' +
+												
+											'<div class="container">' +
+
+												'<img src="images/web/demo/intencity_hero.png" alt="Intencity Logo"/></a>' +
+
+												'<h2>DOWNLOAD FOR FREE</h2>' +
+
+												'<div class="appStore">' +
+													'<a class="element shadow" href="https://itunes.apple.com/us/app/intencity/id786650617?mt=8" target="_blank">' +
+														'<img src="images/web/demo/apple-logo.svg" alt="Android App Store Intencity"/><span>iOS</span></a>' +
+													'<p>2.0 coming soon</p>' +
+													
+												'</div>' +
+
+												'<div class="appStore">' +
+													'<a class="element shadow" href="https://play.google.com/store/apps/details?id=com.intencity.intencity" target="_blank">' +
+														'<img src="images/web/demo/android-logo.svg" alt="Android Play Store Intencity"/><span>Android</span></a>' +
+													'<p>2.0</p>' +
+												'</div>' +
+												
+											'</div>' +
+
+									'</div>');
+			}
+
+  	     </script>
+
+	</head>
+
+	<body>
 	
 		<!-- Google Analytics -->
 		<?php include_once("google_analytics.php"); ?>
 
-		<div class="shadow">
-			
-			<div class="container">
-				<a href="http://www.intencityapp.com/sign_in.php"><img src="images/web/demo/header_hero.png"></a>
-				<a id="webApp" class="rightFloat" href="http://www.intencityapp.com/sign_in.php">GO TO WEB APP (v1.0)</a>
-			</div>
+	    <!-- Swiper -->
+	    <div class="swiper-container">
+	        <div id="swiper" class="swiper-wrapper"></div>
 
-		</div>
+	        <!-- Add Pagination -->
+	        <div class="swiper-pagination"></div>
 
-		<div class="container">
+	        <img class="next" src="images/web/demo/button_next.png" alt="Next"/>
 
-			<div id="descriptionMobile">
-				<h1 class="descriptionTitle">Intencity</h1>
-				<p class="descriptionDescription">A fitness app designed to help you achieve your fitness goals.</p>
-			</div>	
+	    </div>
 
-			<div id="hero" class="hero">
-				<img id="heroImg"src="images/web/demo/intencity_demo_hero.png" alt="Intencity Mobile Hero"/>
-				<p>Intencity v2.0 on Android</p>
-				<p>Intencity v2.0 for iOS coming soon</p>
-			</div>
+	    <!-- Swiper JS -->
+	    <script src="js/swiper.min.js"></script>
 
-			<div class="hero">
-				
-				<div id="descriptionContainer">
-
-					<div id="description">
-						<h1 class="descriptionTitle">Intencity</h1>
-						<p class="descriptionDescription">A fitness app designed to help you achieve your fitness goals.</p>
-					</div>						
-
-					<h2>DOWNLOAD FOR FREE TODAY</h2>
-
-					<div class="appStore">
-						<a href="https://itunes.apple.com/us/app/intencity/id786650617?mt=8" target="_blank"><img src="images/web/demo/button_app_store.png" alt="Android App Store Intencity"/></a>
-						<p>v1.0</p>
-					</div>
-
-					<div class="appStore">
-						<a href="https://play.google.com/store/apps/details?id=com.intencity.intencity" target="_blank"><img src="images/web/demo/button_play_store.png" alt="Android Play Store Intencity"/></a>
-						<p>v2.0</p>
-					</div>
-					
-					
-				</div>
-				
-			</div>
-
-		</div>
+	    <!-- Initialize Swiper -->
+	    <script>
+	    	// initialize the display with all the pagers.
+	    	initDisplay();
 
 
 
-		<div id="footer">
-			
-			<div class="container">
+		    var swiper = new Swiper('.swiper-container', {
+		        pagination: '.swiper-pagination',
+		        nextButton: '.next',
+		        paginationClickable: true,
+		        onReachEnd: function(swiper)
+			    {
+			    	$('.swiper-pagination').hide();
+			    	$('.next').hide();
+			    	console.log("end");
+			    }
+		    });
 
-				<p class="footerContent left">&copy; Intencity 2016. All Rights Reserved.</p>
 
-				<div class="footerContent right">
-					<a id="instagram" href="https://www.instagram.com/intencityapp/" target="_blank"><img src="images/web/demo/social_media_instagram.png" alt="Intencity Instagram"/></a>
-					<a id="twitter" href="https://twitter.com/intencityapp" target="_blank"><img src="images/web/demo/social_media_twitter.png" alt="Intencity Twitter"/></a>
-					<a id="facebook" href="https://www.facebook.com/IntencityApp/" target="_blank"><img src="images/web/demo/social_media_facebook.png" alt="Intencity Facebook"/></a>
-					<a id="youtube" href="https://www.youtube.com/channel/UC6zhYNKLYNidkvjvMq4Vamg" target="_blank"><img src="images/web/demo/social_media_youtube.png" alt="Intencity YouTube"/></a>
-				</div>
 
-			</div>
 
-		</div>
+		    // swiper.isEnd
+    	</script>
 
 	</body>	
 
