@@ -1,0 +1,202 @@
+@CHARSET "US-ASCII";
+
+a, img
+{ 
+	outline: none;
+	vertical-align: middle;
+	line-height: 3em;
+	padding: .625em;
+	font-weight: 500;
+}
+
+h2
+{
+	color: #309DDB;
+	padding: 1.5em .625em .3em 0;
+	letter-spacing: .094em;
+	font-weight: 500;
+}
+
+.hero
+{
+	display:inline-block;
+    vertical-align:middle;
+    width: 49%;
+}
+
+.appStore
+{
+	display: inline-block
+}
+
+.appStore a, .appStore img
+{
+	padding: 0;
+}
+
+.appStore p
+{
+	text-align: right;
+}
+
+#hero
+{
+	text-align: center;
+}
+
+#hero p, .appStore p, #footer p
+{
+	font-size: small;
+}
+
+#footer
+{
+	position: fixed;
+	margin-top: 1em;
+	background-color: #414042;
+	width: 100%; 
+	text-align: center;	
+}
+
+#footer p
+{
+	display:inline-block;
+	vertical-align:middle;
+	line-height: 5em;
+	color: #F6F6FF;
+}
+
+#footer a, #footer img
+{
+	padding: 0;
+}
+
+#footer img
+{
+	padding: .5em .25em;
+}
+
+#webApp:hover
+{
+	color:#FFF;
+	background-color: #309DDB;
+}
+
+.descriptionTitle
+{
+	padding: 0 0 .2em 0;
+}
+
+#description
+{
+	display: inline;
+}
+
+#descriptionMobile
+{
+	display: none;
+}
+
+#instagram:hover
+{
+   background-image: url('images/web/demo/social_media_instagram_hover.png');
+}
+
+#twitter:hover
+{
+   background-image: url('images/web/demo/social_media_twitter_hover.png');
+}
+
+#facebook:hover
+{
+   background-image: url('images/web/demo/social_media_facebook_hover.png');
+}
+
+#youtube:hover
+{
+   background-image: url('images/web/demo/social_media_youtube_hover.png');
+}
+
+@media only screen and (min-width: 767px)
+{
+	.hero
+	{
+		padding: 2.5em 0 5em 0;
+	}
+
+	#footer
+	{
+		bottom: 0; 
+	}
+}
+
+@media only screen and (max-width: 960px)
+{
+	.footerContent
+	{
+		padding-left: .5em;
+		padding-right: .5em;
+	}
+}
+
+@media only screen and (min-width: 660px)
+{
+	.left
+	{
+		float: left;
+	}
+
+	.right
+	{
+		float: right;
+	}
+}
+
+@media only screen and (max-width: 660px)
+{
+	.hero
+	{
+		display:inline-block;
+	    vertical-align:middle;
+	    width: 100%;
+	}
+
+	.descriptionDescription
+	{
+		margin: 0 auto;
+	    width: 70%;
+	}
+
+	#descriptionContainer
+	{
+		padding: .625em;
+		text-align: center;
+	}
+
+	#description
+	{
+		display: none;
+	}
+
+	#descriptionMobile
+	{
+		padding: .625em;
+		text-align: center;
+		display: inline;
+	}
+
+	#hero img
+	{
+		width: 40%;
+	}
+
+	#footer
+	{
+		position: absolute;
+	}
+}
+
+@media only screen and (max-width: 375px) 
+{
+	
+}
