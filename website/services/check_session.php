@@ -5,6 +5,6 @@
 
 	if(!isset($_SESSION['email']))
 	{
-		header("Location: sign_in.php");
+		header("Location: demo.html");
 	}	
 ?>

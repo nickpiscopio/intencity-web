@@ -1,5 +1,14 @@
 $(document).ready(function()
 {	
+	var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+    var new_ie = ua.indexOf('Trident/');
+
+    if (msie > -1 || (new_ie > -1))      // If Internet Explorer, return version number
+    {
+		window.location.href = "browser_not_supported.html";
+	}
+			
 	//Loads the register content to the main content area.
 	//When that is finished it loads the rest of the items.
 	$('#content-register').load('register.php', function()

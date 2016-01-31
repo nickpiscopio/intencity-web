@@ -8,5 +8,5 @@
 	setcookie("email", "", $expire, "/");
 	setcookie("cookie_token", "", $expire, "/");
 	
-	header("Location: sign_in.php");
+	header("Location: demo.html");
 ?>

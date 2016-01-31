@@ -3,10 +3,6 @@
 		<title>Intencity | Sign In</title>
 		<meta charset="UTF-8">
 		
-		<!--[if lt IE 9]>
-			<meta http-equiv="refresh" content="0;URL=browser_not_supported.html">
-		<![endif]-->
-		
 		<!-- Mobile Specific Metas -->
 		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1">
 		
