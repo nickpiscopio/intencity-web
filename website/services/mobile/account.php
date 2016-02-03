@@ -16,6 +16,8 @@
 	define(ACCOUNT_BETA, "B");
 	define(ACCOUNT_NORMAL, "N");
 	define(ACCOUNT_TRIAL, "T");
+	// Account for mobile trials.
+	define(ACCOUNT_MOBILE_TRIAL, "M");
 	
 	//Constants for the response from the database.
 	define(RESPONSE_EMAIL_ERROR, "Email already exists");
@@ -31,7 +33,7 @@
 	$accountType = strtoupper($_POST['account_type']);
 	
 	//Makes the account a trial if it can't figure out what account type the user should be.
-	if($accountType != ACCOUNT_ADMIN && $accountType != ACCOUNT_BETA && $accountType != ACCOUNT_NORMAL)
+	if($accountType != ACCOUNT_ADMIN && $accountType != ACCOUNT_BETA && $accountType != ACCOUNT_NORMAL && $accountType != ACCOUNT_MOBILE_TRIAL)
 	{
 		$accountType = ACCOUNT_TRIAL;
 	}
