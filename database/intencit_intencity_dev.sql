@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Feb 05, 2016 at 03:59 PM
+-- Generation Time: Feb 05, 2016 at 09:06 PM
 -- Server version: 5.5.47-cll
 -- PHP Version: 5.4.31
 
@@ -366,17 +366,17 @@ END IF;
 end$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday`(IN `email` VARCHAR(75))
-SELECT Exercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+SELECT Exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
 FROM Exercise
 INNER JOIN MuscleGroup 
     ON Exercise.ExerciseName = MuscleGroup.ExerciseName
 Inner JOIN Equipment
     ON Exercise.ExerciseName = Equipment.ExerciseName
-LEFT JOIN CompletedExercise
-    ON CompletedExercise.ExerciseName = Exercise.ExerciseName AND
-		CompletedExercise.ID = (SELECT MAX(CompletedExercise.ID)
-                                FROM CompletedExercise
-                                WHERE CompletedExercise.Email = email)
+LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+            FROM CompletedExercise
+            WHERE CompletedExercise.Email = email
+            ORDER BY CompletedExercise.ID DESC) as completedExercise
+ON completedExercise.ExerciseName = Exercise.ExerciseName 
 WHERE 
       Exercise.Type = 'E' && 
       Exercise.Recommended = 1 && 
@@ -735,15 +735,15 @@ begin
 end$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchExercises`(IN `email` VARCHAR(75), IN `name` VARCHAR(50))
-SELECT Exercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+SELECT Exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
 FROM Exercise
-LEFT JOIN CompletedExercise
-    ON CompletedExercise.ExerciseName = Exercise.ExerciseName AND
-		CompletedExercise.ID = (SELECT MAX(CompletedExercise.ID)
-                                FROM CompletedExercise
-                                WHERE CompletedExercise.Email = email)
+LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+            FROM CompletedExercise
+            WHERE CompletedExercise.Email = email
+            ORDER BY CompletedExercise.ID DESC) as completedExercise
+ON completedExercise.ExerciseName = Exercise.ExerciseName 
 LEFT JOIN ExerciseNameVariant
-	ON Exercise.ExerciseName = ExerciseNameVariant.ExerciseName
+  ON Exercise.ExerciseName = ExerciseNameVariant.ExerciseName
 /* Need % before and after name variable*/
 WHERE Exercise.ExerciseName LIKE name OR ExerciseNameVariant.NameVariant LIKE name
 GROUP BY Exercise.ExerciseName$$
@@ -779,7 +779,7 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=266 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=267 ;
 
 --
 -- Dumping data for table `Badge`
@@ -819,6 +819,7 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (199, 'nick.piscopio@gmail.com', 1453914424136, 'Left it on the Field'),
 (200, 'cpiscopio@gmail.com', 1453943238592, 'Kept Swimming'),
 (201, 'cpiscopio@gmail.com', 1453943240214, 'Finisher'),
+(266, 'dev@gmail.com', 1454724123327, 'Finisher'),
 (265, 'dev@gmail.com', 1454704583651, 'Finisher'),
 (264, 'dev@gmail.com', 1454704583649, 'Kept Swimming'),
 (263, 'dev@gmail.com', 1454703690750, 'Finisher'),
@@ -905,7 +906,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5629 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5636 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -926,13 +927,12 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4442, 'nick.piscopio@gmail.com', '2014-06-04', '09:51:11', 'Split Leg Push Press', '25.0', 10, NULL, 6, NULL),
 (4441, 'nick.piscopio@gmail.com', '2014-06-04', '09:47:38', 'Incline Front Raise', '10.0', 10, NULL, 7, NULL),
 (4440, 'nick.piscopio@gmail.com', '2014-06-04', '09:46:19', 'Push Press', '30.0', 10, NULL, 8, NULL),
-(4439, 'nick.piscopio@gmail.com', '2014-06-04', '09:45:19', 'Shoulder Press', '30.0', 10, NULL, 6, NULL),
+(5635, 'dev@gmail.com', '2016-02-05', '20:53:48', 'Lunge', '1.5', 1, NULL, 10, 'gbfvvb-[]^`~[^  hfbgc. fhd.   vbdv'),
 (4438, 'nick.piscopio@gmail.com', '2014-06-04', '09:42:53', 'Side Shoulder Raise', '30.0', 10, NULL, 7, NULL),
 (4437, 'nick.piscopio@gmail.com', '2014-06-04', '09:40:23', 'Incline Front Raise', '15.0', 10, NULL, 8, NULL),
 (4436, 'nick.piscopio@gmail.com', '2014-06-04', '09:38:39', 'Split Leg Push Press', '25.0', 10, NULL, 6, NULL),
 (4435, 'nick.piscopio@gmail.com', '2014-06-04', '09:37:09', 'Push Press', '30.0', 10, NULL, 8, NULL),
 (4434, 'nick.piscopio@gmail.com', '2014-06-04', '09:36:05', 'Side Shoulder Raise', '25.0', 10, NULL, 7, NULL),
-(4433, 'nick.piscopio@gmail.com', '2014-06-04', '09:34:49', 'Shoulder Press', '30.0', 10, NULL, 6, NULL),
 (4431, 'nick.piscopio@gmail.com', '2014-06-04', '09:31:58', 'Shrug', '70.0', 10, NULL, 7, NULL),
 (4432, 'nick.piscopio@gmail.com', '2014-06-04', '09:33:16', 'Front Shoulder Raise', '25.0', 10, NULL, 7, NULL),
 (4404, 'nick.piscopio@gmail.com', '2014-06-03', '09:36:16', 'Reverse Crunch', NULL, 20, NULL, 7, NULL),
@@ -951,7 +951,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4418, 'nick.piscopio@gmail.com', '2014-06-03', '10:02:59', 'Side Bend', '55.0', 10, NULL, 7, NULL),
 (4419, 'nick.piscopio@gmail.com', '2014-06-03', '10:04:30', 'Sit-Up', NULL, 18, NULL, 6, NULL),
 (4420, 'nick.piscopio@gmail.com', '2014-06-03', '10:04:33', 'Plank', NULL, NULL, '00:01:00', 7, NULL),
-(4421, 'nick.piscopio@gmail.com', '2014-06-04', '09:17:57', 'Shoulder Press', '25.0', 10, NULL, 6, NULL),
+(4421, 'nick.piscopio@gmail.com', '2014-06-04', '09:17:57', 'Shoulder Press', '25.5', 10, NULL, 6, NULL),
 (4422, 'nick.piscopio@gmail.com', '2014-06-04', '09:19:22', 'Incline Shoulder Raise', '40.0', 10, NULL, 4, NULL),
 (4423, 'nick.piscopio@gmail.com', '2014-06-04', '09:20:53', 'Incline Front Raise', '10.0', 10, NULL, 6, NULL),
 (4424, 'nick.piscopio@gmail.com', '2014-06-04', '09:22:56', 'Side Shoulder Raise', '25.0', 10, NULL, 7, NULL),
@@ -2367,7 +2367,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4948, 'nick.piscopio@gmail.com', '2014-07-04', '09:32:30', 'Lat Pull Down', '100.0', 10, NULL, 7, NULL),
 (4949, 'nick.piscopio@gmail.com', '2014-07-04', '09:33:27', 'Inverted Row', NULL, 15, NULL, 7, NULL),
 (4950, 'nick.piscopio@gmail.com', '2014-07-04', '09:34:49', 'Lying Pronation', '20.0', 10, NULL, 7, NULL),
-(4951, 'nick.piscopio@gmail.com', '2014-07-04', '09:36:37', 'Dumbbell Curl', '45.0', 10, NULL, 10, NULL),
+(4951, 'nick.piscopio@gmail.com', '2014-07-04', '09:36:37', 'Dumbbell Curl', '100.0', 10, NULL, 10, NULL),
 (4952, 'nick.piscopio@gmail.com', '2014-07-04', '09:39:08', 'Ulnar Deviation', '30.0', 6, NULL, 2, NULL),
 (4953, 'nick.piscopio@gmail.com', '2014-07-04', '09:40:17', 'Chin-Up', NULL, 10, NULL, 7, NULL),
 (4954, 'nick.piscopio@gmail.com', '2014-07-04', '09:41:21', 'Lying Pronation', '20.0', 10, NULL, 7, NULL),
@@ -2385,7 +2385,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4983, 'nick.piscopio@gmail.com', '2014-10-06', '19:53:34', 'Side Shoulder Raise', '30.0', 10, NULL, 7, NULL),
 (4984, 'nick.piscopio@gmail.com', '2014-10-06', '19:53:42', 'Arnold Press', '25.0', 10, NULL, 2, NULL),
 (4985, 'nick.piscopio@gmail.com', '2014-10-06', '19:53:53', 'Isometric Neck Exercise', NULL, NULL, '00:00:30', 7, NULL),
-(4981, 'nick.piscopio@gmail.com', '2014-10-06', '19:53:13', 'Shoulder Press', '30.0', 10, NULL, 6, NULL),
+(4981, 'nick.piscopio@gmail.com', '2014-10-06', '19:53:13', 'Shoulder Press', '40.0', 10, NULL, 6, NULL),
 (4980, 'nick.piscopio@gmail.com', '2014-09-26', '14:16:43', 'Butterfly Crunch', NULL, 35, NULL, 4, NULL),
 (4979, 'nick.piscopio@gmail.com', '2014-09-26', '14:16:02', 'Lying Leg Raise', NULL, 25, NULL, 5, NULL),
 (4989, 'nick.piscopio@gmail.com', '2014-12-17', '09:17:39', 'Lunge', '10.0', 10, NULL, 6, NULL),
@@ -2687,7 +2687,13 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5620, 'dev@gmail.com', '2016-02-05', '12:17:11', 'Prone Incline Curl', NULL, 20, NULL, 10, NULL),
 (5626, 'dev@gmail.com', '2016-02-05', '12:27:11', 'Prone Incline Curl', NULL, 20, NULL, 10, NULL),
 (5627, 'dev@gmail.com', '2016-02-05', '12:27:45', 'Crunch', NULL, 400, NULL, 10, NULL),
-(5628, 'dev@gmail.com', '2016-02-05', '12:28:31', 'Crunch', '12.0', 400, NULL, 10, NULL);
+(5628, 'dev@gmail.com', '2016-02-05', '12:28:31', 'Crunch', '12.0', 400, NULL, 10, NULL),
+(5629, 'dev@gmail.com', '2016-02-05', '18:13:12', 'Hanging Leg Raise', NULL, 10, NULL, 10, 'hel do it'),
+(5630, 'dev@gmail.com', '2016-02-05', '18:17:47', 'Cable Side Bend', NULL, 10, NULL, 10, 'yh'),
+(5631, 'dev@gmail.com', '2016-02-05', '18:27:59', 'Sit-Up', NULL, 10, NULL, 10, 'hc.'),
+(5632, 'dev@gmail.com', '2016-02-05', '18:40:28', 'Hanging Leg Raise', '1051.0', 10, NULL, 10, '.hsjskdiamsmdndjzn.....-------261728389495^~`^\\n[].-56sjdbsbdhhdhshahqhhshdhxhdueuwuqiqiiwieieuuhdbzbcjcjfshdhd d dnsjsnd d djsjs snxjdns sjdjdjwbd djcjd endjd e djakqid e sjdkwkdne xjjjj sbdjejwkd dbsjsnsbwb w w e e e r. d d d. d d d. d d dhdhdhsjd g'),
+(5633, 'dev@gmail.com', '2016-02-05', '18:40:28', 'Hanging Leg Raise', NULL, 1, NULL, 10, '.hsjskdiamsmdndjzn.....-------261728389495^~`^\\n[].-56sjdbsbdhhdhshahqhhshdhxhdueuwuqiqiiwieieuuhdbzbcjcjfshdhd d dnsjsnd d djsjs snxjdns sjdjdjwbd djcjd endjd e djakqid e sjdkwkdne xjjjj sbdjejwkd dbsjsnsbwb w w e e e r. d d d. d d d. d d dhdhdhsjd g'),
+(5634, 'dev@gmail.com', '2016-02-05', '18:42:07', 'Cable Side Crunch', NULL, 10, NULL, 10, '383839292992929292882737473772718191991929299283828228828282828828282828828282828282882828384858858484848848383838388383838383883838288282828^`^`');
 
 -- --------------------------------------------------------
 
@@ -2702,7 +2708,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5007 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5021 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -3575,8 +3581,23 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (4467, 'cpiscopio@gmail.com', '2016-01-25', 'Upper Inner Back'),
 (4468, 'cpiscopio@gmail.com', '2016-01-25', 'Biceps'),
 (4469, 'cpiscopio@gmail.com', '2016-01-25', 'Forearms'),
+(5020, 'dev@gmail.com', '2016-02-05', 'Lower Back'),
+(5019, 'dev@gmail.com', '2016-02-05', 'Glutes'),
+(5018, 'dev@gmail.com', '2016-02-05', 'Quads'),
+(5017, 'dev@gmail.com', '2016-02-05', 'Hamstrings'),
+(5016, 'dev@gmail.com', '2016-02-05', 'Shins'),
+(5015, 'dev@gmail.com', '2016-02-05', 'Calves'),
+(5014, 'dev@gmail.com', '2016-02-05', 'Lower Back'),
+(5013, 'dev@gmail.com', '2016-02-05', 'Glutes'),
+(5012, 'dev@gmail.com', '2016-02-05', 'Quads'),
+(5011, 'dev@gmail.com', '2016-02-05', 'Hamstrings'),
+(5010, 'dev@gmail.com', '2016-02-05', 'Shins'),
+(5009, 'dev@gmail.com', '2016-02-05', 'Calves'),
+(5008, 'dev@gmail.com', '2016-02-05', 'Obliques'),
+(5007, 'dev@gmail.com', '2016-02-05', 'Abs'),
 (5006, 'dev@gmail.com', '2016-02-05', 'Forearms'),
-(5005, 'dev@gmail.com', '2016-02-05', 'Biceps'),
+(5005, 'dev@gmail.com', '2016-02-05', 'Biceps');
+INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VALUES
 (5004, 'dev@gmail.com', '2016-02-05', 'Upper Inner Back'),
 (5003, 'dev@gmail.com', '2016-02-05', 'Upper Outer Back'),
 (5002, 'dev@gmail.com', '2016-02-05', 'Cardio'),
@@ -3590,8 +3611,7 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (4994, 'dev@gmail.com', '2016-02-05', 'Calves'),
 (4993, 'dev@gmail.com', '2016-02-05', 'Lower Back'),
 (4992, 'dev@gmail.com', '2016-02-05', 'Glutes'),
-(4991, 'dev@gmail.com', '2016-02-05', 'Quads');
-INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VALUES
+(4991, 'dev@gmail.com', '2016-02-05', 'Quads'),
 (4990, 'dev@gmail.com', '2016-02-05', 'Hamstrings'),
 (4989, 'dev@gmail.com', '2016-02-05', 'Shins'),
 (4988, 'dev@gmail.com', '2016-02-05', 'Calves'),
@@ -6393,7 +6413,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (132, 'mpryor2008@gmail.com', '2014-03-22', '2014-03-23', 0, NULL, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', NULL, 'N', 0, 1),
 (133, 'test@test.gov', '2014-03-23', '2014-03-23', 0, NULL, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', NULL, 'N', 0, 1),
 (134, 'julienajbjerg@gmail.com', '2014-03-24', '2014-06-13', 0, NULL, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'DfLuc1QeDyvBQcnr', 'N', 0, 1),
-(135, 'dev@gmail.com', '2014-03-25', '2016-02-04', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 710, 1),
+(135, 'dev@gmail.com', '2014-03-25', '2016-02-04', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 765, 1),
 (136, 'shatwon123.sa@gmail.com', '2014-03-26', '2014-03-26', 0, NULL, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', NULL, 'N', 0, 1),
 (137, 'appletest@gmail.com', '2014-03-27', '2014-03-27', 0, NULL, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', NULL, 'R', 0, 1),
 (142, 'beta@gmail.com', '2014-04-01', '2014-04-08', 1, NULL, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', NULL, 'D', 0, 1),
