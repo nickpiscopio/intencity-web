@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Feb 05, 2016 at 09:06 PM
+-- Generation Time: Feb 06, 2016 at 04:47 PM
 -- Server version: 5.5.47-cll
 -- PHP Version: 5.4.31
 
@@ -1067,7 +1067,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4316, 'nick.piscopio@gmail.com', '2014-05-28', '09:07:55', 'Leg Extension', '80.0', 10, NULL, 7, NULL),
 (4317, 'nick.piscopio@gmail.com', '2014-05-28', '09:10:30', 'Lunge', '10.0', 10, NULL, 6, NULL),
 (4318, 'nick.piscopio@gmail.com', '2014-05-28', '09:12:57', 'Squat', NULL, 20, NULL, 7, NULL),
-(4319, 'nick.piscopio@gmail.com', '2014-05-28', '09:14:00', 'Toe Raise', '75.0', 10, NULL, 7, NULL),
+(4319, 'nick.piscopio@gmail.com', '2014-05-28', '09:14:00', 'Calf Raise', '75.0', 10, NULL, 7, NULL),
 (4320, 'nick.piscopio@gmail.com', '2014-05-28', '09:15:11', 'Dead Lift', '30.0', 10, NULL, 6, NULL),
 (4321, 'nick.piscopio@gmail.com', '2014-05-28', '09:16:52', 'Weighted Step-up', '10.0', 10, NULL, 5, NULL),
 (4322, 'nick.piscopio@gmail.com', '2014-05-28', '09:19:29', 'Decline Back Extension', NULL, 10, NULL, 5, NULL),
@@ -1135,7 +1135,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4129, 'halendang@gmail.com', '2014-05-15', '07:00:59', 'Lying Down Back Extension', NULL, NULL, NULL, NULL, NULL),
 (4130, 'halendang@gmail.com', '2014-05-15', '07:02:14', 'Lunge', NULL, NULL, NULL, NULL, NULL),
 (4131, 'halendang@gmail.com', '2014-05-15', '07:02:46', 'Lying Hip Extension', NULL, NULL, NULL, NULL, NULL),
-(4132, 'halendang@gmail.com', '2014-05-15', '07:04:52', 'Toe Raise', NULL, NULL, NULL, NULL, NULL),
+(4132, 'halendang@gmail.com', '2014-05-15', '07:04:52', 'Calf Raise', NULL, NULL, NULL, NULL, NULL),
 (4133, 'halendang@gmail.com', '2014-05-15', '07:06:13', 'Squat', NULL, NULL, NULL, NULL, NULL),
 (4134, 'halendang@gmail.com', '2014-05-15', '07:06:56', 'Decline Back Extension', NULL, NULL, NULL, NULL, NULL),
 (4138, 'halendang@gmail.com', '2014-05-15', '07:09:15', 'Lying Down Back Extension', NULL, NULL, NULL, NULL, NULL),
@@ -1154,7 +1154,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4155, 'nick.piscopio@gmail.com', '2014-05-20', '09:21:31', 'Weighted Step-up', '10.0', 10, NULL, 5, NULL),
 (4156, 'nick.piscopio@gmail.com', '2014-05-20', '09:23:53', 'Back Plank', NULL, NULL, '00:00:45', 6, NULL),
 (4157, 'nick.piscopio@gmail.com', '2014-05-20', '09:25:20', 'Leg Extension', '80.0', 10, NULL, 7, NULL),
-(4158, 'nick.piscopio@gmail.com', '2014-05-20', '09:27:46', 'Toe Raise', '70.0', 10, NULL, 7, NULL),
+(4158, 'nick.piscopio@gmail.com', '2014-05-20', '09:27:46', 'Calf Raise', '70.0', 10, NULL, 7, NULL),
 (4159, 'nick.piscopio@gmail.com', '2014-05-20', '09:29:10', 'Single Leg Split Squat', '10.0', 10, NULL, 8, NULL),
 (4160, 'nick.piscopio@gmail.com', '2014-05-20', '09:32:04', 'Box Jump', NULL, 10, NULL, 6, NULL),
 (4161, 'nick.piscopio@gmail.com', '2014-05-20', '09:33:15', 'Dead Lift', '30.0', 10, NULL, 7, NULL),
@@ -1348,7 +1348,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (3857, 'nick.piscopio@gmail.com', '2014-05-05', '11:54:31', 'Single Leg Split Squat', '10.0', 10, NULL, 8, NULL),
 (3856, 'nick.piscopio@gmail.com', '2014-05-05', '11:53:27', 'Squat', NULL, 20, NULL, 7, NULL),
 (3855, 'nick.piscopio@gmail.com', '2014-05-05', '11:49:04', 'Lunge', '10.0', 10, NULL, 6, NULL),
-(3854, 'nick.piscopio@gmail.com', '2014-05-05', '11:47:35', 'Toe Raise', '70.0', 10, NULL, 7, NULL),
+(3854, 'nick.piscopio@gmail.com', '2014-05-05', '11:47:35', 'Calf Raise', '70.0', 10, NULL, 7, NULL),
 (3853, 'nick.piscopio@gmail.com', '2014-05-05', '11:45:44', 'Leg Curl', '60.0', 10, NULL, 6, NULL),
 (3852, 'nick.piscopio@gmail.com', '2014-05-05', '11:43:40', 'Single Leg Romanian Dead Lift', '10.0', 10, NULL, 7, NULL),
 (3851, 'nick.piscopio@gmail.com', '2014-05-05', '11:42:15', 'Box Jump', NULL, 10, NULL, 6, NULL),
@@ -1532,7 +1532,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (3680, 'nick.piscopio@gmail.com', '2014-04-25', '09:01:06', 'Weighted Step-up', '10.0', 10, NULL, 7, NULL),
 (3679, 'nick.piscopio@gmail.com', '2014-04-25', '08:59:38', 'Leg Curl', '60.0', 10, NULL, 6, NULL),
 (3678, 'nick.piscopio@gmail.com', '2014-04-25', '08:57:06', 'Single Leg Romanian Dead Lift', '10.0', 10, NULL, 7, NULL),
-(3677, 'nick.piscopio@gmail.com', '2014-04-25', '08:55:42', 'Toe Raise', '65.0', 10, NULL, 7, NULL),
+(3677, 'nick.piscopio@gmail.com', '2014-04-25', '08:55:42', 'Calf Raise', '65.0', 10, NULL, 7, NULL),
 (3675, 'nick.piscopio@gmail.com', '2014-04-25', '08:51:12', 'Dead Lift', '30.0', 10, NULL, 7, NULL),
 (3676, 'nick.piscopio@gmail.com', '2014-04-25', '08:52:56', 'Lunge', '10.0', 10, NULL, 6, NULL),
 (3674, 'nick.piscopio@gmail.com', '2014-04-25', '08:48:42', 'Weighted Step-up', '10.0', 10, NULL, 7, NULL),
@@ -1546,7 +1546,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (3666, 'nick.piscopio@gmail.com', '2014-04-25', '08:32:09', 'Lunge', '10.0', 10, NULL, 6, NULL),
 (3665, 'nick.piscopio@gmail.com', '2014-04-25', '08:29:05', 'Cable Standing Hip Extension', '25.0', 10, NULL, 7, NULL),
 (3664, 'nick.piscopio@gmail.com', '2014-04-25', '08:26:55', 'Weighted Step-up', '10.0', 10, NULL, 7, NULL),
-(3663, 'nick.piscopio@gmail.com', '2014-04-25', '08:25:34', 'Toe Raise', '65.0', 10, NULL, 7, NULL),
+(3663, 'nick.piscopio@gmail.com', '2014-04-25', '08:25:34', 'Calf Raise', '65.0', 10, NULL, 7, NULL),
 (3662, 'nick.piscopio@gmail.com', '2014-04-25', '08:23:27', 'Lunge', '10.0', 10, NULL, 6, NULL),
 (3661, 'nick.piscopio@gmail.com', '2014-04-25', '08:22:17', 'Box Jump', NULL, 10, NULL, 6, NULL),
 (3660, 'nick.piscopio@gmail.com', '2014-04-24', '11:58:39', 'Cable Twisting Overhead Press', '25.0', 10, NULL, 6, NULL),
@@ -1655,7 +1655,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4117, 'halendang@gmail.com', '2014-05-15', '06:34:39', 'Box Jump', NULL, NULL, NULL, NULL, NULL),
 (4115, 'halendang@gmail.com', '2014-05-15', '06:31:07', 'Lunge', NULL, NULL, NULL, NULL, NULL),
 (4040, 'nick.piscopio@gmail.com', '2014-05-09', '08:50:32', 'Side Plank', NULL, NULL, '00:00:30', 6, NULL),
-(4116, 'halendang@gmail.com', '2014-05-15', '06:33:01', 'Toe Raise', NULL, NULL, NULL, NULL, NULL),
+(4116, 'halendang@gmail.com', '2014-05-15', '06:33:01', 'Calf Raise', NULL, NULL, NULL, NULL, NULL),
 (3940, 'nick.piscopio@gmail.com', '2014-05-06', '10:35:23', 'Decline Dumbbell Press', '30.0', 10, NULL, 4, NULL),
 (3939, 'nick.piscopio@gmail.com', '2014-05-06', '10:35:16', 'Decline Butterfly', '25.0', 12, NULL, 4, NULL),
 (3938, 'nick.piscopio@gmail.com', '2014-05-06', '10:33:26', 'Wide Push-Up', NULL, 20, NULL, 6, NULL),
@@ -1747,7 +1747,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (3443, 'nick.piscopio@gmail.com', '2014-04-17', '12:10:34', 'Single Leg Split Squat', '10.0', 10, NULL, 5, NULL),
 (3444, 'nick.piscopio@gmail.com', '2014-04-17', '12:14:19', 'Dead Lift', '30.0', 10, NULL, 7, NULL),
 (3445, 'nick.piscopio@gmail.com', '2014-04-17', '12:16:52', 'Box Jump', NULL, 10, NULL, 6, NULL),
-(3446, 'nick.piscopio@gmail.com', '2014-04-17', '12:18:38', 'Toe Raise', '60.0', 10, NULL, 7, NULL),
+(3446, 'nick.piscopio@gmail.com', '2014-04-17', '12:18:38', 'Calf Raise', '60.0', 10, NULL, 7, NULL),
 (3447, 'nick.piscopio@gmail.com', '2014-04-17', '12:20:08', 'Single Leg Romanian Dead Lift', '10.0', 10, NULL, 7, NULL),
 (3448, 'nick.piscopio@gmail.com', '2014-04-17', '12:23:15', 'Back Plank', NULL, NULL, '00:00:45', 6, NULL),
 (3449, 'nick.piscopio@gmail.com', '2014-04-17', '12:25:17', 'Cable Standing Leg Raise', '25.0', 10, NULL, 7, NULL),
@@ -1763,7 +1763,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (3459, 'nick.piscopio@gmail.com', '2014-04-17', '12:49:53', 'Cable Standing Hip Extension', '25.0', 10, NULL, 7, NULL),
 (3460, 'nick.piscopio@gmail.com', '2014-04-17', '12:52:36', 'Squat', NULL, 20, NULL, 7, NULL),
 (3461, 'nick.piscopio@gmail.com', '2014-04-17', '12:54:16', 'Single Leg Romanian Dead Lift', '10.0', 10, NULL, 7, NULL),
-(3462, 'nick.piscopio@gmail.com', '2014-04-17', '12:56:58', 'Toe Raise', '65.0', 10, NULL, 7, NULL),
+(3462, 'nick.piscopio@gmail.com', '2014-04-17', '12:56:58', 'Calf Raise', '65.0', 10, NULL, 7, NULL),
 (3412, 'nick.piscopio@gmail.com', '2014-04-15', '12:41:58', 'Cable Side Bend', '35.0', 10, NULL, 4, NULL),
 (3411, 'nick.piscopio@gmail.com', '2014-04-15', '12:39:48', 'Side Bend', '45.0', 11, NULL, 6, NULL),
 (3409, 'nick.piscopio@gmail.com', '2014-04-15', '12:36:04', 'Side Plank', NULL, NULL, '00:00:30', 6, NULL),
@@ -1890,7 +1890,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (3869, 'halendang@gmail.com', '2014-05-05', '18:29:52', 'Back Plank', NULL, NULL, NULL, NULL, NULL),
 (3870, 'halendang@gmail.com', '2014-05-05', '18:31:30', 'Leg Extension', NULL, NULL, NULL, NULL, NULL),
 (3867, 'halendang@gmail.com', '2014-05-05', '18:27:10', 'Single Leg Split Squat', NULL, NULL, NULL, NULL, NULL),
-(3864, 'halendang@gmail.com', '2014-05-05', '18:24:51', 'Toe Raise', NULL, NULL, NULL, NULL, NULL),
+(3864, 'halendang@gmail.com', '2014-05-05', '18:24:51', 'Calf Raise', NULL, NULL, NULL, NULL, NULL),
 (3155, 'nick.piscopio@gmail.com', '2014-04-04', '11:20:26', 'Incline Row', NULL, NULL, NULL, NULL, NULL),
 (3154, 'nick.piscopio@gmail.com', '2014-04-04', '11:18:51', 'Wide Pull-Up', NULL, 10, NULL, 9, NULL),
 (3153, 'nick.piscopio@gmail.com', '2014-04-04', '11:17:17', 'Floor T-Raise', NULL, NULL, '00:01:00', 6, NULL),
@@ -1940,7 +1940,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4456, 'nick.piscopio@gmail.com', '2014-06-05', '09:52:28', 'Single Leg Split Squat', '10.0', 10, NULL, 8, NULL),
 (4457, 'nick.piscopio@gmail.com', '2014-06-05', '09:54:39', 'Box Jump', NULL, 10, NULL, 6, NULL),
 (4458, 'nick.piscopio@gmail.com', '2014-06-05', '09:55:48', 'Lunge', '10.0', 10, NULL, 6, NULL),
-(4459, 'nick.piscopio@gmail.com', '2014-06-05', '09:58:07', 'Toe Raise', '75.0', 10, NULL, 7, NULL),
+(4459, 'nick.piscopio@gmail.com', '2014-06-05', '09:58:07', 'Calf Raise', '75.0', 10, NULL, 7, NULL),
 (4460, 'nick.piscopio@gmail.com', '2014-06-05', '09:59:34', 'Single Leg Romanian Dead Lift', '10.0', 10, NULL, 7, NULL),
 (4461, 'nick.piscopio@gmail.com', '2014-06-05', '10:01:57', 'Single Leg Split Squat', '10.0', 10, NULL, 8, NULL),
 (4462, 'nick.piscopio@gmail.com', '2014-06-05', '10:04:45', 'Leg Extension', '80.0', 10, NULL, 7, NULL),
@@ -2088,7 +2088,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (4748, 'nick.piscopio@gmail.com', '2014-06-23', '09:15:41', 'Back Plank', NULL, NULL, '00:00:45', 6, NULL),
 (4747, 'nick.piscopio@gmail.com', '2014-06-23', '09:14:33', 'Lying Down Back Extension', NULL, 10, NULL, 6, NULL),
 (4746, 'nick.piscopio@gmail.com', '2014-06-23', '09:12:15', 'Weighted Step-up', '10.0', 10, NULL, 5, NULL),
-(4745, 'nick.piscopio@gmail.com', '2014-06-23', '09:10:44', 'Toe Raise', '75.0', 10, NULL, 7, NULL),
+(4745, 'nick.piscopio@gmail.com', '2014-06-23', '09:10:44', 'Calf Raise', '75.0', 10, NULL, 7, NULL),
 (4744, 'nick.piscopio@gmail.com', '2014-06-23', '09:08:50', 'Leg Curl', '65.0', 10, NULL, 6, NULL),
 (4743, 'nick.piscopio@gmail.com', '2014-06-23', '09:06:16', 'Single Leg Romanian Dead Lift', '10.0', 10, NULL, 7, NULL),
 (4742, 'nick.piscopio@gmail.com', '2014-06-23', '09:04:04', 'Back Plank', NULL, NULL, '00:00:45', 6, NULL),
@@ -2414,7 +2414,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5190, 'cpiscopio@gmail.com', '2015-09-30', '21:35:19', 'Shoulder Blade Hold', NULL, NULL, '00:00:60', 5, NULL),
 (5147, 'cpiscopio@gmail.com', '2015-09-03', '11:26:23', 'Squat', '25.0', 6, NULL, 4, NULL),
 (5148, 'cpiscopio@gmail.com', '2015-09-03', '11:30:18', 'Single Leg Romanian Dead Lift', '15.0', 5, NULL, 6, NULL),
-(5149, 'cpiscopio@gmail.com', '2015-09-03', '11:32:23', 'Toe Raise', '40.0', 10, NULL, 5, NULL),
+(5149, 'cpiscopio@gmail.com', '2015-09-03', '11:32:23', 'Calf Raise', '40.0', 10, NULL, 5, NULL),
 (5151, 'cpiscopio@gmail.com', '2015-09-03', '11:34:14', 'Lying Down Back Extension', NULL, 10, NULL, 7, NULL),
 (5153, 'cpiscopio@gmail.com', '2015-09-03', '11:35:48', 'Single Leg Split Squat', '30.0', 5, NULL, NULL, NULL),
 (5154, 'cpiscopio@gmail.com', '2015-09-03', '11:39:34', 'Squat', '25.0', 6, NULL, 4, NULL),
@@ -2424,7 +2424,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5158, 'cpiscopio@gmail.com', '2015-09-03', '11:53:33', 'Dead Lift', '35.0', 5, NULL, 6, NULL),
 (5160, 'cpiscopio@gmail.com', '2015-09-03', '11:55:06', 'Squat', '30.0', 5, NULL, 4, NULL),
 (5161, 'cpiscopio@gmail.com', '2015-09-03', '11:58:31', 'Decline Back Extension', NULL, 8, NULL, 5, NULL),
-(5162, 'cpiscopio@gmail.com', '2015-09-03', '11:59:49', 'Toe Raise', '50.0', 5, NULL, 5, NULL),
+(5162, 'cpiscopio@gmail.com', '2015-09-03', '11:59:49', 'Calf Raise', '50.0', 5, NULL, 5, NULL),
 (5163, 'cpiscopio@gmail.com', '2015-09-03', '12:01:20', 'Dead Lift', '40.0', 5, NULL, 6, NULL),
 (5164, 'cpiscopio@gmail.com', '2015-09-03', '12:03:09', 'Lying Down Back Extension', NULL, 10, NULL, 7, NULL),
 (5165, 'cpiscopio@gmail.com', '2015-09-06', '00:29:42', 'Butterfly', '30.0', 5, NULL, 4, NULL),
@@ -2460,7 +2460,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5221, 'cpiscopio@gmail.com', '2015-09-30', '21:59:39', 'Dumbbell Curl', '40.0', 4, NULL, 5, NULL),
 (5222, 'cpiscopio@gmail.com', '2015-10-29', '15:23:47', 'Side Plank', NULL, NULL, '00:00:30', 5, NULL),
 (5238, 'user1450367271540@intencity.com', '2015-12-17', '10:50:22', 'Lying Hip Extension', '11.0', 10, NULL, NULL, NULL),
-(5239, 'user1450367271540@intencity.com', '2015-12-17', '10:50:40', 'Toe Raise', '10.0', 5, NULL, NULL, NULL),
+(5239, 'user1450367271540@intencity.com', '2015-12-17', '10:50:40', 'Calf Raise', '10.0', 5, NULL, NULL, NULL),
 (5237, 'user1450367271540@intencity.com', '2015-12-17', '10:49:05', 'Back Plank', '0.0', 10, NULL, NULL, NULL),
 (5235, 'nick.piscopio@gmail.com', '2015-12-13', '08:38:37', 'Over the Head Tricep Extension', '30.0', 10, NULL, 3, NULL),
 (5240, 'user1450367271540@intencity.com', '2015-12-17', '10:50:53', 'Dead Lift', NULL, NULL, NULL, NULL, NULL),
@@ -2661,7 +2661,7 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5580, 'cpiscopio@gmail.com', '2016-02-01', '23:44:50', 'Lying Leg Raise', NULL, 10, NULL, 5, NULL),
 (5581, 'cpiscopio@gmail.com', '2016-02-01', '23:44:50', 'Lying Leg Raise', NULL, 10, NULL, 5, NULL),
 (5583, 'user1454434307292@intencity.com', '2016-02-02', '12:32:15', 'Lunge', NULL, NULL, NULL, NULL, NULL),
-(5584, 'user1454434307292@intencity.com', '2016-02-02', '12:32:18', 'Toe Raise', NULL, NULL, NULL, NULL, NULL),
+(5584, 'user1454434307292@intencity.com', '2016-02-02', '12:32:18', 'Calf Raise', NULL, NULL, NULL, NULL, NULL),
 (5585, 'user1454434307292@intencity.com', '2016-02-02', '12:32:20', 'Back Plank', NULL, NULL, NULL, NULL, NULL),
 (5586, 'cpiscopio@gmail.com', '2016-02-02', '19:45:29', 'Shoulder Press', '25.0', 8, NULL, 5, NULL),
 (5587, 'cpiscopio@gmail.com', '2016-02-02', '19:50:22', 'Shoulder Press', '25.0', 8, NULL, 5, NULL),
@@ -3853,7 +3853,7 @@ CREATE TABLE IF NOT EXISTS `Direction` (
   `ExerciseName` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ExerciseName` (`ExerciseName`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=682 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=690 ;
 
 --
 -- Dumping data for table `Direction`
@@ -3943,10 +3943,9 @@ INSERT INTO `Direction` (`ID`, `Direction`, `ExerciseName`) VALUES
 (82, '2. Slowly curly your legs in until they reach a 90 degree angle.', 'Leg Curl'),
 (83, '3. Slowly release your legs to their initial position.', 'Leg Curl'),
 (84, ' 4. Repeat steps 2 and 3 until exercise is complete.', 'Leg Curl'),
-(85, '1. Stand up straight holding a dumbbell in each hand.', 'Toe Raise'),
-(86, '2. Slowly raise your heels off the ground until you are on you toes.', 'Toe Raise'),
-(87, '3. Slowly lower heels to the ground.', 'Toe Raise'),
-(88, '4. Repeat steps 2 and 3 until the exercise is complete.', 'Toe Raise'),
+(688, '3. Slowly lower heels to the ground.', 'Calf Raise'),
+(687, '2. Slowly raise your heels off the ground until you are on you toes.', 'Calf Raise'),
+(686, '1. Stand up straight holding a dumbbell in each hand.', 'Calf Raise'),
 (89, '1. Sit down on a bench with the dumbbells resting on your thighs or position yourself in a shoulder press machine.', 'Shoulder Press'),
 (90, '2. If you are using dumbbells, go to step 4.', 'Shoulder Press'),
 (91, '3. While keeping your back straight, lift up the weights, and place them next to your head.', 'Shoulder Press'),
@@ -4394,9 +4393,9 @@ INSERT INTO `Direction` (`ID`, `Direction`, `ExerciseName`) VALUES
 (599, '1. Stand at the roman chair.', 'Roman Chair Dip'),
 (600, '2. Place both of your hands on the bars.', 'Roman Chair Dip'),
 (601, '3. Raise your body as high as you can while keeping your arms straight.', 'Roman Chair Dip'),
-(602, '4. Lower your body.', 'Roman Chair Dip');
+(602, '4. Lower your body.', 'Roman Chair Dip'),
+(603, '5. Repeat steps 3 and 4 until your exercise is complete.', 'Roman Chair Dip');
 INSERT INTO `Direction` (`ID`, `Direction`, `ExerciseName`) VALUES
-(603, '5. Repeat steps 3 and 4 until your exercise is complete.', 'Roman Chair Dip'),
 (604, '1. Sit on the side of the bench and place your hands on the edge of the bench.', 'Bench Dip'),
 (605, '2. Place your heels on the floor with your legs straightened out.', 'Bench Dip'),
 (606, '3. Slide off the bench while keeping your legs straight.', 'Bench Dip'),
@@ -4472,7 +4471,12 @@ INSERT INTO `Direction` (`ID`, `Direction`, `ExerciseName`) VALUES
 (676, '4. Raise your pelvis toward the ceiling.', 'Lying Hip Extension'),
 (677, '5. Lower your body back to the ground.', 'Lying Hip Extension'),
 (678, '6. Repeat steps 4 and 5 until your exercise is complete.', 'Lying Hip Extension'),
-(679, '7. Repeat with the other leg extended.', 'Lying Hip Extension');
+(679, '7. Repeat with the other leg extended.', 'Lying Hip Extension'),
+(682, '1. Stand up straight holding a dumbbell in each hand.', 'Calf Raise'),
+(683, '2. Slowly raise your heels off the ground until you are on you toes.', 'Calf Raise'),
+(684, '3. Slowly lower heels to the ground.', 'Calf Raise'),
+(685, '4. Repeat steps 2 and 3 until the exercise is complete.', 'Calf Raise'),
+(689, '4. Repeat steps 2 and 3 until the exercise is complete.', 'Calf Raise');
 
 -- --------------------------------------------------------
 
@@ -4486,7 +4490,7 @@ CREATE TABLE IF NOT EXISTS `Equipment` (
   `ExerciseName` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ExerciseName` (`ExerciseName`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=280 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=282 ;
 
 --
 -- Dumping data for table `Equipment`
@@ -4500,8 +4504,6 @@ INSERT INTO `Equipment` (`ID`, `EquipmentName`, `ExerciseName`) VALUES
 (112, 'Dumbbells', 'Back Fly'),
 (111, 'Shoulder Press Machine', 'Shoulder Press'),
 (110, 'Dumbbells', 'Shoulder Press'),
-(109, 'Barbell', 'Toe Raise'),
-(108, 'Dumbbells', 'Toe Raise'),
 (107, 'Leg Curl Machine', 'Leg Curl'),
 (106, 'Leg Extension Machine', 'Leg Extension'),
 (105, 'Barbell', 'Squat'),
@@ -4524,7 +4526,7 @@ INSERT INTO `Equipment` (`ID`, `EquipmentName`, `ExerciseName`) VALUES
 (39, NULL, 'Diamond Push-Up'),
 (40, NULL, 'Wide Push-Up'),
 (41, NULL, 'Squat'),
-(42, NULL, 'Toe Raise'),
+(281, NULL, 'Calf Raise'),
 (43, NULL, 'Plank'),
 (44, NULL, 'Crunch'),
 (45, NULL, 'Sit-Up'),
@@ -4669,7 +4671,8 @@ INSERT INTO `Equipment` (`ID`, `EquipmentName`, `ExerciseName`) VALUES
 (275, 'Dumbbells', 'Weighted Step-up'),
 (276, 'Bench', 'Prone Incline Curl'),
 (277, 'Dumbbells', 'Prone Incline Curl'),
-(278, NULL, 'Lying Hip Extension');
+(278, NULL, 'Lying Hip Extension'),
+(280, NULL, 'Calf Raise');
 
 -- --------------------------------------------------------
 
@@ -4752,7 +4755,6 @@ INSERT INTO `Exercise` (`ExerciseName`, `Type`, `SubmittedBy`, `Recommended`, `V
 ('Squat', 'E', 'Intencity', 1, 'Mf1zYaa_Z6c'),
 ('Leg Extension', 'E', 'Intencity', 1, '6kAiSJLnVOg'),
 ('Leg Curl', 'E', 'Intencity', 1, 'PEQ68YtRLmg'),
-('Toe Raise', 'E', 'Intencity', 1, 'NK0rTuPxC0Q'),
 ('Shoulder Press', 'E', 'Intencity', 1, '9ZuWotZTXuM'),
 ('Back Fly', 'E', 'Intencity', 1, 'v5vSHelnM80'),
 ('Dead Lift', 'E', 'Intencity', 1, 'r-YhuFYqvuM'),
@@ -4868,7 +4870,8 @@ INSERT INTO `Exercise` (`ExerciseName`, `Type`, `SubmittedBy`, `Recommended`, `V
 ('Cable Underhand Pull Down', 'E', 'Intencity', 1, 'qbstoAHhBbI'),
 ('Weighted Step-up', 'E', 'Intencity', 1, '2nQal34jm48'),
 ('Prone Incline Curl', 'E', 'Intencity', 1, '0Ah1_yVuNM0'),
-('Lying Hip Extension', 'E', 'Intencity', 1, 'QCD-wpKAd5I');
+('Lying Hip Extension', 'E', 'Intencity', 1, 'QCD-wpKAd5I'),
+('Calf Raise', 'E', 'Intencity', 1, 'FssdFQ1aIBM');
 
 -- --------------------------------------------------------
 
@@ -4882,7 +4885,7 @@ CREATE TABLE IF NOT EXISTS `ExerciseNameVariant` (
   `NameVariant` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ExerciseName` (`ExerciseName`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 --
 -- Dumping data for table `ExerciseNameVariant`
@@ -4903,7 +4906,9 @@ INSERT INTO `ExerciseNameVariant` (`ID`, `ExerciseName`, `NameVariant`) VALUES
 (12, 'Side Shoulder Raise', 'Side Raises'),
 (13, 'Side Shoulder Raise', 'Side Dumbbell Raises'),
 (14, 'Shrug', 'Shoulder Shrug'),
-(19, 'Bench Dip', 'Chair Dip');
+(19, 'Bench Dip', 'Chair Dip'),
+(20, 'Calf Raise', 'Toe Raise'),
+(21, 'Calf Raise', 'Toe Raise');
 
 -- --------------------------------------------------------
 
@@ -4973,7 +4978,7 @@ CREATE TABLE IF NOT EXISTS `Muscle` (
   `ExerciseName` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ExerciseName` (`ExerciseName`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=643 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=647 ;
 
 --
 -- Dumping data for table `Muscle`
@@ -5033,8 +5038,7 @@ INSERT INTO `Muscle` (`ID`, `MuscleName`, `ExerciseName`) VALUES
 (51, 'Quads', 'Leg Extension'),
 (52, 'Hamstring', 'Leg Curl'),
 (53, 'Soleus', 'Leg Curl'),
-(54, 'Gastrocnemeus', 'Toe Raise'),
-(55, 'Soleus', 'Toe Raise'),
+(645, 'Gastrocnemeus', 'Calf Raise'),
 (56, 'Delts', 'Shoulder Press'),
 (57, 'Deltoids', 'Shoulder Press'),
 (58, 'Tricep', 'Shoulder Press'),
@@ -5494,7 +5498,10 @@ INSERT INTO `Muscle` (`ID`, `MuscleName`, `ExerciseName`) VALUES
 (637, 'Obliques', 'Lying Hip Extension'),
 (638, 'Abs', 'Lying Hip Extension'),
 (639, 'Quads', 'Lying Hip Extension'),
-(640, 'Quadriceps', 'Lying Hip Extension');
+(640, 'Quadriceps', 'Lying Hip Extension'),
+(643, 'Gastrocnemeus', 'Calf Raise'),
+(644, 'Soleus', 'Calf Raise'),
+(646, 'Soleus', 'Calf Raise');
 
 -- --------------------------------------------------------
 
@@ -5509,7 +5516,7 @@ CREATE TABLE IF NOT EXISTS `MuscleGroup` (
   `MuscleGroupExercisePercentage` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `ExerciseName` (`ExerciseName`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=405 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=407 ;
 
 --
 -- Dumping data for table `MuscleGroup`
@@ -5566,7 +5573,7 @@ INSERT INTO `MuscleGroup` (`ID`, `ExerciseName`, `MuscleGroupName`, `MuscleGroup
 (48, 'Leg Extension', 'Quads', 100),
 (49, 'Leg Curl', 'Hamstrings', 100),
 (50, 'Leg Curl', 'Calves', 50),
-(51, 'Toe Raise', 'Calves', 100),
+(406, 'Calf Raise', 'Calves', 100),
 (52, 'Shoulder Press', 'Shoulders', 100),
 (53, 'Shoulder Press', 'Triceps', 25),
 (54, 'Back Fly', 'Shoulders', 25),
@@ -5872,7 +5879,8 @@ INSERT INTO `MuscleGroup` (`ID`, `ExerciseName`, `MuscleGroupName`, `MuscleGroup
 (400, 'Lying Hip Extension', 'Glutes', 100),
 (401, 'Lying Hip Extension', 'Quads', 75),
 (402, 'Lying Hip Extension', 'Abs', 40),
-(403, 'Lying Hip Extension', 'Obliques', 35);
+(403, 'Lying Hip Extension', 'Obliques', 35),
+(405, 'Calf Raise', 'Calves', 100);
 
 -- --------------------------------------------------------
 
