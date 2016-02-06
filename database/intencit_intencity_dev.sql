@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Feb 06, 2016 at 04:47 PM
+-- Generation Time: Feb 06, 2016 at 05:53 PM
 -- Server version: 5.5.47-cll
 -- PHP Version: 5.4.31
 
@@ -745,10 +745,10 @@ ON completedExercise.ExerciseName = Exercise.ExerciseName
 LEFT JOIN ExerciseNameVariant
   ON Exercise.ExerciseName = ExerciseNameVariant.ExerciseName
 /* Need % before and after name variable*/
-WHERE Exercise.ExerciseName LIKE name OR ExerciseNameVariant.NameVariant LIKE name
+WHERE Exercise.ExerciseName LIKE CONCAT('%', name, '%') OR ExerciseNameVariant.NameVariant LIKE CONCAT('%', name, '%') 
 GROUP BY Exercise.ExerciseName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchUsers`(IN `email` VARCHAR(75), IN `term` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchUsers`(IN `email` VARCHAR(75), IN `name` VARCHAR(75))
 SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
 		Following.ID AS FollowingId, (SELECT COUNT(Badge.BadgeName)
                                          FROM Badge 
@@ -757,7 +757,7 @@ FROM User
 LEFT JOIN Following
 	ON User.Email = Following.Following AND Following.Email = email
 /* term must include % before and after variable. */
-WHERE CONCAT(User.FirstName, User.LastName) LIKE term$$
+WHERE CONCAT(User.FirstName, User.LastName) LIKE CONCAT('%', name, '%')$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setCurrentMuscleGroup`(IN `email` VARCHAR(75), IN `routineNumber` INT)
 INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName)
@@ -2708,7 +2708,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5021 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5023 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -3581,6 +3581,8 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (4467, 'cpiscopio@gmail.com', '2016-01-25', 'Upper Inner Back'),
 (4468, 'cpiscopio@gmail.com', '2016-01-25', 'Biceps'),
 (4469, 'cpiscopio@gmail.com', '2016-01-25', 'Forearms'),
+(5022, 'dev@gmail.com', '2016-02-06', 'Chest'),
+(5021, 'dev@gmail.com', '2016-02-06', 'Triceps'),
 (5020, 'dev@gmail.com', '2016-02-05', 'Lower Back'),
 (5019, 'dev@gmail.com', '2016-02-05', 'Glutes'),
 (5018, 'dev@gmail.com', '2016-02-05', 'Quads'),
@@ -3594,10 +3596,10 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (5010, 'dev@gmail.com', '2016-02-05', 'Shins'),
 (5009, 'dev@gmail.com', '2016-02-05', 'Calves'),
 (5008, 'dev@gmail.com', '2016-02-05', 'Obliques'),
-(5007, 'dev@gmail.com', '2016-02-05', 'Abs'),
-(5006, 'dev@gmail.com', '2016-02-05', 'Forearms'),
-(5005, 'dev@gmail.com', '2016-02-05', 'Biceps');
+(5007, 'dev@gmail.com', '2016-02-05', 'Abs');
 INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VALUES
+(5006, 'dev@gmail.com', '2016-02-05', 'Forearms'),
+(5005, 'dev@gmail.com', '2016-02-05', 'Biceps'),
 (5004, 'dev@gmail.com', '2016-02-05', 'Upper Inner Back'),
 (5003, 'dev@gmail.com', '2016-02-05', 'Upper Outer Back'),
 (5002, 'dev@gmail.com', '2016-02-05', 'Cardio'),
@@ -4907,8 +4909,7 @@ INSERT INTO `ExerciseNameVariant` (`ID`, `ExerciseName`, `NameVariant`) VALUES
 (13, 'Side Shoulder Raise', 'Side Dumbbell Raises'),
 (14, 'Shrug', 'Shoulder Shrug'),
 (19, 'Bench Dip', 'Chair Dip'),
-(20, 'Calf Raise', 'Toe Raise'),
-(21, 'Calf Raise', 'Toe Raise');
+(20, 'Calf Raise', 'Toe Raise');
 
 -- --------------------------------------------------------
 
@@ -6421,7 +6422,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (132, 'mpryor2008@gmail.com', '2014-03-22', '2014-03-23', 0, NULL, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', NULL, 'N', 0, 1),
 (133, 'test@test.gov', '2014-03-23', '2014-03-23', 0, NULL, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', NULL, 'N', 0, 1),
 (134, 'julienajbjerg@gmail.com', '2014-03-24', '2014-06-13', 0, NULL, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'DfLuc1QeDyvBQcnr', 'N', 0, 1),
-(135, 'dev@gmail.com', '2014-03-25', '2016-02-04', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 765, 1),
+(135, 'dev@gmail.com', '2014-03-25', '2016-02-04', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 770, 1),
 (136, 'shatwon123.sa@gmail.com', '2014-03-26', '2014-03-26', 0, NULL, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', NULL, 'N', 0, 1),
 (137, 'appletest@gmail.com', '2014-03-27', '2014-03-27', 0, NULL, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', NULL, 'R', 0, 1),
 (142, 'beta@gmail.com', '2014-04-01', '2014-04-08', 1, NULL, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', NULL, 'D', 0, 1),
