@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Feb 06, 2016 at 05:53 PM
+-- Generation Time: Feb 07, 2016 at 08:50 AM
 -- Server version: 5.5.47-cll
 -- PHP Version: 5.4.31
 
@@ -757,7 +757,11 @@ FROM User
 LEFT JOIN Following
 	ON User.Email = Following.Following AND Following.Email = email
 /* term must include % before and after variable. */
-WHERE CONCAT(User.FirstName, User.LastName) LIKE CONCAT('%', name, '%')$$
+WHERE CONCAT(User.FirstName, User.LastName) LIKE CONCAT('%', name, '%') AND
+		User.Email != email AND
+		User.AccountType != 'T' AND
+		User.AccountType != 'M' AND
+		User.AccountType != 'D'$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setCurrentMuscleGroup`(IN `email` VARCHAR(75), IN `routineNumber` INT)
 INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName)
@@ -4945,7 +4949,7 @@ CREATE TABLE IF NOT EXISTS `Following` (
   `Following` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=115 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=117 ;
 
 --
 -- Dumping data for table `Following`
@@ -6422,7 +6426,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (132, 'mpryor2008@gmail.com', '2014-03-22', '2014-03-23', 0, NULL, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', NULL, 'N', 0, 1),
 (133, 'test@test.gov', '2014-03-23', '2014-03-23', 0, NULL, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', NULL, 'N', 0, 1),
 (134, 'julienajbjerg@gmail.com', '2014-03-24', '2014-06-13', 0, NULL, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'DfLuc1QeDyvBQcnr', 'N', 0, 1),
-(135, 'dev@gmail.com', '2014-03-25', '2016-02-04', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 770, 1),
+(135, 'dev@gmail.com', '2014-03-25', '2016-02-04', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 775, 1),
 (136, 'shatwon123.sa@gmail.com', '2014-03-26', '2014-03-26', 0, NULL, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', NULL, 'N', 0, 1),
 (137, 'appletest@gmail.com', '2014-03-27', '2014-03-27', 0, NULL, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', NULL, 'R', 0, 1),
 (142, 'beta@gmail.com', '2014-04-01', '2014-04-08', 1, NULL, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', NULL, 'D', 0, 1),
