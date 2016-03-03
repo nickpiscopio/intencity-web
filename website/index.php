@@ -53,7 +53,7 @@
 						}
 						else
 						{
-							window.location.href = "demo.html";
+							window.location.href = "sign_in.php";
 						}												
 					});
 					
@@ -104,7 +104,7 @@
 			{
 		?>
  				<script type="text/javascript">
- 					window.location.href = "demo.html";
+ 					window.location.href = "sign_in.php";
 				</script>
 		<?php 
 		
