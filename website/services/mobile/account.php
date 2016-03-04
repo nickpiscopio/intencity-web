@@ -33,7 +33,7 @@
 	$accountType = strtoupper($_POST['account_type']);
 	
 	//Makes the account a trial if it can't figure out what account type the user should be.
-	if($accountType != ACCOUNT_ADMIN && $accountType != ACCOUNT_BETA && $accountType != ACCOUNT_NORMAL && $accountType != ACCOUNT_MOBILE_TRIAL)
+	if($accountType != ACCOUNT_ADMIN && $accountType != ACCOUNT_BETA && $accountType != ACCOUNT_NORMAL && $accountType != ACCOUNT_MOBILE_TRIALd)
 	{
 		$accountType = ACCOUNT_TRIAL;
 	}
