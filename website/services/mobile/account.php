@@ -2,7 +2,7 @@
 	/**
 	 * This file creates a new account only if the email hasn't already been used.
 	 * 
-	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/account.php?first_name=John&last_name=Smith&email=john.smith@gmail.com&password=hello123&account_type=n
+	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/mobile/account.php?first_name=John&last_name=Smith&email=john.smith@gmail.com&password=hello123&account_type=n
 	 * 						This example does not work when we are using $_POST. We ARE using $_POST.
 	 */
 
@@ -24,8 +24,9 @@
 	define(RESPONSE_ACCOUNT_CREATED, "Account created");
 	
 	//Capitalize first letter.
-	$firstName = ucfirst($_POST['first_name']);
-	$lastName = ucfirst($_POST['last_name']);
+	$firstName = addslashes(ucfirst($_POST['first_name']));
+	$lastName = addslashes(ucfirst($_POST['last_name']));
+
 	//Changes the email to lowercase.
 	$email = strtolower($_POST['email']);
 	$password = $_POST['password'];
@@ -33,7 +34,7 @@
 	$accountType = strtoupper($_POST['account_type']);
 	
 	//Makes the account a trial if it can't figure out what account type the user should be.
-	if($accountType != ACCOUNT_ADMIN && $accountType != ACCOUNT_BETA && $accountType != ACCOUNT_NORMAL && $accountType != ACCOUNT_MOBILE_TRIALd)
+	if($accountType != ACCOUNT_ADMIN && $accountType != ACCOUNT_BETA && $accountType != ACCOUNT_NORMAL && $accountType != ACCOUNT_MOBILE_TRIAL)
 	{
 		$accountType = ACCOUNT_TRIAL;
 	}

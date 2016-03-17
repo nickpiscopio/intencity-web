@@ -15,7 +15,7 @@
 	
 	//NEEDS TO BE CHANGED TO A POST.
 	$storedProcedure = $_POST['d'];
-	$v = $_POST['v'];
+	$v = addslashes($_POST['v']);
 	$variables = explode(',', $v);
 	$varLength = count($variables);
 
