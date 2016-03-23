@@ -16,6 +16,7 @@
 	define("TABLE_EXERCISE_NAME_VARIANT", "ExerciseNameVariant");
 	define("TABLE_MUSCLE", "Muscle");
 	define("TABLE_EXCLUSION", "Exclusion");
+	define("TABLE_EXERCISE_PRIORITY", "ExercisePriority");
 	
 	//Constants for Column Names.
 	define("COLUMN_FIRST_NAME", "FirstName");
@@ -37,6 +38,7 @@
 	define("COLUMN_ID", "ID");
 	define("COLUMN_MUSCLE_GROUP_NAME", "MuscleGroupName");
 	define("COLUMN_EXERCISE_NAME", "ExerciseName");
+	define("COLUMN_PRIORITY", "Priority");
 	define("COLUMN_EXERCISE_WEIGHT", "ExerciseWeight");
 	define("COLUMN_EXERCISE_REPS", "ExerciseReps");
 	define("COLUMN_EXERCISE_DURATION", "ExerciseDuration");
