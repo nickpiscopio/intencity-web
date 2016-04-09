@@ -6,9 +6,6 @@
 	 */	
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
-
-	define("SUCCESS", "SUCCESS");
-	define("FAILURE", "FAILURE");
  
  	// $email = $_POST['id'];
  	$userId = $_POST['id'];
@@ -29,13 +26,9 @@
 			"Message" => "The image has been uploaded.",
 			"Status" => "OK"
 		]);
-
-		// $insertQuery .= "INSERT INTO " . TABLE_USER_MEDIA . " (" . COLUMN_DATE . ", " . COLUMN_EMAIL . ", " .  . ") VALUES ('" . $email . "'" . $insertString . "); ";
-
-		// $query = mysqli_multi_query($conn, $insertQuery);
-
-	} else {
-
+	} 
+	else 
+	{
 		echo json_encode([
 			"Message" => "Sorry, there was an error uploading your file.",
 			"Status" => "Error"
