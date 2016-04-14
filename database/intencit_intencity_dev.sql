@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 13, 2016 at 03:56 PM
+-- Generation Time: Apr 14, 2016 at 10:04 AM
 -- Server version: 5.5.48-cll
 -- PHP Version: 5.4.31
 
@@ -980,7 +980,7 @@ begin
 
         END IF;
 
-    ELSEIF ((priority > PRIORITY_LIMIT_LOWER && priority < PRIORITY_LIMIT_MID) || (priority > PRIORITY_LIMIT_MID && priority < PRIORITY_LIMIT_UPPER)) THEN
+    ELSEIF ((priority > PRIORITY_LIMIT_LOWER && priority < PRIORITY_LIMIT_MID) || (priority > PRIORITY_LIMIT_MID && priority <= PRIORITY_LIMIT_UPPER)) THEN
 
         INSERT INTO ExercisePriority (Email, ExerciseName, Priority) VALUES (email, exerciseName, priority);
 
@@ -3322,7 +3322,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10267 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10270 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -9672,7 +9672,10 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (10263, 'nick.piscopio@gmail.com', 1460559174000, 'Hamstrings'),
 (10264, 'nick.piscopio@gmail.com', 1460559174000, 'Quads'),
 (10265, 'nick.piscopio@gmail.com', 1460559174000, 'Glutes'),
-(10266, 'nick.piscopio@gmail.com', 1460559174000, 'Lower Back');
+(10266, 'nick.piscopio@gmail.com', 1460559174000, 'Lower Back'),
+(10267, 'nick.piscopio@gmail.com', 1460639282000, 'Triceps'),
+(10268, 'nick.piscopio@gmail.com', 1460639282000, 'Chest'),
+(10269, 'nick.piscopio@gmail.com', 1460642043000, 'Cardio');
 
 -- --------------------------------------------------------
 
@@ -10535,7 +10538,7 @@ CREATE TABLE IF NOT EXISTS `Exclusion` (
   `ExclusionType` char(1) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=770 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=795 ;
 
 --
 -- Dumping data for table `Exclusion`
@@ -10560,6 +10563,7 @@ INSERT INTO `Exclusion` (`ID`, `Email`, `ExcludeForever`, `ExclusionName`, `Excl
 (763, 'User1460465770978@intencity.fit', 1, 'Cable Standing Leg Raise', 'E'),
 (762, 'User1460465770978@intencity.fit', 1, 'Bench Dip', 'E'),
 (761, 'User1460465770978@intencity.fit', 1, 'Depth Box Jump', 'E'),
+(794, 'nick.piscopio@gmail.com', 1, 'Push Press', 'E'),
 (713, 'User1458667494669.244141@intencity.fit', 1, 'Shoulder Press', 'E'),
 (732, 'User1459170303908.062012@intencity.fit', 1, 'Wide Push-Up', 'E'),
 (712, 'User1458667494669.244141@intencity.fit', 1, 'Lying Down Back Extension', 'E'),
@@ -10780,7 +10784,7 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
   `ExerciseName` varchar(50) NOT NULL,
   `Priority` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=291 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=374 ;
 
 --
 -- Dumping data for table `ExercisePriority`
@@ -10800,12 +10804,10 @@ INSERT INTO `ExercisePriority` (`ID`, `Email`, `ExerciseName`, `Priority`) VALUE
 (128, 'User1458667494669.244141@intencity.fit', 'Split Leg Push Press', 25),
 (129, 'User1458667494669.244141@intencity.fit', 'Incline Front Raise', 25),
 (130, 'User1458667494669.244141@intencity.fit', 'Isometric Neck Exercise', 25),
-(288, 'nick.piscopio@gmail.com', 'Depth Box Jump', 10),
-(287, 'nick.piscopio@gmail.com', 'Incline Shoulder Raise', 30),
+(373, 'nick.piscopio@gmail.com', 'Incline Shoulder Raise', 10),
 (232, 'dev@gmail.com', 'Standing Cable Fly', 25),
-(286, 'nick.piscopio@gmail.com', 'Incline Front Raise', 40),
-(289, 'nick.piscopio@gmail.com', 'Push Press', 10),
-(290, 'nick.piscopio@gmail.com', 'Depth Box Jump', 10);
+(372, 'nick.piscopio@gmail.com', 'Decline Butterfly', 10),
+(371, 'nick.piscopio@gmail.com', 'Incline Front Raise', 30);
 
 -- --------------------------------------------------------
 
@@ -12401,7 +12403,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 550, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 545, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
