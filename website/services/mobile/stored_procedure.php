@@ -15,15 +15,19 @@
 	
 	//NEEDS TO BE CHANGED TO A POST.
 	$storedProcedure = $_POST['d'];
-	$v = addslashes($_POST['v']);
+	$urlV  = $_POST['v'];
+	$v = addslashes($urlV);
 	$variables = explode(',', $v);
 	$varLength = count($variables);
 
 	$parameters = "";
 
-	for ($i = 0; $i < $varLength; $i++)
+	if (isset($urlV))
 	{
-    	$parameters .= ($i > 0 ? "," : "") . "'" . $variables[$i] ."'";
+		for ($i = 0; $i < $varLength; $i++)
+		{
+	    	$parameters .= ($i > 0 ? "," : "") . "'" . $variables[$i] ."'";
+		}
 	}
 
 	$query = mysqli_query($conn, "CALL " . $storedProcedure . "(" . $parameters . ")");
