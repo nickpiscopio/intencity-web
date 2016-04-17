@@ -32,8 +32,6 @@
 		$inserts = explode(",", $inserts);
 
 		$insertTotal = count($inserts);
-
-		// echo $insertTotal;
 		
 		for($z = 0; $z < $insertTotal; $z++)
 		{

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 16, 2016 at 05:06 PM
+-- Generation Time: Apr 17, 2016 at 10:37 AM
 -- Server version: 5.5.48-cll
 -- PHP Version: 5.4.31
 
@@ -639,6 +639,12 @@ begin
   ORDER BY Priority DESC, ExerciseName ASC;
 
 end$$
+
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine`(IN `email` VARCHAR(75))
+SELECT DisplayName
+FROM UserMuscleGroupRoutine
+WHERE Email = email
+GROUP BY DisplayName$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantBadgeToUser`(IN `email` VARCHAR(75), IN `date` BIGINT, IN `badgeName` VARCHAR(30))
 INSERT INTO Badge(Email, EarnedDate, BadgeName)
@@ -10591,7 +10597,7 @@ CREATE TABLE IF NOT EXISTS `Exclusion` (
   `ExclusionType` char(1) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=797 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=799 ;
 
 --
 -- Dumping data for table `Exclusion`
@@ -10616,8 +10622,7 @@ INSERT INTO `Exclusion` (`ID`, `Email`, `ExcludeForever`, `ExclusionName`, `Excl
 (763, 'User1460465770978@intencity.fit', 1, 'Cable Standing Leg Raise', 'E'),
 (762, 'User1460465770978@intencity.fit', 1, 'Bench Dip', 'E'),
 (761, 'User1460465770978@intencity.fit', 1, 'Depth Box Jump', 'E'),
-(795, 'nick.piscopio@gmail.com', 1, 'Decline Butterfly', 'E'),
-(796, 'nick.piscopio@gmail.com', 1, 'Push Press', 'E'),
+(798, 'nick.piscopio@gmail.com', 1, 'Decline Butterfly', 'E'),
 (713, 'User1458667494669.244141@intencity.fit', 1, 'Shoulder Press', 'E'),
 (732, 'User1459170303908.062012@intencity.fit', 1, 'Wide Push-Up', 'E'),
 (712, 'User1458667494669.244141@intencity.fit', 1, 'Lying Down Back Extension', 'E'),
@@ -10838,7 +10843,7 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
   `ExerciseName` varchar(50) NOT NULL,
   `Priority` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=378 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=382 ;
 
 --
 -- Dumping data for table `ExercisePriority`
@@ -10846,7 +10851,8 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
 
 INSERT INTO `ExercisePriority` (`ID`, `Email`, `ExerciseName`, `Priority`) VALUES
 (232, 'dev@gmail.com', 'Standing Cable Fly', 30),
-(377, 'nick.piscopio@gmail.com', 'Incline Front Raise', 30);
+(381, 'nick.piscopio@gmail.com', 'Push Press', 40),
+(380, 'nick.piscopio@gmail.com', 'Incline Front Raise', 40);
 
 -- --------------------------------------------------------
 
@@ -12442,7 +12448,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 550, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 555, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -12698,7 +12704,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8196 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8338 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -12764,9 +12770,10 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (1831, 'teddy_zandvliet@hotmail.com', 'Pull Up Bar'),
 (1923, 'cpiscopio@gmail.com', 'Bench'),
 (7940, 'user1459170303908.062012@intencity.fit', 'Barbell'),
-(8195, 'nick.piscopio@gmail.com', 'Treadmill'),
-(8194, 'nick.piscopio@gmail.com', 'Step'),
-(8193, 'nick.piscopio@gmail.com', 'Squat Machine'),
+(8337, 'nick.piscopio@gmail.com', 'Bench'),
+(8336, 'nick.piscopio@gmail.com', 'Barbell'),
+(8334, 'nick.piscopio@gmail.com', 'Step'),
+(8335, 'nick.piscopio@gmail.com', 'Treadmill'),
 (1924, 'cpiscopio@gmail.com', 'Bench Rack'),
 (1925, 'cpiscopio@gmail.com', 'Bike'),
 (1926, 'cpiscopio@gmail.com', 'Cable Pull'),
@@ -12788,16 +12795,16 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (1942, 'cpiscopio@gmail.com', 'Treadmill'),
 (1944, 'julienajbjerg@gmail.com', 'Dumbbells'),
 (8114, 'user1460465770978@intencity.fit', 'Barbell'),
-(8192, 'nick.piscopio@gmail.com', 'Shoulder Press Machine'),
-(8191, 'nick.piscopio@gmail.com', 'Roman Chair'),
-(8190, 'nick.piscopio@gmail.com', 'Pull Up Bar'),
-(8189, 'nick.piscopio@gmail.com', 'Pull Down Machine'),
-(8188, 'nick.piscopio@gmail.com', 'Preacher Curl Machine'),
-(8187, 'nick.piscopio@gmail.com', 'Preacher Curl Bench'),
-(8186, 'nick.piscopio@gmail.com', 'Leg Press Machine'),
-(8185, 'nick.piscopio@gmail.com', 'Leg Extension Machine'),
-(8184, 'nick.piscopio@gmail.com', 'Leg Curl Machine'),
-(8183, 'nick.piscopio@gmail.com', 'Exercise Box'),
+(8333, 'nick.piscopio@gmail.com', 'Squat Machine'),
+(8332, 'nick.piscopio@gmail.com', 'Shoulder Press Machine'),
+(8331, 'nick.piscopio@gmail.com', 'Roman Chair'),
+(8330, 'nick.piscopio@gmail.com', 'Pull Up Bar'),
+(8329, 'nick.piscopio@gmail.com', 'Pull Down Machine'),
+(8328, 'nick.piscopio@gmail.com', 'Preacher Curl Machine'),
+(8327, 'nick.piscopio@gmail.com', 'Preacher Curl Bench'),
+(8326, 'nick.piscopio@gmail.com', 'Leg Press Machine'),
+(8325, 'nick.piscopio@gmail.com', 'Leg Extension Machine'),
+(8324, 'nick.piscopio@gmail.com', 'Leg Curl Machine'),
 (4303, 'user1454516505349@intencityapp.com', 'Cable Pull'),
 (4302, 'user1454516505349@intencityapp.com', 'Bike'),
 (1969, 'shatwon123.sa@gmail.com', 'Barbell'),
@@ -12933,7 +12940,7 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (2411, 'halendang@gmail.com', 'Leg Press Machine'),
 (2412, 'halendang@gmail.com', 'Preacher Curl Bench'),
 (2413, 'halendang@gmail.com', 'Preacher Curl Machine'),
-(8182, 'nick.piscopio@gmail.com', 'Dumbbells'),
+(8323, 'nick.piscopio@gmail.com', 'Exercise Box'),
 (2234, 'madamo444@gmail.com', 'Elliptical'),
 (2235, 'madamo444@gmail.com', 'Exercise Box'),
 (2236, 'madamo444@gmail.com', 'Leg Curl Machine'),
@@ -13645,9 +13652,9 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (4598, 'test+12345@gmail.com', 'Shoulder Press Machine'),
 (4599, 'test+12345@gmail.com', 'Squat Machine'),
 (4600, 'test+12345@gmail.com', 'Step'),
-(4601, 'test+12345@gmail.com', 'Treadmill'),
-(4602, 'user1456160486690.937012@intencity.fit', 'Barbell');
+(4601, 'test+12345@gmail.com', 'Treadmill');
 INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
+(4602, 'user1456160486690.937012@intencity.fit', 'Barbell'),
 (4603, 'user1456160486690.937012@intencity.fit', 'Bench'),
 (4604, 'user1456160486690.937012@intencity.fit', 'Bench Rack'),
 (4605, 'user1456160486690.937012@intencity.fit', 'Bike'),
@@ -14431,9 +14438,9 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (5578, 'user1457110011252.958984@intencity.fit', 'Leg Curl Machine'),
 (5579, 'user1457110011252.958984@intencity.fit', 'Leg Extension Machine'),
 (5580, 'user1457110011252.958984@intencity.fit', 'Leg Press Machine'),
-(5581, 'user1457110011252.958984@intencity.fit', 'Preacher Curl Bench'),
-(5582, 'user1457110011252.958984@intencity.fit', 'Preacher Curl Machine');
+(5581, 'user1457110011252.958984@intencity.fit', 'Preacher Curl Bench');
 INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
+(5582, 'user1457110011252.958984@intencity.fit', 'Preacher Curl Machine'),
 (5583, 'user1457110011252.958984@intencity.fit', 'Pull Down Machine'),
 (5584, 'user1457110011252.958984@intencity.fit', 'Pull Up Bar'),
 (5585, 'user1457110011252.958984@intencity.fit', 'Roman Chair'),
@@ -15242,9 +15249,9 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (6511, 'user1457531896719.839111@intencity.fit', 'Exercise Box'),
 (6512, 'user1457531896719.839111@intencity.fit', 'Leg Curl Machine'),
 (6513, 'user1457531896719.839111@intencity.fit', 'Leg Extension Machine'),
-(6514, 'user1457531896719.839111@intencity.fit', 'Leg Press Machine'),
-(6515, 'user1457531896719.839111@intencity.fit', 'Preacher Curl Bench');
+(6514, 'user1457531896719.839111@intencity.fit', 'Leg Press Machine');
 INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
+(6515, 'user1457531896719.839111@intencity.fit', 'Preacher Curl Bench'),
 (6516, 'user1457531896719.839111@intencity.fit', 'Preacher Curl Machine'),
 (6517, 'user1457531896719.839111@intencity.fit', 'Pull Down Machine'),
 (6518, 'user1457531896719.839111@intencity.fit', 'Pull Up Bar'),
@@ -16079,9 +16086,9 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (7708, 'user1458565865632.422852@intencity.fit', 'Leg Curl Machine'),
 (7709, 'user1458565865632.422852@intencity.fit', 'Leg Extension Machine'),
 (7710, 'user1458565865632.422852@intencity.fit', 'Leg Press Machine'),
-(7711, 'user1458565865632.422852@intencity.fit', 'Preacher Curl Bench'),
-(7712, 'user1458565865632.422852@intencity.fit', 'Preacher Curl Machine');
+(7711, 'user1458565865632.422852@intencity.fit', 'Preacher Curl Bench');
 INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
+(7712, 'user1458565865632.422852@intencity.fit', 'Preacher Curl Machine'),
 (7713, 'user1458565865632.422852@intencity.fit', 'Pull Down Machine'),
 (7714, 'user1458565865632.422852@intencity.fit', 'Pull Up Bar'),
 (7715, 'user1458565865632.422852@intencity.fit', 'Roman Chair'),
@@ -16188,8 +16195,9 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (7943, 'user1459170303908.062012@intencity.fit', 'Bike'),
 (7942, 'user1459170303908.062012@intencity.fit', 'Bench Rack'),
 (7941, 'user1459170303908.062012@intencity.fit', 'Bench'),
-(8181, 'nick.piscopio@gmail.com', 'Chair'),
-(8180, 'nick.piscopio@gmail.com', 'Cable Row Machine'),
+(8322, 'nick.piscopio@gmail.com', 'Dumbbells'),
+(8321, 'nick.piscopio@gmail.com', 'Chair'),
+(8320, 'nick.piscopio@gmail.com', 'Cable Row Machine'),
 (7955, 'user1459170303908.062012@intencity.fit', 'Pull Down Machine'),
 (7956, 'user1459170303908.062012@intencity.fit', 'Pull Up Bar'),
 (7957, 'user1459170303908.062012@intencity.fit', 'Roman Chair'),
@@ -16262,9 +16270,9 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (8133, 'user1460465770978@intencity.fit', 'Squat Machine'),
 (8134, 'user1460465770978@intencity.fit', 'Step'),
 (8135, 'user1460465770978@intencity.fit', 'Treadmill'),
-(8178, 'nick.piscopio@gmail.com', 'Bike'),
-(8179, 'nick.piscopio@gmail.com', 'Cable Pull'),
-(8177, 'nick.piscopio@gmail.com', 'Bench Rack');
+(8319, 'nick.piscopio@gmail.com', 'Cable Pull'),
+(8317, 'nick.piscopio@gmail.com', 'Bench Rack'),
+(8318, 'nick.piscopio@gmail.com', 'Bike');
 
 -- --------------------------------------------------------
 
@@ -16309,27 +16317,7 @@ CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
   `RoutineNumber` int(11) NOT NULL,
   `DisplayName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=104 ;
-
---
--- Dumping data for table `UserMuscleGroupRoutine`
---
-
-INSERT INTO `UserMuscleGroupRoutine` (`ID`, `Email`, `MuscleGroupName`, `RoutineNumber`, `DisplayName`) VALUES
-(103, 'nick.piscopio@gmail.com', 'Triceps', 2, 'Upper Back & Triceps'),
-(102, 'nick.piscopio@gmail.com', 'Upper Outer Back', 2, 'Upper Back & Triceps'),
-(101, 'nick.piscopio@gmail.com', 'Upper Inner Back', 2, 'Upper Back & Triceps'),
-(100, 'nick.piscopio@gmail.com', 'Shoulders', 1, 'Legs & Shoulders'),
-(99, 'nick.piscopio@gmail.com', 'Neck', 1, 'Legs & Shoulders'),
-(98, 'nick.piscopio@gmail.com', 'Traps', 1, 'Legs & Shoulders'),
-(97, 'nick.piscopio@gmail.com', 'Glutes', 1, 'Legs & Shoulders'),
-(96, 'nick.piscopio@gmail.com', 'Quads', 1, 'Legs & Shoulders'),
-(95, 'nick.piscopio@gmail.com', 'Hamstrings', 1, 'Legs & Shoulders'),
-(94, 'nick.piscopio@gmail.com', 'Shins', 1, 'Legs & Shoulders'),
-(93, 'nick.piscopio@gmail.com', 'Calves', 1, 'Legs & Shoulders'),
-(92, 'nick.piscopio@gmail.com', 'Obliques', 0, 'Abs & Cardio'),
-(91, 'nick.piscopio@gmail.com', 'Abs', 0, 'Abs & Cardio'),
-(90, 'nick.piscopio@gmail.com', 'Cardio', 0, 'Abs & Cardio');
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=145 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
