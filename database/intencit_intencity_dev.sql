@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 18, 2016 at 12:03 PM
+-- Generation Time: Apr 18, 2016 at 01:21 PM
 -- Server version: 5.5.48-cll
 -- PHP Version: 5.4.31
 
@@ -12358,7 +12358,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 560, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 565, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -16225,9 +16225,17 @@ CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
   `Email` varchar(75) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
-  `DisplayName` varchar(25) NOT NULL,
+  `DisplayName` varchar(100) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=145 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=203 ;
+
+--
+-- Dumping data for table `UserMuscleGroupRoutine`
+--
+
+INSERT INTO `UserMuscleGroupRoutine` (`ID`, `Email`, `MuscleGroupName`, `RoutineNumber`, `DisplayName`) VALUES
+(192, 'nick.piscopio@gmail.com', 'Abs', 1, 'Abs'),
+(193, 'nick.piscopio@gmail.com', 'Obliques', 1, 'Abs');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

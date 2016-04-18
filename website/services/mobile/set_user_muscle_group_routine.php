@@ -28,6 +28,7 @@
 	$varLength = count($variables);
 
 	$insert = "";
+	$routineName = "";
 
 	$routineNumber = mysqli_query($conn, "SELECT " . COLUMN_ROUTINE_NUMBER . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " ORDER BY " . COLUMN_ROUTINE_NUMBER . " DESC LIMIT 1;");
 	if ($row = mysqli_fetch_assoc($routineNumber))
@@ -40,7 +41,21 @@
 		$routineNumber = 0;
 	}
 
-	$select = "SELECT " . COLUMN_MUSCLE_GROUP_NAME . " FROM " . TABLE_CUSTOM_ROUTINE_MUSCLE_GROUP . " WHERE " . COLUMN_DISPLAY_NAME . " = '" . $variables[0] . "'" . ($varLength > 1 ? " OR " . COLUMN_DISPLAY_NAME . " = '" . $variables[1] . "'" : "");
+	for ($z = 0; $z < $varLength; $z++)
+	{
+		if ($z == 0)
+		{
+			$routineName .= $variables[$z];
+
+			$select = "SELECT " . COLUMN_MUSCLE_GROUP_NAME . " FROM " . TABLE_CUSTOM_ROUTINE_MUSCLE_GROUP . " WHERE ";
+		}
+		else
+		{
+			$routineName .= ($varLength > 2 ? "," : "") . ($z == $varLength - 1 ? " & " : " ") . $variables[$z];	
+		}
+
+		$select .= ($z > 0 ? " OR " : "") . COLUMN_DISPLAY_NAME . " = '" . $variables[$z] . "'";
+	}
 
 	$muscleGroupNameQuery = mysqli_query($conn, $select);
 
@@ -55,7 +70,7 @@
 	{
 		$muscleGroup = $muscleGroupNames[$i];
 
-	    $insert .= "INSERT INTO " . TABLE_USER_MUSCLE_GROUP_ROUTINE . "(" . COLUMN_EMAIL . "," . COLUMN_MUSCLE_GROUP_NAME . "," . COLUMN_ROUTINE_NUMBER . "," . COLUMN_DISPLAY_NAME . ") VALUES (" . $e . ",'" . $muscleGroup . "'," . $routineNumber . "," . ($varLength > 1 ? "'" . $variables[0] . " & " . $variables[1]. "'" : "'" . $variables[0] . "'") . "); ";
+	    $insert .= "INSERT INTO " . TABLE_USER_MUSCLE_GROUP_ROUTINE . "(" . COLUMN_EMAIL . "," . COLUMN_MUSCLE_GROUP_NAME . "," . COLUMN_ROUTINE_NUMBER . "," . COLUMN_DISPLAY_NAME . ") VALUES (" . $e . ",'" . $muscleGroup . "'," . $routineNumber . ",'" . $routineName . "'); ";
 	}
 
 	$query = mysqli_multi_query($conn, $insert);

@@ -3,14 +3,14 @@
 	 * This file is to delete muscle group routines from the UserMuscleGroupRoutine table.
 	 *
 	 * Accepts:
-	 * 		delete(0-n)		The equipment to insert to the database. Separate with a ",".
+	 *		email 		The email of the user.
+	 * 		remove		The equipment to insert to the database. Separate with a "|".
 	 *
  	 * Returns:
  	 *		SUCCESS
  	 *		FAILURE
 	 * 
-	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_user_muscle_group_routine.php?email=dev@gmail.com&remove=Abs %26 Biceps, Cardio %26 Chest
-	 * 
+	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_user_muscle_group_routine.php?email=dev@gmail.com&remove=Upper Back, Lower Back, L| Cardio %26 Chest
 	 */
 
 	//Includes the database connection information.
@@ -28,7 +28,7 @@
 
 	if (isset($remove))
 	{
-		$remove = explode(",", $remove);
+		$remove = explode("|", $remove);
 
 		$total = count($remove);
 		
