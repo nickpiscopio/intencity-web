@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 17, 2016 at 10:37 AM
+-- Generation Time: Apr 18, 2016 at 12:03 PM
 -- Server version: 5.5.48-cll
 -- PHP Version: 5.4.31
 
@@ -375,23 +375,6 @@ ELSE
 	SELECT 'WINGING_IT';
 
 END IF;
-
-end$$
-
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisePriority`(IN `email` VARCHAR(75))
-begin
-
-  declare EXCLUSION_LIST_PRIORITY int default -25;
-
-  SELECT * 
-  FROM(SELECT ExercisePriority.ExerciseName as ExerciseName, ExercisePriority.Priority as Priority
-       FROM ExercisePriority
-       WHERE ExercisePriority.Email = email
-       UNION ALL
-       SELECT Exclusion.ExclusionName, EXCLUSION_LIST_PRIORITY
-       FROM Exclusion
-       WHERE Exclusion.Email = email) as priority
-  ORDER BY Priority DESC, ExerciseName ASC;
 
 end$$
 
@@ -851,79 +834,6 @@ INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGro
     SELECT email, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName
     FROM MuscleGroupRoutine
     WHERE MuscleGroupRoutine.RoutineNumber = routineNumber$$
-
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setExercisePriority`(IN `email` VARCHAR(75), IN `exerciseName` VARCHAR(50), IN `incrementing` CHAR(1))
-begin
-
-    declare IS_TRUE char(1) default "1";
-    declare IS_FALSE char(1) default "0";
-
-    declare PRIORITY_LIMIT_UPPER int default 50;
-    declare PRIORITY_LIMIT_LOWER int default 0;
-    declare INCREMENTAL_VALUE int default 25;
-
-    declare excludedExercise varchar(50);
-
-    declare priority int default 0;
-    declare tempPriority int default 0;
-
-    set tempPriority = (SELECT ExercisePriority.Priority
-                        FROM ExercisePriority
-                        WHERE ExercisePriority.Email = email && ExercisePriority.ExerciseName = exerciseName);
-
-    IF (tempPriority IS NOT NULL) THEN
-    
-        set priority = tempPriority;
-
-    END IF;
-
-    IF (priority < PRIORITY_LIMIT_UPPER && incrementing = IS_TRUE) THEN
-
-        set excludedExercise = (SELECT Exclusion.ExclusionName
-                                FROM Exclusion 
-                                WHERE Exclusion.Email = email && Exclusion.ExclusionName = exerciseName);
-
-        IF (excludedExercise IS NULL) THEN
-
-            set priority = priority + INCREMENTAL_VALUE;
-
-        ELSE
-
-            DELETE FROM Exclusion 
-            WHERE Exclusion.Email = email && Exclusion.ExclusionName = excludedExercise;
-
-        END IF;
-  
-    ELSEIF (priority >= PRIORITY_LIMIT_LOWER && incrementing = IS_FALSE) THEN
-
-        set priority = priority - INCREMENTAL_VALUE;
-
-    END IF;
-
-    /* We delete from ExercisePriority because we want to set a new value or we want to add to the exclusion list. */
-    DELETE FROM ExercisePriority 
-    WHERE ExercisePriority.Email = email && ExercisePriority.ExerciseName = exerciseName;
-
-    IF (priority < PRIORITY_LIMIT_LOWER) THEN
-
-        set excludedExercise = (SELECT Exclusion.ExclusionName
-                                FROM Exclusion 
-                                WHERE Exclusion.Email = email && Exclusion.ExclusionName = exerciseName);
-
-        IF (excludedExercise IS NULL) THEN
-
-            INSERT INTO Exclusion (Email, ExcludeForever, ExclusionName, ExclusionType)
-            VALUES (email, 1, exerciseName, 'E');
-
-        END IF;
-
-    ELSEIF (priority > PRIORITY_LIMIT_LOWER) THEN
-
-        INSERT INTO ExercisePriority (Email, ExerciseName, Priority) VALUES (email, exerciseName, priority);
-
-    END IF;
-
-end$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority`(IN `email` VARCHAR(75), IN `exerciseName` VARCHAR(50), IN `incrementing` CHAR(1))
 begin
@@ -12448,7 +12358,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 555, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 560, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
