@@ -38,7 +38,10 @@
 	}
 	else
 	{
-		$routineNumber = 0;
+		// We start at 7 because 7 would be the next number in the list 
+		// if we continued from the default list of routines from the 
+		// MuscleGroupRoutine table.
+		$routineNumber = 7;
 	}
 
 	for ($z = 0; $z < $varLength; $z++)

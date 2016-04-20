@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 18, 2016 at 01:21 PM
+-- Generation Time: Apr 20, 2016 at 10:59 AM
 -- Server version: 5.5.48-cll
 -- PHP Version: 5.4.31
 
@@ -87,9 +87,9 @@ IF (routineNumber = (SELECT MuscleGroupRoutine.RoutineNumber
                     FROM MuscleGroupRoutine
                     ORDER BY MuscleGroupRoutine.RoutineNumber DESC
                     LIMIT 1)) THEN
-	SET routineNumber = 1;
+    SET routineNumber = 1;
 ELSE
-	SET routineNumber = routineNumber + 1;
+    SET routineNumber = routineNumber + 1;
 END IF;
 
 SET currentMuscleGroup = (SELECT MuscleGroupRoutine.DisplayName
@@ -97,10 +97,16 @@ SET currentMuscleGroup = (SELECT MuscleGroupRoutine.DisplayName
                           WHERE MuscleGroupRoutine.RoutineNumber = routineNumber
                           GROUP BY MuscleGroupRoutine.DisplayName);
 
-SELECT DisplayName, currentMuscleGroup
-FROM MuscleGroupRoutine
-GROUP BY DisplayName
-ORDER BY MuscleGroupRoutine.RoutineNumber;
+SELECT * 
+  FROM(SELECT MuscleGroupRoutine.DisplayName, MuscleGroupRoutine.RoutineNumber AS routineNum, currentMuscleGroup
+       FROM MuscleGroupRoutine
+       GROUP BY MuscleGroupRoutine.DisplayName
+       UNION ALL
+       SELECT UserMuscleGroupRoutine.DisplayName, UserMuscleGroupRoutine.RoutineNumber, currentMuscleGroup
+       FROM UserMuscleGroupRoutine
+       WHERE UserMuscleGroupRoutine.Email = email
+       GROUP BY UserMuscleGroupRoutine.DisplayName) as muscleGroup
+  ORDER BY routineNum;
 
 end$$
 
@@ -830,10 +836,27 @@ WHERE CONCAT(User.FirstName, User.LastName) LIKE CONCAT('%', name, '%') AND
 		User.AccountType != 'D'$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setCurrentMuscleGroup`(IN `email` VARCHAR(75), IN `routineNumber` INT)
-INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName)
-    SELECT email, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName
-    FROM MuscleGroupRoutine
-    WHERE MuscleGroupRoutine.RoutineNumber = routineNumber$$
+begin 
+
+    /*  This is the max threshold that Intencity has for its routine numbers.
+        Anything greater than this is a custom rotine created by the user. */
+    declare DEFAULT_INTENCITY_ROUTINE_THRESHOLD int default 6;
+
+    IF (routineNumber > DEFAULT_INTENCITY_ROUTINE_THRESHOLD) THEN
+        /* Pull from the custom routines */
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName)
+            SELECT email, UNIX_TIMESTAMP() * 1000 , UserMuscleGroupRoutine.MuscleGroupName
+            FROM UserMuscleGroupRoutine
+            WHERE UserMuscleGroupRoutine.RoutineNumber = routineNumber;
+    ELSE
+        /* Pull from Intencity's routines */
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName)
+            SELECT email, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName
+            FROM MuscleGroupRoutine
+            WHERE MuscleGroupRoutine.RoutineNumber = routineNumber;
+    END IF;
+
+end$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority`(IN `email` VARCHAR(75), IN `exerciseName` VARCHAR(50), IN `incrementing` CHAR(1))
 begin
@@ -923,7 +946,7 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=700 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=707 ;
 
 --
 -- Dumping data for table `Badge`
@@ -942,6 +965,13 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (67, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
 (70, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
 (74, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(706, 'nick.piscopio@gmail.com', 1461071215586, 'Finisher'),
+(705, 'nick.piscopio@gmail.com', 1461071215572, 'Kept Swimming'),
+(704, 'nick.piscopio@gmail.com', 1461071194567, 'Finisher'),
+(703, 'nick.piscopio@gmail.com', 1461071194554, 'Kept Swimming'),
+(702, 'nick.piscopio@gmail.com', 1461071089450, 'Finisher'),
+(701, 'nick.piscopio@gmail.com', 1461005960616, 'Kept Swimming'),
+(700, 'nick.piscopio@gmail.com', 1461005960629, 'Finisher'),
 (699, 'User1460731426135.704102@intencity.fit', 1460736081188, 'Kept Swimming'),
 (693, 'dev@gmail.com', 1460504593006, 'Finisher'),
 (698, 'User1460731426135.704102@intencity.fit', 1460736081195, 'Finisher'),
@@ -1138,7 +1168,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5941 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5944 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -3230,7 +3260,10 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5937, 'nick.piscopio@gmail.com', '2016-04-13', '08:27:54', 'Wide Push-Up', '1.0', 10, NULL, 9, ''),
 (5938, 'nick.piscopio@gmail.com', '2016-04-13', '08:27:54', 'Wide Push-Up', '3.0', 10, NULL, 9, ''),
 (5939, 'nick.piscopio@gmail.com', '2016-04-13', '08:32:14', 'Back Fly', '25.0', NULL, '00:00:05', 7, NULL),
-(5940, 'nick.piscopio@gmail.com', '2016-04-13', '08:32:14', 'Back Fly', '26.0', NULL, '00:00:06', 7, NULL);
+(5940, 'nick.piscopio@gmail.com', '2016-04-13', '08:32:14', 'Back Fly', '26.0', NULL, '00:00:06', 7, NULL),
+(5943, 'User1461081866060.433838@intencity.fit', '2016-04-19', '12:05:27', 'Leg', '0.1', 45, NULL, 10, ''),
+(5942, 'nick.piscopio@gmail.com', '2016-04-19', '11:25:25', 'Hy', '0.1', 2, NULL, 9, ''),
+(5941, 'nick.piscopio@gmail.com', '2016-04-19', '11:23:15', 'Ni', NULL, 10, NULL, 10, 'null');
 
 -- --------------------------------------------------------
 
@@ -3245,7 +3278,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10279 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10374 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -9607,7 +9640,102 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (10275, 'User1460731426135.704102@intencity.fit', 1460735353000, 'Lower Back'),
 (10276, 'User1460731426135.704102@intencity.fit', 1460735913000, 'Triceps'),
 (10277, 'User1460731426135.704102@intencity.fit', 1460735913000, 'Chest'),
-(10278, 'User1460731426135.704102@intencity.fit', 1460736075000, 'Cardio');
+(10278, 'User1460731426135.704102@intencity.fit', 1460736075000, 'Cardio'),
+(10279, 'nick.piscopio@gmail.com', 1461005965000, 'Upper Outer Back'),
+(10280, 'nick.piscopio@gmail.com', 1461005965000, 'Upper Inner Back'),
+(10281, 'nick.piscopio@gmail.com', 1461005965000, 'Biceps'),
+(10282, 'nick.piscopio@gmail.com', 1461005965000, 'Forearms'),
+(10283, 'nick.piscopio@gmail.com', 1461070983000, 'Biceps'),
+(10284, 'nick.piscopio@gmail.com', 1461070983000, 'Forearms'),
+(10285, 'nick.piscopio@gmail.com', 1461070983000, 'Cardio'),
+(10286, 'nick.piscopio@gmail.com', 1461070983000, 'Chest'),
+(10287, 'nick.piscopio@gmail.com', 1461071171000, 'Traps'),
+(10288, 'nick.piscopio@gmail.com', 1461071171000, 'Neck'),
+(10289, 'nick.piscopio@gmail.com', 1461071171000, 'Shoulders'),
+(10290, 'nick.piscopio@gmail.com', 1461072613000, 'Abs'),
+(10291, 'nick.piscopio@gmail.com', 1461072613000, 'Obliques'),
+(10292, 'nick.piscopio@gmail.com', 1461073876000, 'Traps'),
+(10293, 'nick.piscopio@gmail.com', 1461073876000, 'Neck'),
+(10294, 'nick.piscopio@gmail.com', 1461073876000, 'Shoulders'),
+(10295, 'nick.piscopio@gmail.com', 1461073952000, 'Abs'),
+(10296, 'nick.piscopio@gmail.com', 1461073952000, 'Obliques'),
+(10297, 'nick.piscopio@gmail.com', 1461074546000, 'Traps'),
+(10298, 'nick.piscopio@gmail.com', 1461074546000, 'Neck'),
+(10299, 'nick.piscopio@gmail.com', 1461074546000, 'Shoulders'),
+(10300, 'nick.piscopio@gmail.com', 1461074753000, 'Abs'),
+(10301, 'nick.piscopio@gmail.com', 1461074753000, 'Obliques'),
+(10302, 'nick.piscopio@gmail.com', 1461074804000, 'Traps'),
+(10303, 'nick.piscopio@gmail.com', 1461074804000, 'Neck'),
+(10304, 'nick.piscopio@gmail.com', 1461074804000, 'Shoulders'),
+(10305, 'nick.piscopio@gmail.com', 1461074848000, 'Abs'),
+(10306, 'nick.piscopio@gmail.com', 1461074848000, 'Obliques'),
+(10307, 'nick.piscopio@gmail.com', 1461074971000, 'Traps'),
+(10308, 'nick.piscopio@gmail.com', 1461074971000, 'Neck'),
+(10309, 'nick.piscopio@gmail.com', 1461074971000, 'Shoulders'),
+(10310, 'nick.piscopio@gmail.com', 1461075724000, 'Abs'),
+(10311, 'nick.piscopio@gmail.com', 1461075724000, 'Obliques'),
+(10312, 'nick.piscopio@gmail.com', 1461075756000, 'Traps'),
+(10313, 'nick.piscopio@gmail.com', 1461075756000, 'Neck'),
+(10314, 'nick.piscopio@gmail.com', 1461075756000, 'Shoulders'),
+(10315, 'nick.piscopio@gmail.com', 1461075821000, 'Abs'),
+(10316, 'nick.piscopio@gmail.com', 1461075821000, 'Obliques'),
+(10317, 'nick.piscopio@gmail.com', 1461076217000, 'Traps'),
+(10318, 'nick.piscopio@gmail.com', 1461076217000, 'Neck'),
+(10319, 'nick.piscopio@gmail.com', 1461076217000, 'Shoulders'),
+(10320, 'nick.piscopio@gmail.com', 1461077331000, 'Abs'),
+(10321, 'nick.piscopio@gmail.com', 1461077331000, 'Obliques'),
+(10322, 'nick.piscopio@gmail.com', 1461077479000, 'Traps'),
+(10323, 'nick.piscopio@gmail.com', 1461077479000, 'Neck'),
+(10324, 'nick.piscopio@gmail.com', 1461077479000, 'Shoulders'),
+(10325, 'nick.piscopio@gmail.com', 1461077703000, 'Cardio'),
+(10326, 'nick.piscopio@gmail.com', 1461077727000, 'Calves'),
+(10327, 'nick.piscopio@gmail.com', 1461077727000, 'Shins'),
+(10328, 'nick.piscopio@gmail.com', 1461077727000, 'Hamstrings'),
+(10329, 'nick.piscopio@gmail.com', 1461077727000, 'Quads'),
+(10330, 'nick.piscopio@gmail.com', 1461077727000, 'Glutes'),
+(10331, 'nick.piscopio@gmail.com', 1461077727000, 'Lower Back'),
+(10332, 'nick.piscopio@gmail.com', 1461078492000, 'Upper Outer Back'),
+(10333, 'nick.piscopio@gmail.com', 1461078492000, 'Upper Inner Back'),
+(10334, 'nick.piscopio@gmail.com', 1461078492000, 'Biceps'),
+(10335, 'nick.piscopio@gmail.com', 1461078492000, 'Forearms'),
+(10336, 'nick.piscopio@gmail.com', 1461078635000, 'Triceps'),
+(10337, 'nick.piscopio@gmail.com', 1461078635000, 'Chest'),
+(10338, 'nick.piscopio@gmail.com', 1461078968000, 'Cardio'),
+(10339, 'nick.piscopio@gmail.com', 1461079037000, 'Upper Outer Back'),
+(10340, 'nick.piscopio@gmail.com', 1461079037000, 'Upper Inner Back'),
+(10341, 'nick.piscopio@gmail.com', 1461079037000, 'Biceps'),
+(10342, 'nick.piscopio@gmail.com', 1461079037000, 'Forearms'),
+(10343, 'nick.piscopio@gmail.com', 1461079152000, 'Abs'),
+(10344, 'nick.piscopio@gmail.com', 1461079152000, 'Obliques'),
+(10345, 'nick.piscopio@gmail.com', 1461079281000, 'Traps'),
+(10346, 'nick.piscopio@gmail.com', 1461079281000, 'Neck'),
+(10347, 'nick.piscopio@gmail.com', 1461079281000, 'Shoulders'),
+(10348, 'nick.piscopio@gmail.com', 1461079506000, 'Calves'),
+(10349, 'nick.piscopio@gmail.com', 1461079506000, 'Shins'),
+(10350, 'nick.piscopio@gmail.com', 1461079506000, 'Hamstrings'),
+(10351, 'nick.piscopio@gmail.com', 1461079506000, 'Quads'),
+(10352, 'nick.piscopio@gmail.com', 1461079506000, 'Glutes'),
+(10353, 'nick.piscopio@gmail.com', 1461079506000, 'Lower Back'),
+(10354, 'User1461081866060.433838@intencity.fit', 1461081910000, 'Calves'),
+(10355, 'User1461081866060.433838@intencity.fit', 1461081910000, 'Shins'),
+(10356, 'User1461081866060.433838@intencity.fit', 1461081910000, 'Hamstrings'),
+(10357, 'User1461081866060.433838@intencity.fit', 1461081910000, 'Quads'),
+(10358, 'User1461081866060.433838@intencity.fit', 1461081910000, 'Glutes'),
+(10359, 'User1461081866060.433838@intencity.fit', 1461081910000, 'Lower Back'),
+(10360, 'User1461081866060.433838@intencity.fit', 1461162222000, 'Calves'),
+(10361, 'User1461081866060.433838@intencity.fit', 1461162222000, 'Shins'),
+(10362, 'User1461081866060.433838@intencity.fit', 1461162222000, 'Hamstrings'),
+(10363, 'User1461081866060.433838@intencity.fit', 1461162222000, 'Quads'),
+(10364, 'User1461081866060.433838@intencity.fit', 1461162222000, 'Glutes'),
+(10365, 'User1461081866060.433838@intencity.fit', 1461162222000, 'Lower Back'),
+(10366, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Calves'),
+(10367, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Shins'),
+(10368, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Hamstrings'),
+(10369, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Quads'),
+(10370, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Glutes'),
+(10371, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Lower Back'),
+(10372, 'User1461081866060.433838@intencity.fit', 1461163323000, 'Triceps'),
+(10373, 'User1461081866060.433838@intencity.fit', 1461163323000, 'Chest');
 
 -- --------------------------------------------------------
 
@@ -10753,13 +10881,14 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
   `ExerciseName` varchar(50) NOT NULL,
   `Priority` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=382 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=383 ;
 
 --
 -- Dumping data for table `ExercisePriority`
 --
 
 INSERT INTO `ExercisePriority` (`ID`, `Email`, `ExerciseName`, `Priority`) VALUES
+(382, 'nick.piscopio@gmail.com', 'Muscle Up', 10),
 (232, 'dev@gmail.com', 'Standing Cable Fly', 30),
 (381, 'nick.piscopio@gmail.com', 'Push Press', 40),
 (380, 'nick.piscopio@gmail.com', 'Incline Front Raise', 40);
@@ -11864,7 +11993,7 @@ CREATE TABLE IF NOT EXISTS `Routine` (
   `ExerciseName` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3231 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3257 ;
 
 --
 -- Dumping data for table `Routine`
@@ -11876,7 +12005,7 @@ INSERT INTO `Routine` (`ID`, `Email`, `RoutineName`, `ExerciseDay`, `ExerciseNam
 (835, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 2, 'Push-Up'),
 (834, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 1, 'Wide Push-Up'),
 (833, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 1, 'Push-Up'),
-(3131, 'nick.piscopio@gmail.com', 'Cardio', 7, 'Bike Ride'),
+(3254, 'User1461081866060.433838@intencity.fit', 'ghy', 10, 'Calf Raise'),
 (838, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 3, 'Wide Push-Up'),
 (839, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 4, 'Push-Up'),
 (840, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 4, 'Wide Push-Up'),
@@ -11886,8 +12015,13 @@ INSERT INTO `Routine` (`ID`, `Email`, `RoutineName`, `ExerciseDay`, `ExerciseNam
 (844, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 6, 'Wide Push-Up'),
 (845, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 7, 'Push-Up'),
 (846, 'hazmathazard83@gmail.com', 'Routine 2/24/2014', 7, 'Wide Push-Up'),
-(1545, 'nick.piscopio@gmail.com', 'My Saved Routine', 4, 'Dead Lift'),
-(1546, 'nick.piscopio@gmail.com', 'My Saved Routine', 4, 'Leg Extension'),
+(3249, 'User1461081866060.433838@intencity.fit', 'helpinserts=WARM-UP,Lunge', 7, ''),
+(3250, 'User1461081866060.433838@intencity.fit', 'chest,Calf Raise,Lying Down Ba', 8, ''),
+(3251, 'User1461081866060.433838@intencity.fit', 'hhh', 9, 'Calf Raise'),
+(3252, 'User1461081866060.433838@intencity.fit', 'hhh', 9, 'Lying Down Back Extension'),
+(3253, 'User1461081866060.433838@intencity.fit', 'hhh', 9, 'Leg'),
+(3256, 'User1461081866060.433838@intencity.fit', 'ghy', 10, 'Leg'),
+(3255, 'User1461081866060.433838@intencity.fit', 'ghy', 10, 'Lying Down Back Extension'),
 (1474, 'test@test.gov', 'Routine 3/23/2014', 7, 'Box Jump'),
 (1473, 'test@test.gov', 'Routine 3/23/2014', 7, 'Leg Curl'),
 (1472, 'test@test.gov', 'Routine 3/23/2014', 7, 'Lying Hip Extension'),
@@ -11974,8 +12108,7 @@ INSERT INTO `Routine` (`ID`, `Email`, `RoutineName`, `ExerciseDay`, `ExerciseNam
 (1478, 'test@test.gov', 'Routine 3/23/2014', 7, 'Cable Seated Hip Internal Rotation'),
 (1477, 'test@test.gov', 'Routine 3/23/2014', 7, 'Dead Lift'),
 (1476, 'test@test.gov', 'Routine 3/23/2014', 7, 'Lunge'),
-(1475, 'test@test.gov', 'Routine 3/23/2014', 7, 'Weighted Step-up'),
-(3132, 'nick.piscopio@gmail.com', 'Cardio', 7, 'Run');
+(1475, 'test@test.gov', 'Routine 3/23/2014', 7, 'Weighted Step-up');
 
 -- --------------------------------------------------------
 
@@ -11992,7 +12125,7 @@ CREATE TABLE IF NOT EXISTS `Settings` (
   `ShowSocialNotifications` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=620 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=621 ;
 
 --
 -- Dumping data for table `Settings`
@@ -12263,7 +12396,8 @@ INSERT INTO `Settings` (`ID`, `Email`, `FitnessType`, `CurrentFitnessMean`, `Cur
 (616, 'user1459170303908.062012@intencity.fit', NULL, NULL, NULL, 1),
 (617, 'user1459172680229.947998@intencity.fit', NULL, NULL, NULL, 1),
 (618, 'user1459529721171.031006@intencity.fit', NULL, NULL, NULL, 1),
-(619, 'user1460465770978@intencity.fit', NULL, NULL, NULL, 1);
+(619, 'user1460465770978@intencity.fit', NULL, NULL, NULL, 1),
+(620, 'user1461081866060.433838@intencity.fit', NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -12343,7 +12477,7 @@ CREATE TABLE IF NOT EXISTS `User` (
   `EarnedPoints` int(11) NOT NULL,
   `CanRecievePrizes` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=515 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=516 ;
 
 --
 -- Dumping data for table `User`
@@ -12358,7 +12492,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 565, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 790, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -12600,7 +12734,8 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (511, 'user1459170303908.062012@intencity.fit', '2016-03-28', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$rD/JtT54USLq12bPYr05nOU.B0UqtJ7.QcDIB26CnUP4aJ5NWj9rq', NULL, 'M', 145, 1),
 (512, 'user1459172680229.947998@intencity.fit', '2016-03-28', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$7lie1GX/tlAnzy1F5z4wmeHzmuuaIZTk2bT4hjw8eC6Sydg.H1oda', NULL, 'M', 105, 1),
 (513, 'user1459529721171.031006@intencity.fit', '2016-04-01', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$Fuj0uTSNHW04Fw.9Yrepredd2yL.svF5aeofvvKaQ/q0pOLw4jkSS', NULL, 'M', 120, 1),
-(514, 'user1460465770978@intencity.fit', '2016-04-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$Z3Yp1i0JdEmKevU90tWeh.DzAJRyOzKkpH9A3GACFpHqbODH4Ejc2', NULL, 'M', 225, 1);
+(514, 'user1460465770978@intencity.fit', '2016-04-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$Z3Yp1i0JdEmKevU90tWeh.DzAJRyOzKkpH9A3GACFpHqbODH4Ejc2', NULL, 'M', 225, 1),
+(515, 'user1461081866060.433838@intencity.fit', '2016-04-19', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$jOGcpn1ni6YVJWKIcY4p3ObiH5K7vbbzeJmO/v42Ceh6guO7/eI46', NULL, 'M', 175, 1);
 
 -- --------------------------------------------------------
 
@@ -12614,7 +12749,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8338 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8360 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -16182,7 +16317,29 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (8135, 'user1460465770978@intencity.fit', 'Treadmill'),
 (8319, 'nick.piscopio@gmail.com', 'Cable Pull'),
 (8317, 'nick.piscopio@gmail.com', 'Bench Rack'),
-(8318, 'nick.piscopio@gmail.com', 'Bike');
+(8318, 'nick.piscopio@gmail.com', 'Bike'),
+(8338, 'user1461081866060.433838@intencity.fit', 'Barbell'),
+(8339, 'user1461081866060.433838@intencity.fit', 'Bench'),
+(8340, 'user1461081866060.433838@intencity.fit', 'Bench Rack'),
+(8341, 'user1461081866060.433838@intencity.fit', 'Bike'),
+(8342, 'user1461081866060.433838@intencity.fit', 'Cable Pull'),
+(8343, 'user1461081866060.433838@intencity.fit', 'Cable Row Machine'),
+(8344, 'user1461081866060.433838@intencity.fit', 'Chair'),
+(8345, 'user1461081866060.433838@intencity.fit', 'Dumbbells'),
+(8346, 'user1461081866060.433838@intencity.fit', 'Elliptical'),
+(8347, 'user1461081866060.433838@intencity.fit', 'Exercise Box'),
+(8348, 'user1461081866060.433838@intencity.fit', 'Leg Curl Machine'),
+(8349, 'user1461081866060.433838@intencity.fit', 'Leg Extension Machine'),
+(8350, 'user1461081866060.433838@intencity.fit', 'Leg Press Machine'),
+(8351, 'user1461081866060.433838@intencity.fit', 'Preacher Curl Bench'),
+(8352, 'user1461081866060.433838@intencity.fit', 'Preacher Curl Machine'),
+(8353, 'user1461081866060.433838@intencity.fit', 'Pull Down Machine'),
+(8354, 'user1461081866060.433838@intencity.fit', 'Pull Up Bar'),
+(8355, 'user1461081866060.433838@intencity.fit', 'Roman Chair'),
+(8356, 'user1461081866060.433838@intencity.fit', 'Shoulder Press Machine'),
+(8357, 'user1461081866060.433838@intencity.fit', 'Squat Machine'),
+(8358, 'user1461081866060.433838@intencity.fit', 'Step'),
+(8359, 'user1461081866060.433838@intencity.fit', 'Treadmill');
 
 -- --------------------------------------------------------
 
@@ -16227,15 +16384,17 @@ CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
   `RoutineNumber` int(11) NOT NULL,
   `DisplayName` varchar(100) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=203 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=230 ;
 
 --
 -- Dumping data for table `UserMuscleGroupRoutine`
 --
 
 INSERT INTO `UserMuscleGroupRoutine` (`ID`, `Email`, `MuscleGroupName`, `RoutineNumber`, `DisplayName`) VALUES
-(192, 'nick.piscopio@gmail.com', 'Abs', 1, 'Abs'),
-(193, 'nick.piscopio@gmail.com', 'Obliques', 1, 'Abs');
+(226, 'nick.piscopio@gmail.com', 'Biceps', 7, 'Biceps, Cardio, & Chest'),
+(227, 'nick.piscopio@gmail.com', 'Forearms', 7, 'Biceps, Cardio, & Chest'),
+(228, 'nick.piscopio@gmail.com', 'Cardio', 7, 'Biceps, Cardio, & Chest'),
+(229, 'nick.piscopio@gmail.com', 'Chest', 7, 'Biceps, Cardio, & Chest');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
