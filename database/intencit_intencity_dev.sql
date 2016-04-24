@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 20, 2016 at 10:59 AM
+-- Generation Time: Apr 24, 2016 at 09:55 AM
 -- Server version: 5.5.48-cll
 -- PHP Version: 5.4.31
 
@@ -403,18 +403,13 @@ LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
 WHERE 
       Exercise.Type = 'E' && 
       Exercise.Recommended = 1 && 
-      (MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
-                                       FROM MuscleGroupRoutine
-                                       WHERE MuscleGroupRoutine.RoutineNumber = (SELECT MuscleGroupRoutine.RoutineNumber
-                                                                                 FROM MuscleGroupRoutine
-                                                                                 INNER JOIN CompletedMuscleGroup
-                                                                                    ON CompletedMuscleGroup.MuscleGroupName = MuscleGroupRoutine.MuscleGroupName
-                                                                                 WHERE CompletedMuscleGroup.Email = email
-                                                                                 ORDER BY CompletedMuscleGroup.ID DESC
-                                                                                 LIMIT 1) && 
-                                            MuscleGroupRoutine.MuscleGroupName NOT IN (SELECT Exclusion.ExclusionName 
-                                                                                       FROM Exclusion
-                                                                                       WHERE Exclusion.Email = email && Exclusion.ExclusionType = 'M')) && 
+      (MuscleGroup.MuscleGroupName IN (SELECT CompletedMuscleGroup.MuscleGroupName
+                                       FROM CompletedMuscleGroup
+                                       WHERE CompletedMuscleGroup.Email = email && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
+                                                                                                                FROM CompletedMuscleGroup
+                                                                                                                WHERE CompletedMuscleGroup.Email = email
+                                                                                                                ORDER BY CompletedMuscleGroup.ID DESC
+                                                                                                                LIMIT 1)) && 
       MuscleGroup.MuscleGroupExercisePercentage >= 50) && 
       (Equipment.EquipmentName IN (SELECT UserEquipment.EquipmentName 
                                     FROM UserEquipment 
@@ -630,10 +625,10 @@ begin
 end$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine`(IN `email` VARCHAR(75))
-SELECT DisplayName
+SELECT UserMuscleGroupRoutine.DisplayName
 FROM UserMuscleGroupRoutine
-WHERE Email = email
-GROUP BY DisplayName$$
+WHERE UserMuscleGroupRoutine.Email = email
+GROUP BY UserMuscleGroupRoutine.DisplayName$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantBadgeToUser`(IN `email` VARCHAR(75), IN `date` BIGINT, IN `badgeName` VARCHAR(30))
 INSERT INTO Badge(Email, EarnedDate, BadgeName)
@@ -847,7 +842,7 @@ begin
         INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName)
             SELECT email, UNIX_TIMESTAMP() * 1000 , UserMuscleGroupRoutine.MuscleGroupName
             FROM UserMuscleGroupRoutine
-            WHERE UserMuscleGroupRoutine.RoutineNumber = routineNumber;
+            WHERE UserMuscleGroupRoutine.Email = email && UserMuscleGroupRoutine.RoutineNumber = routineNumber;
     ELSE
         /* Pull from Intencity's routines */
         INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName)
@@ -946,25 +941,38 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=707 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=729 ;
 
 --
 -- Dumping data for table `Badge`
 --
 
 INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
+(717, 'User1461081866060.433838@intencity.fit', 1461431111573, 'Finisher'),
+(718, 'User1461081866060.433838@intencity.fit', 1461431851181, 'Finisher'),
 (50, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(719, 'User1461081866060.433838@intencity.fit', 1461432073753, 'Finisher'),
+(720, 'User1461503221174.161865@intencity.fit', 1461503345982, 'Finisher'),
 (55, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
 (56, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
 (57, 'cpiscopio@gmail.com', 1453733856440, 'Kept Swimming'),
 (58, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
 (60, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
+(725, 'User1461503221174.161865@intencity.fit', 1461506102915, 'Kept Swimming'),
 (64, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
 (65, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
 (66, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
 (67, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
 (70, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(715, 'User1461081866060.433838@intencity.fit', 1461430743531, 'Finisher'),
+(714, 'User1461081866060.433838@intencity.fit', 1461428828034, 'Finisher'),
 (74, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(712, 'User1461081866060.433838@intencity.fit', 1461358149359, 'Kept Swimming'),
+(711, 'User1461081866060.433838@intencity.fit', 1461251840123, 'Kept Swimming'),
+(710, 'User1461081866060.433838@intencity.fit', 1461251840137, 'Finisher'),
+(709, 'User1461081866060.433838@intencity.fit', 1461251828189, 'Finisher'),
+(707, 'User1461081866060.433838@intencity.fit', 1461170053598, 'Finisher'),
+(708, 'User1461081866060.433838@intencity.fit', 1461251828178, 'Kept Swimming'),
 (706, 'nick.piscopio@gmail.com', 1461071215586, 'Finisher'),
 (705, 'nick.piscopio@gmail.com', 1461071215572, 'Kept Swimming'),
 (704, 'nick.piscopio@gmail.com', 1461071194567, 'Finisher'),
@@ -985,6 +993,9 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (270, 'dev@gmail.com', 1456679554418, 'Kept Swimming'),
 (269, 'dev@gmail.com', 1456679554006, 'Finisher'),
 (197, 'cpiscopio@gmail.com', 1453854672938, 'Left it on the Field'),
+(721, 'User1461503221174.161865@intencity.fit', 1461506068140, 'Finisher'),
+(722, 'User1461503221174.161865@intencity.fit', 1461506068129, 'Kept Swimming'),
+(723, 'User1461503221174.161865@intencity.fit', 1461506085443, 'Finisher'),
 (268, 'dev@gmail.com', 1455235244806, 'Finisher'),
 (267, 'dev@gmail.com', 1455235244804, 'Kept Swimming'),
 (266, 'dev@gmail.com', 1454724123327, 'Finisher'),
@@ -1024,6 +1035,7 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (239, 'cpiscopio@gmail.com', 1454461470767, 'Left it on the Field'),
 (240, 'cpiscopio@gmail.com', 1454461473806, 'Kept Swimming'),
 (241, 'cpiscopio@gmail.com', 1454461473808, 'Finisher'),
+(713, 'User1461081866060.433838@intencity.fit', 1461358149372, 'Finisher'),
 (686, 'User1460465770978@intencity.fit', 1460466303565, 'Finisher'),
 (685, 'User1460465770978@intencity.fit', 1460466040893, 'Finisher'),
 (684, 'User1460465770978@intencity.fit', 1460466040891, 'Kept Swimming'),
@@ -1031,6 +1043,9 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (487, 'User1458245546255.422119@intencity.fit', 1, 'Finisher'),
 (682, 'User1460465770978@intencity.fit', 1460465951765, 'Kept Swimming'),
 (301, 'nick.piscopio@gmail.com', 1, 'Kept Swimming'),
+(726, 'User1461503221174.161865@intencity.fit', 1461506102927, 'Finisher'),
+(727, 'User1461503221174.161865@intencity.fit', 1461506111494, 'Finisher'),
+(728, 'User1461503221174.161865@intencity.fit', 1461506111480, 'Kept Swimming'),
 (382, 'User1457889088715.697021@intencity.fit', 1, 'Left it on the Field'),
 (383, 'User1457889088715.697021@intencity.fit', 1, 'Left it on the Field'),
 (384, 'User1457889088715.697021@intencity.fit', 1, 'Left it on the Field'),
@@ -1061,6 +1076,7 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (409, 'User1457889088715.697021@intencity.fit', 1, 'Kept Swimming'),
 (410, 'User1457889088715.697021@intencity.fit', 1, 'Kept Swimming'),
 (411, 'User1457889088715.697021@intencity.fit', 1, 'Finisher'),
+(724, 'User1461503221174.161865@intencity.fit', 1461506085430, 'Kept Swimming'),
 (415, 'User1457628486938.740967@intencity.fit', 1, 'Kept Swimming'),
 (416, 'User1457628486938.740967@intencity.fit', 1, 'Finisher'),
 (417, 'User1457890998764.174072@intencity.fit', 1, 'Left it on the Field'),
@@ -1117,6 +1133,7 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (470, 'User1458046484069.281006@intencity.fit', 1, 'Finisher'),
 (471, 'User1458046484069.281006@intencity.fit', 1, 'Kept Swimming'),
 (472, 'User1458046484069.281006@intencity.fit', 1, 'Finisher'),
+(716, 'User1461081866060.433838@intencity.fit', 1461431111563, 'Kept Swimming'),
 (475, 'nick.piscopio@gmail.com', 1, 'Finisher'),
 (478, 'nick.piscopio@gmail.com', 1, 'Finisher');
 
@@ -1168,7 +1185,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5944 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5960 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -3169,6 +3186,8 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5844, 'nick.piscopio@gmail.com', '2016-03-14', '14:38:27', 'Back Plank', NULL, NULL, '00:00:30', 6, ''),
 (5845, 'nick.piscopio@gmail.com', '2016-03-14', '14:38:27', 'Back Plank', NULL, NULL, '00:00:30', 6, ''),
 (5846, 'nick.piscopio@gmail.com', '2016-03-14', '14:38:27', 'Back Plank', NULL, NULL, '00:00:30', 7, ''),
+(5947, 'User1461081866060.433838@intencity.fit', '2016-04-20', '11:58:58', 'Leg Curl', '80.0', 5, NULL, 8, ''),
+(5946, 'User1461081866060.433838@intencity.fit', '2016-04-20', '11:58:58', 'Leg Curl', '80.0', 5, NULL, 8, ''),
 (5848, 'User1457987361132.425049@intencity.fit', '2016-03-14', '16:29:44', 'Lying Hip Extension', '1.0', 10, NULL, 9, 'On the ground'),
 (5849, 'User1457987498632.660889@intencity.fit', '2016-03-14', '17:30:32', 'Cable Standing Hip Extension', '1.0', NULL, '00:00:10', 10, NULL),
 (5850, 'User1457987498632.660889@intencity.fit', '2016-03-14', '17:30:50', 'Cable Standing Hip Extension', '100.0', 10, NULL, 10, 'null'),
@@ -3261,9 +3280,23 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5938, 'nick.piscopio@gmail.com', '2016-04-13', '08:27:54', 'Wide Push-Up', '3.0', 10, NULL, 9, ''),
 (5939, 'nick.piscopio@gmail.com', '2016-04-13', '08:32:14', 'Back Fly', '25.0', NULL, '00:00:05', 7, NULL),
 (5940, 'nick.piscopio@gmail.com', '2016-04-13', '08:32:14', 'Back Fly', '26.0', NULL, '00:00:06', 7, NULL),
+(5954, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:18:34', 'Calf Raise', '65.0', 5, NULL, 6, ''),
+(5953, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:18:34', 'Calf Raise', '65.0', 5, NULL, 6, ''),
+(5952, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:06:56', 'Leg Extension', '92.5', 5, NULL, 7, ''),
+(5951, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:06:56', 'Leg Extension', '92.5', 5, NULL, 7, ''),
+(5950, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:06:56', 'Leg Extension', '92.5', 5, NULL, 7, ''),
+(5949, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:06:56', 'Leg Extension', '92.5', 5, NULL, 7, ''),
+(5948, 'User1461081866060.433838@intencity.fit', '2016-04-20', '11:58:58', 'Leg Curl', '80.0', 5, NULL, 8, ''),
+(5945, 'User1461081866060.433838@intencity.fit', '2016-04-20', '11:58:58', 'Leg Curl', '80.0', 5, NULL, 8, ''),
+(5944, 'User1461081866060.433838@intencity.fit', '2016-04-20', '11:58:58', 'Leg Curl', '80.0', 5, NULL, 8, ''),
 (5943, 'User1461081866060.433838@intencity.fit', '2016-04-19', '12:05:27', 'Leg', '0.1', 45, NULL, 10, ''),
 (5942, 'nick.piscopio@gmail.com', '2016-04-19', '11:25:25', 'Hy', '0.1', 2, NULL, 9, ''),
-(5941, 'nick.piscopio@gmail.com', '2016-04-19', '11:23:15', 'Ni', NULL, 10, NULL, 10, 'null');
+(5941, 'nick.piscopio@gmail.com', '2016-04-19', '11:23:15', 'Ni', NULL, 10, NULL, 10, 'null'),
+(5955, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:18:34', 'Calf Raise', '65.0', 5, NULL, 7, ''),
+(5956, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:18:34', 'Calf Raise', '65.0', 5, NULL, 7, ''),
+(5957, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:18:34', 'Calf Raise', '65.0', 5, NULL, 7, ''),
+(5958, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:27:10', 'Cable Seated Hip Internal Rotation', '30.0', 5, NULL, 7, ''),
+(5959, 'User1461081866060.433838@intencity.fit', '2016-04-20', '12:34:11', 'Cable Standing Hip Extension', '40.0', 5, NULL, 6, '');
 
 -- --------------------------------------------------------
 
@@ -3278,7 +3311,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10374 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10610 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -9735,7 +9768,244 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (10370, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Glutes'),
 (10371, 'User1461081866060.433838@intencity.fit', 1461162909000, 'Lower Back'),
 (10372, 'User1461081866060.433838@intencity.fit', 1461163323000, 'Triceps'),
-(10373, 'User1461081866060.433838@intencity.fit', 1461163323000, 'Chest');
+(10373, 'User1461081866060.433838@intencity.fit', 1461163323000, 'Chest'),
+(10374, 'User1461081866060.433838@intencity.fit', 1461166882000, 'Calves'),
+(10375, 'User1461081866060.433838@intencity.fit', 1461166882000, 'Shins'),
+(10376, 'User1461081866060.433838@intencity.fit', 1461166882000, 'Hamstrings'),
+(10377, 'User1461081866060.433838@intencity.fit', 1461166882000, 'Quads'),
+(10378, 'User1461081866060.433838@intencity.fit', 1461166882000, 'Glutes'),
+(10379, 'User1461081866060.433838@intencity.fit', 1461166882000, 'Lower Back'),
+(10380, 'User1461081866060.433838@intencity.fit', 1461249615000, 'Triceps'),
+(10381, 'User1461081866060.433838@intencity.fit', 1461249615000, 'Chest'),
+(10382, 'User1461081866060.433838@intencity.fit', 1461249787000, 'Cardio'),
+(10383, 'User1461081866060.433838@intencity.fit', 1461249836000, 'Upper Outer Back'),
+(10384, 'User1461081866060.433838@intencity.fit', 1461249836000, 'Upper Inner Back'),
+(10385, 'User1461081866060.433838@intencity.fit', 1461249836000, 'Biceps'),
+(10386, 'User1461081866060.433838@intencity.fit', 1461249836000, 'Forearms'),
+(10387, 'User1461081866060.433838@intencity.fit', 1461249911000, 'Abs'),
+(10388, 'User1461081866060.433838@intencity.fit', 1461249911000, 'Obliques'),
+(10389, 'User1461081866060.433838@intencity.fit', 1461250521000, 'Traps'),
+(10390, 'User1461081866060.433838@intencity.fit', 1461250521000, 'Neck'),
+(10391, 'User1461081866060.433838@intencity.fit', 1461250521000, 'Shoulders'),
+(10392, 'User1461081866060.433838@intencity.fit', 1461250557000, 'Calves'),
+(10393, 'User1461081866060.433838@intencity.fit', 1461250557000, 'Shins'),
+(10394, 'User1461081866060.433838@intencity.fit', 1461250557000, 'Hamstrings'),
+(10395, 'User1461081866060.433838@intencity.fit', 1461250557000, 'Quads'),
+(10396, 'User1461081866060.433838@intencity.fit', 1461250557000, 'Glutes'),
+(10397, 'User1461081866060.433838@intencity.fit', 1461250557000, 'Lower Back'),
+(10398, 'User1461081866060.433838@intencity.fit', 1461250637000, 'Triceps'),
+(10399, 'User1461081866060.433838@intencity.fit', 1461250637000, 'Chest'),
+(10400, 'User1461081866060.433838@intencity.fit', 1461250694000, 'Cardio'),
+(10401, 'User1461081866060.433838@intencity.fit', 1461250821000, 'Upper Outer Back'),
+(10402, 'User1461081866060.433838@intencity.fit', 1461250821000, 'Upper Inner Back'),
+(10403, 'User1461081866060.433838@intencity.fit', 1461250821000, 'Biceps'),
+(10404, 'User1461081866060.433838@intencity.fit', 1461250821000, 'Forearms'),
+(10405, 'User1461081866060.433838@intencity.fit', 1461250865000, 'Abs'),
+(10406, 'User1461081866060.433838@intencity.fit', 1461250865000, 'Obliques'),
+(10407, 'User1461081866060.433838@intencity.fit', 1461250920000, 'Traps'),
+(10408, 'User1461081866060.433838@intencity.fit', 1461250920000, 'Neck'),
+(10409, 'User1461081866060.433838@intencity.fit', 1461250920000, 'Shoulders'),
+(10410, 'User1461081866060.433838@intencity.fit', 1461251214000, 'Calves'),
+(10411, 'User1461081866060.433838@intencity.fit', 1461251214000, 'Shins'),
+(10412, 'User1461081866060.433838@intencity.fit', 1461251214000, 'Hamstrings'),
+(10413, 'User1461081866060.433838@intencity.fit', 1461251214000, 'Quads'),
+(10414, 'User1461081866060.433838@intencity.fit', 1461251214000, 'Glutes'),
+(10415, 'User1461081866060.433838@intencity.fit', 1461251214000, 'Lower Back'),
+(10416, 'User1461081866060.433838@intencity.fit', 1461251302000, 'Triceps'),
+(10417, 'User1461081866060.433838@intencity.fit', 1461251302000, 'Chest'),
+(10418, 'User1461081866060.433838@intencity.fit', 1461251353000, 'Cardio'),
+(10419, 'User1461081866060.433838@intencity.fit', 1461251437000, 'Upper Outer Back'),
+(10420, 'User1461081866060.433838@intencity.fit', 1461251437000, 'Upper Inner Back'),
+(10421, 'User1461081866060.433838@intencity.fit', 1461251437000, 'Biceps'),
+(10422, 'User1461081866060.433838@intencity.fit', 1461251437000, 'Forearms'),
+(10423, 'User1461081866060.433838@intencity.fit', 1461251468000, 'Abs'),
+(10424, 'User1461081866060.433838@intencity.fit', 1461251468000, 'Obliques'),
+(10425, 'User1461081866060.433838@intencity.fit', 1461251589000, 'Traps'),
+(10426, 'User1461081866060.433838@intencity.fit', 1461251589000, 'Neck'),
+(10427, 'User1461081866060.433838@intencity.fit', 1461251589000, 'Shoulders'),
+(10428, 'User1461081866060.433838@intencity.fit', 1461251609000, 'Calves'),
+(10429, 'User1461081866060.433838@intencity.fit', 1461251609000, 'Shins'),
+(10430, 'User1461081866060.433838@intencity.fit', 1461251609000, 'Hamstrings'),
+(10431, 'User1461081866060.433838@intencity.fit', 1461251609000, 'Quads'),
+(10432, 'User1461081866060.433838@intencity.fit', 1461251609000, 'Glutes'),
+(10433, 'User1461081866060.433838@intencity.fit', 1461251609000, 'Lower Back'),
+(10434, 'User1461081866060.433838@intencity.fit', 1461251801000, 'Triceps'),
+(10435, 'User1461081866060.433838@intencity.fit', 1461251801000, 'Chest'),
+(10436, 'User1461081866060.433838@intencity.fit', 1461251839000, 'Cardio'),
+(10437, 'User1461081866060.433838@intencity.fit', 1461252248000, 'Upper Outer Back'),
+(10438, 'User1461081866060.433838@intencity.fit', 1461252248000, 'Upper Inner Back'),
+(10439, 'User1461081866060.433838@intencity.fit', 1461252248000, 'Biceps'),
+(10440, 'User1461081866060.433838@intencity.fit', 1461252248000, 'Forearms'),
+(10441, 'User1461081866060.433838@intencity.fit', 1461252267000, 'Abs'),
+(10442, 'User1461081866060.433838@intencity.fit', 1461252267000, 'Obliques'),
+(10443, 'User1461081866060.433838@intencity.fit', 1461252327000, 'Traps'),
+(10444, 'User1461081866060.433838@intencity.fit', 1461252327000, 'Neck'),
+(10445, 'User1461081866060.433838@intencity.fit', 1461252327000, 'Shoulders'),
+(10446, 'User1461081866060.433838@intencity.fit', 1461252382000, 'Calves'),
+(10447, 'User1461081866060.433838@intencity.fit', 1461252382000, 'Shins'),
+(10448, 'User1461081866060.433838@intencity.fit', 1461252382000, 'Hamstrings'),
+(10449, 'User1461081866060.433838@intencity.fit', 1461252382000, 'Quads'),
+(10450, 'User1461081866060.433838@intencity.fit', 1461252382000, 'Glutes'),
+(10451, 'User1461081866060.433838@intencity.fit', 1461252382000, 'Lower Back'),
+(10452, 'User1461081866060.433838@intencity.fit', 1461252432000, 'Triceps'),
+(10453, 'User1461081866060.433838@intencity.fit', 1461252432000, 'Chest'),
+(10454, 'User1461081866060.433838@intencity.fit', 1461252492000, 'Cardio'),
+(10455, 'User1461081866060.433838@intencity.fit', 1461252525000, 'Upper Outer Back'),
+(10456, 'User1461081866060.433838@intencity.fit', 1461252525000, 'Upper Inner Back'),
+(10457, 'User1461081866060.433838@intencity.fit', 1461252525000, 'Biceps'),
+(10458, 'User1461081866060.433838@intencity.fit', 1461252525000, 'Forearms'),
+(10459, 'User1461081866060.433838@intencity.fit', 1461252682000, 'Abs'),
+(10460, 'User1461081866060.433838@intencity.fit', 1461252682000, 'Obliques'),
+(10461, 'User1461081866060.433838@intencity.fit', 1461252726000, 'Traps'),
+(10462, 'User1461081866060.433838@intencity.fit', 1461252726000, 'Neck'),
+(10463, 'User1461081866060.433838@intencity.fit', 1461252726000, 'Shoulders'),
+(10464, 'User1461081866060.433838@intencity.fit', 1461252828000, 'Calves'),
+(10465, 'User1461081866060.433838@intencity.fit', 1461252828000, 'Shins'),
+(10466, 'User1461081866060.433838@intencity.fit', 1461252828000, 'Hamstrings'),
+(10467, 'User1461081866060.433838@intencity.fit', 1461252828000, 'Quads'),
+(10468, 'User1461081866060.433838@intencity.fit', 1461252828000, 'Glutes'),
+(10469, 'User1461081866060.433838@intencity.fit', 1461252828000, 'Lower Back'),
+(10470, 'User1461081866060.433838@intencity.fit', 1461252886000, 'Triceps'),
+(10471, 'User1461081866060.433838@intencity.fit', 1461252886000, 'Chest'),
+(10472, 'User1461081866060.433838@intencity.fit', 1461252944000, 'Cardio'),
+(10473, 'User1461081866060.433838@intencity.fit', 1461252986000, 'Upper Outer Back'),
+(10474, 'User1461081866060.433838@intencity.fit', 1461252986000, 'Upper Inner Back'),
+(10475, 'User1461081866060.433838@intencity.fit', 1461252986000, 'Biceps'),
+(10476, 'User1461081866060.433838@intencity.fit', 1461252986000, 'Forearms'),
+(10477, 'User1461081866060.433838@intencity.fit', 1461253064000, 'Abs'),
+(10478, 'User1461081866060.433838@intencity.fit', 1461253064000, 'Obliques'),
+(10479, 'User1461081866060.433838@intencity.fit', 1461253150000, 'Traps'),
+(10480, 'User1461081866060.433838@intencity.fit', 1461253150000, 'Neck'),
+(10481, 'User1461081866060.433838@intencity.fit', 1461253150000, 'Shoulders'),
+(10482, 'User1461081866060.433838@intencity.fit', 1461253187000, 'Calves'),
+(10483, 'User1461081866060.433838@intencity.fit', 1461253187000, 'Shins'),
+(10484, 'User1461081866060.433838@intencity.fit', 1461253187000, 'Hamstrings'),
+(10485, 'User1461081866060.433838@intencity.fit', 1461253187000, 'Quads'),
+(10486, 'User1461081866060.433838@intencity.fit', 1461253187000, 'Glutes'),
+(10487, 'User1461081866060.433838@intencity.fit', 1461253187000, 'Lower Back'),
+(10488, 'User1461081866060.433838@intencity.fit', 1461253584000, 'Triceps'),
+(10489, 'User1461081866060.433838@intencity.fit', 1461253584000, 'Chest'),
+(10490, 'User1461081866060.433838@intencity.fit', 1461253712000, 'Cardio'),
+(10491, 'User1461081866060.433838@intencity.fit', 1461356929000, 'Abs'),
+(10492, 'User1461081866060.433838@intencity.fit', 1461356929000, 'Obliques'),
+(10493, 'User1461081866060.433838@intencity.fit', 1461357059000, 'Abs'),
+(10494, 'User1461081866060.433838@intencity.fit', 1461357059000, 'Obliques'),
+(10495, 'User1461081866060.433838@intencity.fit', 1461429148000, 'Cardio'),
+(10496, 'User1461081866060.433838@intencity.fit', 1461429663000, 'Cardio'),
+(10497, 'User1461081866060.433838@intencity.fit', 1461429839000, 'Triceps'),
+(10498, 'User1461081866060.433838@intencity.fit', 1461429839000, 'Chest'),
+(10499, 'User1461081866060.433838@intencity.fit', 1461430671000, 'Cardio'),
+(10500, 'User1461081866060.433838@intencity.fit', 1461430727000, 'Cardio'),
+(10501, 'User1461081866060.433838@intencity.fit', 1461430749000, 'Cardio'),
+(10502, 'User1461081866060.433838@intencity.fit', 1461430839000, 'Cardio'),
+(10503, 'User1461081866060.433838@intencity.fit', 1461430962000, 'Cardio'),
+(10504, 'User1461081866060.433838@intencity.fit', 1461430986000, 'Cardio'),
+(10505, 'User1461081866060.433838@intencity.fit', 1461431042000, 'Cardio'),
+(10506, 'User1461081866060.433838@intencity.fit', 1461431050000, 'Cardio'),
+(10507, 'User1461081866060.433838@intencity.fit', 1461431060000, 'Cardio'),
+(10508, 'User1461081866060.433838@intencity.fit', 1461431082000, 'Upper Outer Back'),
+(10509, 'User1461081866060.433838@intencity.fit', 1461431082000, 'Upper Inner Back'),
+(10510, 'User1461081866060.433838@intencity.fit', 1461431082000, 'Biceps'),
+(10511, 'User1461081866060.433838@intencity.fit', 1461431082000, 'Forearms'),
+(10512, 'User1461081866060.433838@intencity.fit', 1461431154000, 'Traps'),
+(10513, 'User1461081866060.433838@intencity.fit', 1461431154000, 'Neck'),
+(10514, 'User1461081866060.433838@intencity.fit', 1461431154000, 'Shoulders'),
+(10515, 'User1461081866060.433838@intencity.fit', 1461431420000, 'Cardio'),
+(10516, 'User1461081866060.433838@intencity.fit', 1461431786000, 'Cardio'),
+(10517, 'User1461081866060.433838@intencity.fit', 1461431800000, 'Cardio'),
+(10518, 'User1461081866060.433838@intencity.fit', 1461431802000, 'Cardio'),
+(10519, 'User1461081866060.433838@intencity.fit', 1461431814000, 'Cardio'),
+(10520, 'User1461081866060.433838@intencity.fit', 1461431841000, 'Cardio'),
+(10521, 'User1461081866060.433838@intencity.fit', 1461431868000, 'Calves'),
+(10522, 'User1461081866060.433838@intencity.fit', 1461431868000, 'Shins'),
+(10523, 'User1461081866060.433838@intencity.fit', 1461431868000, 'Hamstrings'),
+(10524, 'User1461081866060.433838@intencity.fit', 1461431868000, 'Quads'),
+(10525, 'User1461081866060.433838@intencity.fit', 1461431868000, 'Glutes'),
+(10526, 'User1461081866060.433838@intencity.fit', 1461431868000, 'Lower Back'),
+(10527, 'User1461081866060.433838@intencity.fit', 1461432061000, 'Cardio'),
+(10528, 'User1461081866060.433838@intencity.fit', 1461432083000, 'Cardio'),
+(10529, 'User1461081866060.433838@intencity.fit', 1461432085000, 'Cardio'),
+(10530, 'User1461081866060.433838@intencity.fit', 1461432086000, 'Cardio'),
+(10531, 'User1461081866060.433838@intencity.fit', 1461432092000, 'Cardio'),
+(10532, 'User1461081866060.433838@intencity.fit', 1461432093000, 'Cardio'),
+(10533, 'User1461081866060.433838@intencity.fit', 1461432104000, 'Cardio'),
+(10534, 'User1461081866060.433838@intencity.fit', 1461432180000, 'Abs'),
+(10535, 'User1461081866060.433838@intencity.fit', 1461432180000, 'Obliques'),
+(10536, 'User1461081866060.433838@intencity.fit', 1461433307000, 'Traps'),
+(10537, 'User1461081866060.433838@intencity.fit', 1461433307000, 'Neck'),
+(10538, 'User1461081866060.433838@intencity.fit', 1461433307000, 'Shoulders'),
+(10539, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Biceps'),
+(10540, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Forearms'),
+(10541, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Cardio'),
+(10542, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Chest'),
+(10543, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Biceps'),
+(10544, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Forearms'),
+(10545, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Abs'),
+(10546, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Obliques'),
+(10547, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Biceps'),
+(10548, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Forearms'),
+(10549, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Abs'),
+(10550, 'User1461503221174.161865@intencity.fit', 1461503250000, 'Obliques'),
+(10551, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Biceps'),
+(10552, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Forearms'),
+(10553, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Cardio'),
+(10554, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Chest'),
+(10555, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Biceps'),
+(10556, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Forearms'),
+(10557, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Abs'),
+(10558, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Obliques'),
+(10559, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Biceps'),
+(10560, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Forearms'),
+(10561, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Abs'),
+(10562, 'User1461503221174.161865@intencity.fit', 1461504027000, 'Obliques'),
+(10563, 'User1461503221174.161865@intencity.fit', 1461504893000, 'Calves'),
+(10564, 'User1461503221174.161865@intencity.fit', 1461504893000, 'Shins'),
+(10565, 'User1461503221174.161865@intencity.fit', 1461504893000, 'Hamstrings'),
+(10566, 'User1461503221174.161865@intencity.fit', 1461504893000, 'Quads'),
+(10567, 'User1461503221174.161865@intencity.fit', 1461504893000, 'Glutes'),
+(10568, 'User1461503221174.161865@intencity.fit', 1461504893000, 'Lower Back'),
+(10569, 'User1461503221174.161865@intencity.fit', 1461504921000, 'Cardio'),
+(10570, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Biceps'),
+(10571, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Forearms'),
+(10572, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Cardio'),
+(10573, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Chest'),
+(10574, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Biceps'),
+(10575, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Forearms'),
+(10576, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Abs'),
+(10577, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Obliques'),
+(10578, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Biceps'),
+(10579, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Forearms'),
+(10580, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Abs'),
+(10581, 'User1461503221174.161865@intencity.fit', 1461504965000, 'Obliques'),
+(10582, 'User1461503221174.161865@intencity.fit', 1461505821000, 'Biceps');
+INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VALUES
+(10583, 'User1461503221174.161865@intencity.fit', 1461505821000, 'Forearms'),
+(10584, 'User1461503221174.161865@intencity.fit', 1461505821000, 'Abs'),
+(10585, 'User1461503221174.161865@intencity.fit', 1461505821000, 'Obliques'),
+(10586, 'User1461503221174.161865@intencity.fit', 1461505920000, 'Biceps'),
+(10587, 'User1461503221174.161865@intencity.fit', 1461505920000, 'Forearms'),
+(10588, 'User1461503221174.161865@intencity.fit', 1461505920000, 'Abs'),
+(10589, 'User1461503221174.161865@intencity.fit', 1461505920000, 'Obliques'),
+(10590, 'User1461503221174.161865@intencity.fit', 1461505936000, 'Cardio'),
+(10591, 'User1461503221174.161865@intencity.fit', 1461505956000, 'Biceps'),
+(10592, 'User1461503221174.161865@intencity.fit', 1461505956000, 'Forearms'),
+(10593, 'User1461503221174.161865@intencity.fit', 1461505956000, 'Abs'),
+(10594, 'User1461503221174.161865@intencity.fit', 1461505956000, 'Obliques'),
+(10595, 'User1461503221174.161865@intencity.fit', 1461506056000, 'Biceps'),
+(10596, 'User1461503221174.161865@intencity.fit', 1461506056000, 'Forearms'),
+(10597, 'User1461503221174.161865@intencity.fit', 1461506056000, 'Abs'),
+(10598, 'User1461503221174.161865@intencity.fit', 1461506056000, 'Obliques'),
+(10599, 'User1461503221174.161865@intencity.fit', 1461506078000, 'Calves'),
+(10600, 'User1461503221174.161865@intencity.fit', 1461506078000, 'Shins'),
+(10601, 'User1461503221174.161865@intencity.fit', 1461506078000, 'Hamstrings'),
+(10602, 'User1461503221174.161865@intencity.fit', 1461506078000, 'Quads'),
+(10603, 'User1461503221174.161865@intencity.fit', 1461506078000, 'Glutes'),
+(10604, 'User1461503221174.161865@intencity.fit', 1461506078000, 'Lower Back'),
+(10605, 'User1461503221174.161865@intencity.fit', 1461506099000, 'Traps'),
+(10606, 'User1461503221174.161865@intencity.fit', 1461506099000, 'Neck'),
+(10607, 'User1461503221174.161865@intencity.fit', 1461506099000, 'Shoulders'),
+(10608, 'User1461503221174.161865@intencity.fit', 1461506108000, 'Triceps'),
+(10609, 'User1461503221174.161865@intencity.fit', 1461506108000, 'Chest');
 
 -- --------------------------------------------------------
 
@@ -10635,7 +10905,7 @@ CREATE TABLE IF NOT EXISTS `Exclusion` (
   `ExclusionType` char(1) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=799 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=808 ;
 
 --
 -- Dumping data for table `Exclusion`
@@ -10667,6 +10937,8 @@ INSERT INTO `Exclusion` (`ID`, `Email`, `ExcludeForever`, `ExclusionName`, `Excl
 (711, 'User1458667494669.244141@intencity.fit', 1, 'Dead Lift', 'E'),
 (578, 'test12345678@gmail.com', 1, 'Bike Ride', 'E'),
 (582, 'User1457890998764.174072@intencity.fit', 1, 'Butterfly Crunch', 'E'),
+(807, 'User1461081866060.433838@intencity.fit', 1, 'Bike Ride', 'E'),
+(806, 'User1461081866060.433838@intencity.fit', 1, 'Run', 'E'),
 (621, 'User1458483700665.065918@intencity.fit', 1, 'Single Leg Split Squat', 'E'),
 (622, 'User1458565865632.422852@intencity.fit', 1, 'Decline Butterfly', 'E'),
 (623, 'User1458587610877.595947@intencity.fit', 1, 'Side Shoulder Raise', 'E'),
@@ -10676,7 +10948,8 @@ INSERT INTO `Exclusion` (`ID`, `Email`, `ExcludeForever`, `ExclusionName`, `Excl
 (627, 'User1458483700665.065918@intencity.fit', 1, 'Lying Down Tricep Extension', 'E'),
 (628, 'User1458483700665.065918@intencity.fit', 1, 'Roman Chair Dip', 'E'),
 (629, 'User1458483700665.065918@intencity.fit', 1, 'Tricep Pull Down', 'E'),
-(630, 'User1458483700665.065918@intencity.fit', 1, 'Lying Down Back Extension', 'E');
+(630, 'User1458483700665.065918@intencity.fit', 1, 'Lying Down Back Extension', 'E'),
+(805, 'User1461081866060.433838@intencity.fit', 1, 'Elliptical', 'E');
 
 -- --------------------------------------------------------
 
@@ -10881,13 +11154,16 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
   `ExerciseName` varchar(50) NOT NULL,
   `Priority` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=383 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=397 ;
 
 --
 -- Dumping data for table `ExercisePriority`
 --
 
 INSERT INTO `ExercisePriority` (`ID`, `Email`, `ExerciseName`, `Priority`) VALUES
+(393, 'User1461081866060.433838@intencity.fit', 'Box Jump', 10),
+(394, 'User1461081866060.433838@intencity.fit', 'Single Leg Split Squat', 10),
+(395, 'User1461081866060.433838@intencity.fit', 'Squat', 10),
 (382, 'nick.piscopio@gmail.com', 'Muscle Up', 10),
 (232, 'dev@gmail.com', 'Standing Cable Fly', 30),
 (381, 'nick.piscopio@gmail.com', 'Push Press', 40),
@@ -12125,7 +12401,7 @@ CREATE TABLE IF NOT EXISTS `Settings` (
   `ShowSocialNotifications` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=621 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=622 ;
 
 --
 -- Dumping data for table `Settings`
@@ -12397,7 +12673,8 @@ INSERT INTO `Settings` (`ID`, `Email`, `FitnessType`, `CurrentFitnessMean`, `Cur
 (617, 'user1459172680229.947998@intencity.fit', NULL, NULL, NULL, 1),
 (618, 'user1459529721171.031006@intencity.fit', NULL, NULL, NULL, 1),
 (619, 'user1460465770978@intencity.fit', NULL, NULL, NULL, 1),
-(620, 'user1461081866060.433838@intencity.fit', NULL, NULL, NULL, 1);
+(620, 'user1461081866060.433838@intencity.fit', NULL, NULL, NULL, 1),
+(621, 'user1461503221174.161865@intencity.fit', NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -12477,7 +12754,7 @@ CREATE TABLE IF NOT EXISTS `User` (
   `EarnedPoints` int(11) NOT NULL,
   `CanRecievePrizes` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=516 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=517 ;
 
 --
 -- Dumping data for table `User`
@@ -12555,7 +12832,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (132, 'mpryor2008@gmail.com', '2014-03-22', '2014-03-23', 0, NULL, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', NULL, 'N', 0, 1),
 (133, 'test@test.gov', '2014-03-23', '2014-03-23', 0, NULL, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', NULL, 'N', 0, 1),
 (134, 'julienajbjerg@gmail.com', '2014-03-24', '2014-06-13', 0, NULL, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'DfLuc1QeDyvBQcnr', 'N', 0, 1),
-(135, 'dev@gmail.com', '2014-03-25', '2016-03-03', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 1035, 1),
+(135, 'dev@gmail.com', '2014-03-25', '2016-03-03', 0, '2016-02-04', 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'ipcLIQvpcADEjDq2', 'D', 1045, 1),
 (136, 'shatwon123.sa@gmail.com', '2014-03-26', '2014-03-26', 0, NULL, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', NULL, 'N', 0, 1),
 (137, 'appletest@gmail.com', '2014-03-27', '2014-03-27', 0, NULL, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', NULL, 'R', 0, 1),
 (142, 'beta@gmail.com', '2014-04-01', '2014-04-08', 1, NULL, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', NULL, 'D', 0, 1),
@@ -12735,7 +13012,8 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (512, 'user1459172680229.947998@intencity.fit', '2016-03-28', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$7lie1GX/tlAnzy1F5z4wmeHzmuuaIZTk2bT4hjw8eC6Sydg.H1oda', NULL, 'M', 105, 1),
 (513, 'user1459529721171.031006@intencity.fit', '2016-04-01', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$Fuj0uTSNHW04Fw.9Yrepredd2yL.svF5aeofvvKaQ/q0pOLw4jkSS', NULL, 'M', 120, 1),
 (514, 'user1460465770978@intencity.fit', '2016-04-12', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$Z3Yp1i0JdEmKevU90tWeh.DzAJRyOzKkpH9A3GACFpHqbODH4Ejc2', NULL, 'M', 225, 1),
-(515, 'user1461081866060.433838@intencity.fit', '2016-04-19', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$jOGcpn1ni6YVJWKIcY4p3ObiH5K7vbbzeJmO/v42Ceh6guO7/eI46', NULL, 'M', 175, 1);
+(515, 'user1461081866060.433838@intencity.fit', '2016-04-19', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$jOGcpn1ni6YVJWKIcY4p3ObiH5K7vbbzeJmO/v42Ceh6guO7/eI46', NULL, 'M', 480, 1),
+(516, 'user1461503221174.161865@intencity.fit', '2016-04-24', NULL, 1, NULL, 'Anonymous', 'User', '$2a$12$KCQEluw/u9M966a1YgW.6uRaZVAJK15xpmO9tJXvsPfB5f4DGBPXy', NULL, 'M', 175, 1);
 
 -- --------------------------------------------------------
 
@@ -12749,7 +13027,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8360 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8403 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -16318,28 +16596,49 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `EquipmentName`) VALUES
 (8319, 'nick.piscopio@gmail.com', 'Cable Pull'),
 (8317, 'nick.piscopio@gmail.com', 'Bench Rack'),
 (8318, 'nick.piscopio@gmail.com', 'Bike'),
-(8338, 'user1461081866060.433838@intencity.fit', 'Barbell'),
-(8339, 'user1461081866060.433838@intencity.fit', 'Bench'),
-(8340, 'user1461081866060.433838@intencity.fit', 'Bench Rack'),
-(8341, 'user1461081866060.433838@intencity.fit', 'Bike'),
-(8342, 'user1461081866060.433838@intencity.fit', 'Cable Pull'),
-(8343, 'user1461081866060.433838@intencity.fit', 'Cable Row Machine'),
-(8344, 'user1461081866060.433838@intencity.fit', 'Chair'),
-(8345, 'user1461081866060.433838@intencity.fit', 'Dumbbells'),
-(8346, 'user1461081866060.433838@intencity.fit', 'Elliptical'),
-(8347, 'user1461081866060.433838@intencity.fit', 'Exercise Box'),
-(8348, 'user1461081866060.433838@intencity.fit', 'Leg Curl Machine'),
-(8349, 'user1461081866060.433838@intencity.fit', 'Leg Extension Machine'),
-(8350, 'user1461081866060.433838@intencity.fit', 'Leg Press Machine'),
-(8351, 'user1461081866060.433838@intencity.fit', 'Preacher Curl Bench'),
-(8352, 'user1461081866060.433838@intencity.fit', 'Preacher Curl Machine'),
-(8353, 'user1461081866060.433838@intencity.fit', 'Pull Down Machine'),
-(8354, 'user1461081866060.433838@intencity.fit', 'Pull Up Bar'),
-(8355, 'user1461081866060.433838@intencity.fit', 'Roman Chair'),
-(8356, 'user1461081866060.433838@intencity.fit', 'Shoulder Press Machine'),
-(8357, 'user1461081866060.433838@intencity.fit', 'Squat Machine'),
-(8358, 'user1461081866060.433838@intencity.fit', 'Step'),
-(8359, 'user1461081866060.433838@intencity.fit', 'Treadmill');
+(8376, 'User1461081866060.433838@intencity.fit', 'Shoulder Press Machine'),
+(8375, 'User1461081866060.433838@intencity.fit', 'Roman Chair'),
+(8374, 'User1461081866060.433838@intencity.fit', 'Pull Up Bar'),
+(8373, 'User1461081866060.433838@intencity.fit', 'Pull Down Machine'),
+(8372, 'User1461081866060.433838@intencity.fit', 'Preacher Curl Machine'),
+(8371, 'User1461081866060.433838@intencity.fit', 'Preacher Curl Bench'),
+(8370, 'User1461081866060.433838@intencity.fit', 'Leg Press Machine'),
+(8369, 'User1461081866060.433838@intencity.fit', 'Leg Extension Machine'),
+(8368, 'User1461081866060.433838@intencity.fit', 'Leg Curl Machine'),
+(8367, 'User1461081866060.433838@intencity.fit', 'Exercise Box'),
+(8366, 'User1461081866060.433838@intencity.fit', 'Elliptical'),
+(8365, 'User1461081866060.433838@intencity.fit', 'Dumbbells'),
+(8364, 'User1461081866060.433838@intencity.fit', 'Chair'),
+(8363, 'User1461081866060.433838@intencity.fit', 'Cable Row Machine'),
+(8362, 'User1461081866060.433838@intencity.fit', 'Cable Pull'),
+(8361, 'User1461081866060.433838@intencity.fit', 'Bike'),
+(8360, 'User1461081866060.433838@intencity.fit', 'Bench'),
+(8377, 'User1461081866060.433838@intencity.fit', 'Squat Machine'),
+(8378, 'User1461081866060.433838@intencity.fit', 'Step'),
+(8379, 'User1461081866060.433838@intencity.fit', 'Treadmill'),
+(8380, 'User1461081866060.433838@intencity.fit', 'Bench Rack'),
+(8381, 'user1461503221174.161865@intencity.fit', 'Barbell'),
+(8382, 'user1461503221174.161865@intencity.fit', 'Bench'),
+(8383, 'user1461503221174.161865@intencity.fit', 'Bench Rack'),
+(8384, 'user1461503221174.161865@intencity.fit', 'Bike'),
+(8385, 'user1461503221174.161865@intencity.fit', 'Cable Pull'),
+(8386, 'user1461503221174.161865@intencity.fit', 'Cable Row Machine'),
+(8387, 'user1461503221174.161865@intencity.fit', 'Chair'),
+(8388, 'user1461503221174.161865@intencity.fit', 'Dumbbells'),
+(8389, 'user1461503221174.161865@intencity.fit', 'Elliptical'),
+(8390, 'user1461503221174.161865@intencity.fit', 'Exercise Box'),
+(8391, 'user1461503221174.161865@intencity.fit', 'Leg Curl Machine'),
+(8392, 'user1461503221174.161865@intencity.fit', 'Leg Extension Machine'),
+(8393, 'user1461503221174.161865@intencity.fit', 'Leg Press Machine'),
+(8394, 'user1461503221174.161865@intencity.fit', 'Preacher Curl Bench'),
+(8395, 'user1461503221174.161865@intencity.fit', 'Preacher Curl Machine'),
+(8396, 'user1461503221174.161865@intencity.fit', 'Pull Down Machine'),
+(8397, 'user1461503221174.161865@intencity.fit', 'Pull Up Bar'),
+(8398, 'user1461503221174.161865@intencity.fit', 'Roman Chair'),
+(8399, 'user1461503221174.161865@intencity.fit', 'Shoulder Press Machine'),
+(8400, 'user1461503221174.161865@intencity.fit', 'Squat Machine'),
+(8401, 'user1461503221174.161865@intencity.fit', 'Step'),
+(8402, 'user1461503221174.161865@intencity.fit', 'Treadmill');
 
 -- --------------------------------------------------------
 
@@ -16384,7 +16683,7 @@ CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
   `RoutineNumber` int(11) NOT NULL,
   `DisplayName` varchar(100) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=230 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=238 ;
 
 --
 -- Dumping data for table `UserMuscleGroupRoutine`
@@ -16394,7 +16693,15 @@ INSERT INTO `UserMuscleGroupRoutine` (`ID`, `Email`, `MuscleGroupName`, `Routine
 (226, 'nick.piscopio@gmail.com', 'Biceps', 7, 'Biceps, Cardio, & Chest'),
 (227, 'nick.piscopio@gmail.com', 'Forearms', 7, 'Biceps, Cardio, & Chest'),
 (228, 'nick.piscopio@gmail.com', 'Cardio', 7, 'Biceps, Cardio, & Chest'),
-(229, 'nick.piscopio@gmail.com', 'Chest', 7, 'Biceps, Cardio, & Chest');
+(229, 'nick.piscopio@gmail.com', 'Chest', 7, 'Biceps, Cardio, & Chest'),
+(230, 'User1461081866060.433838@intencity.fit', 'Biceps', 7, 'Abs & Biceps'),
+(231, 'User1461081866060.433838@intencity.fit', 'Forearms', 7, 'Abs & Biceps'),
+(232, 'User1461081866060.433838@intencity.fit', 'Abs', 7, 'Abs & Biceps'),
+(233, 'User1461081866060.433838@intencity.fit', 'Obliques', 7, 'Abs & Biceps'),
+(234, 'User1461503221174.161865@intencity.fit', 'Biceps', 7, 'Abs & Biceps'),
+(235, 'User1461503221174.161865@intencity.fit', 'Forearms', 7, 'Abs & Biceps'),
+(236, 'User1461503221174.161865@intencity.fit', 'Abs', 7, 'Abs & Biceps'),
+(237, 'User1461503221174.161865@intencity.fit', 'Obliques', 7, 'Abs & Biceps');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
