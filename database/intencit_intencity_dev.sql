@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 28, 2016 at 11:42 AM
+-- Generation Time: Apr 29, 2016 at 01:39 PM
 -- Server version: 5.5.48-cll
 -- PHP Version: 5.4.31
 
@@ -98,7 +98,7 @@ SET currentMuscleGroup = (SELECT MuscleGroupRoutine.DisplayName
                           GROUP BY MuscleGroupRoutine.DisplayName);
 
 SELECT * 
-  FROM(SELECT MuscleGroupRoutine.DisplayName, MuscleGroupRoutine.RoutineNumber AS routineNum, currentMuscleGroup
+  FROM(SELECT MuscleGroupRoutine.DisplayName, MuscleGroupRoutine.RoutineNumber AS ExerciseDay, currentMuscleGroup
        FROM MuscleGroupRoutine
        GROUP BY MuscleGroupRoutine.DisplayName
        UNION ALL
@@ -106,7 +106,7 @@ SELECT *
        FROM UserMuscleGroupRoutine
        WHERE UserMuscleGroupRoutine.Email = email
        GROUP BY UserMuscleGroupRoutine.DisplayName) as muscleGroup
-  ORDER BY routineNum;
+  ORDER BY ExerciseDay;
 
 end$$
 
@@ -631,11 +631,37 @@ WHERE UserMuscleGroupRoutine.Email = email
 GROUP BY UserMuscleGroupRoutine.DisplayName$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine`(IN `email` VARCHAR(75))
-SELECT Routine.RoutineName
+SELECT Routine.RoutineName, Routine.ExerciseDay
 FROM Routine
 WHERE Routine.Email = email 
 GROUP BY Routine.RoutineName
 ORDER BY Routine.RoutineName$$
+
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutineExercises`(IN `email` VARCHAR(75), IN `routineNumber` INT(1))
+begin 
+
+  /* We insert into the CompletedRoutine table, so we can later pull to show what the user has exercised in the last 7 days. */
+  INSERT INTO CompletedRoutine (CompletedRoutine.Email, CompletedRoutine.Date, CompletedRoutine.RoutineName)
+      SELECT email, UNIX_TIMESTAMP() * 1000 , Routine.RoutineName
+      FROM Routine
+      WHERE Routine.Email = email && Routine.ExerciseDay = routineNumber
+      GROUP BY Routine.RoutineName;
+
+  SELECT Routine.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes, exercise.ExerciseTableExerciseName
+  FROM Routine
+  LEFT JOIN (SELECT Exercise.ExerciseName AS ExerciseTableExerciseName
+             FROM Exercise) as exercise
+      ON exercise.ExerciseTableExerciseName = Routine.ExerciseName
+  LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+              FROM CompletedExercise
+              WHERE CompletedExercise.Email = email
+              ORDER BY CompletedExercise.ID DESC) as completedExercise
+      ON completedExercise.ExerciseName = Routine.ExerciseName 
+  WHERE Routine.Email = email && Routine.ExerciseDay = routineNumber
+  GROUP BY Routine.ExerciseName
+  ORDER BY Routine.ID ASC;
+
+end$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantBadgeToUser`(IN `email` VARCHAR(75), IN `date` BIGINT, IN `badgeName` VARCHAR(30))
 INSERT INTO Badge(Email, EarnedDate, BadgeName)
@@ -948,7 +974,7 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=746 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=782 ;
 
 --
 -- Dumping data for table `Badge`
@@ -1050,6 +1076,11 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (487, 'User1458245546255.422119@intencity.fit', 1, 'Finisher'),
 (682, 'User1460465770978@intencity.fit', 1460465951765, 'Kept Swimming'),
 (301, 'nick.piscopio@gmail.com', 1, 'Kept Swimming'),
+(777, 'nick.piscopio@gmail.com', 1461950511555, 'Finisher'),
+(778, 'nick.piscopio@gmail.com', 1461950559380, 'Kept Swimming'),
+(779, 'nick.piscopio@gmail.com', 1461950559386, 'Finisher'),
+(780, 'nick.piscopio@gmail.com', 1461951269228, 'Kept Swimming'),
+(781, 'nick.piscopio@gmail.com', 1461951269234, 'Finisher'),
 (733, 'nick.piscopio@gmail.com', 1461694931882, 'Finisher'),
 (734, 'nick.piscopio@gmail.com', 1461695799259, 'Kept Swimming'),
 (735, 'nick.piscopio@gmail.com', 1461695799268, 'Finisher'),
@@ -1063,6 +1094,37 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (743, 'nick.piscopio@gmail.com', 1461699537433, 'Finisher'),
 (744, 'nick.piscopio@gmail.com', 1461777206846, 'Finisher'),
 (745, 'nick.piscopio@gmail.com', 1461854485221, 'Finisher'),
+(746, 'nick.piscopio@gmail.com', 1461938310185, 'Finisher'),
+(747, 'nick.piscopio@gmail.com', 1461938332672, 'Finisher'),
+(748, 'nick.piscopio@gmail.com', 1461940057781, 'Kept Swimming'),
+(749, 'nick.piscopio@gmail.com', 1461940057793, 'Finisher'),
+(750, 'nick.piscopio@gmail.com', 1461942247939, 'Kept Swimming'),
+(751, 'nick.piscopio@gmail.com', 1461942247981, 'Finisher'),
+(752, 'nick.piscopio@gmail.com', 1461942263332, 'Kept Swimming'),
+(753, 'nick.piscopio@gmail.com', 1461942263343, 'Finisher'),
+(754, 'nick.piscopio@gmail.com', 1461942358498, 'Kept Swimming'),
+(755, 'nick.piscopio@gmail.com', 1461942358511, 'Finisher'),
+(756, 'nick.piscopio@gmail.com', 1461942386987, 'Finisher'),
+(757, 'nick.piscopio@gmail.com', 1461942386975, 'Kept Swimming'),
+(758, 'nick.piscopio@gmail.com', 1461948795432, 'Finisher'),
+(759, 'nick.piscopio@gmail.com', 1461949302091, 'Kept Swimming'),
+(760, 'nick.piscopio@gmail.com', 1461949302130, 'Finisher'),
+(761, 'nick.piscopio@gmail.com', 1461949426303, 'Finisher'),
+(762, 'nick.piscopio@gmail.com', 1461949567734, 'Finisher'),
+(763, 'nick.piscopio@gmail.com', 1461949567722, 'Kept Swimming'),
+(764, 'nick.piscopio@gmail.com', 1461949577948, 'Kept Swimming'),
+(765, 'nick.piscopio@gmail.com', 1461949577963, 'Finisher'),
+(766, 'nick.piscopio@gmail.com', 1461949723494, 'Kept Swimming'),
+(767, 'nick.piscopio@gmail.com', 1461949723509, 'Finisher'),
+(768, 'nick.piscopio@gmail.com', 1461949800482, 'Kept Swimming'),
+(769, 'nick.piscopio@gmail.com', 1461949800492, 'Finisher'),
+(770, 'nick.piscopio@gmail.com', 1461950205287, 'Finisher'),
+(771, 'nick.piscopio@gmail.com', 1461950205283, 'Kept Swimming'),
+(772, 'nick.piscopio@gmail.com', 1461950260404, 'Kept Swimming'),
+(773, 'nick.piscopio@gmail.com', 1461950260427, 'Finisher'),
+(774, 'nick.piscopio@gmail.com', 1461950440780, 'Kept Swimming'),
+(775, 'nick.piscopio@gmail.com', 1461950440794, 'Finisher'),
+(776, 'nick.piscopio@gmail.com', 1461950511523, 'Kept Swimming'),
 (732, 'nick.piscopio@gmail.com', 1461691811545, 'Kept Swimming'),
 (731, 'nick.piscopio@gmail.com', 1461691811561, 'Finisher'),
 (726, 'User1461503221174.161865@intencity.fit', 1461506102927, 'Finisher'),
@@ -1209,7 +1271,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5977 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5980 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -3337,7 +3399,10 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (5973, 'nick.piscopio@gmail.com', '2016-04-26', '14:12:58', 'Calf Raise', '55.0', NULL, '00:00:00', 7, NULL),
 (5974, 'nick.piscopio@gmail.com', '2016-04-26', '14:12:58', 'Calf Raise', '55.0', NULL, '00:00:00', 7, NULL),
 (5975, 'nick.piscopio@gmail.com', '2016-04-26', '14:13:06', 'Calf Raise', '60.0', 5, NULL, 7, ''),
-(5976, 'nick.piscopio@gmail.com', '2016-04-26', '14:22:09', 'Cable Seated Hip Internal Rotation', '40.0', 15, NULL, 7, '');
+(5976, 'nick.piscopio@gmail.com', '2016-04-26', '14:22:09', 'Cable Seated Hip Internal Rotation', '40.0', 15, NULL, 7, ''),
+(5977, 'nick.piscopio@gmail.com', '2016-04-29', '10:28:06', 'Help', '4.5', 6, NULL, 7, ''),
+(5978, 'nick.piscopio@gmail.com', '2016-04-29', '10:28:32', 'Hanging Leg Raise', NULL, 6, NULL, 10, ''),
+(5979, 'nick.piscopio@gmail.com', '2016-04-29', '10:28:44', 'Double Leg Hamstring Stretch', '2.3', 5, NULL, 1, '');
 
 -- --------------------------------------------------------
 
@@ -3352,7 +3417,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10721 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10796 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -10157,7 +10222,124 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`) VA
 (10717, 'nick.piscopio@gmail.com', 1461854194000, 'Upper Outer Back'),
 (10718, 'nick.piscopio@gmail.com', 1461854194000, 'Upper Inner Back'),
 (10719, 'nick.piscopio@gmail.com', 1461854194000, 'Biceps'),
-(10720, 'nick.piscopio@gmail.com', 1461854194000, 'Forearms');
+(10720, 'nick.piscopio@gmail.com', 1461854194000, 'Forearms'),
+(10721, 'nick.piscopio@gmail.com', 1461860542000, 'Triceps'),
+(10722, 'nick.piscopio@gmail.com', 1461860542000, 'Chest'),
+(10723, 'nick.piscopio@gmail.com', 1461938302000, 'Triceps'),
+(10724, 'nick.piscopio@gmail.com', 1461938302000, 'Chest'),
+(10725, 'nick.piscopio@gmail.com', 1461938321000, 'Traps'),
+(10726, 'nick.piscopio@gmail.com', 1461938321000, 'Neck'),
+(10727, 'nick.piscopio@gmail.com', 1461938321000, 'Shoulders'),
+(10728, 'nick.piscopio@gmail.com', 1461941656000, 'Triceps'),
+(10729, 'nick.piscopio@gmail.com', 1461941656000, 'Chest'),
+(10730, 'nick.piscopio@gmail.com', 1461941684000, 'Triceps'),
+(10731, 'nick.piscopio@gmail.com', 1461941684000, 'Chest'),
+(10732, 'nick.piscopio@gmail.com', 1461941799000, 'Triceps'),
+(10733, 'nick.piscopio@gmail.com', 1461941799000, 'Chest'),
+(10734, 'nick.piscopio@gmail.com', 1461942212000, 'Upper Outer Back'),
+(10735, 'nick.piscopio@gmail.com', 1461942212000, 'Upper Inner Back'),
+(10736, 'nick.piscopio@gmail.com', 1461942212000, 'Biceps'),
+(10737, 'nick.piscopio@gmail.com', 1461942212000, 'Forearms'),
+(10738, 'nick.piscopio@gmail.com', 1461942257000, 'Abs'),
+(10739, 'nick.piscopio@gmail.com', 1461942257000, 'Obliques'),
+(10740, 'nick.piscopio@gmail.com', 1461942349000, 'Neck'),
+(10741, 'nick.piscopio@gmail.com', 1461942349000, 'Shoulders'),
+(10742, 'nick.piscopio@gmail.com', 1461942349000, 'Traps'),
+(10743, 'nick.piscopio@gmail.com', 1461942349000, 'Lower Back'),
+(10744, 'nick.piscopio@gmail.com', 1461942379000, 'Chest'),
+(10745, 'nick.piscopio@gmail.com', 1461942379000, 'Cardio'),
+(10746, 'nick.piscopio@gmail.com', 1461948484000, 'Upper Outer Back'),
+(10747, 'nick.piscopio@gmail.com', 1461948484000, 'Upper Inner Back'),
+(10748, 'nick.piscopio@gmail.com', 1461948484000, 'Biceps'),
+(10749, 'nick.piscopio@gmail.com', 1461948484000, 'Forearms'),
+(10750, 'nick.piscopio@gmail.com', 1461948770000, 'Traps'),
+(10751, 'nick.piscopio@gmail.com', 1461948770000, 'Neck'),
+(10752, 'nick.piscopio@gmail.com', 1461948770000, 'Shoulders'),
+(10753, 'nick.piscopio@gmail.com', 1461949263000, 'Cardio'),
+(10754, 'nick.piscopio@gmail.com', 1461949289000, 'Upper Outer Back'),
+(10755, 'nick.piscopio@gmail.com', 1461949289000, 'Upper Inner Back'),
+(10756, 'nick.piscopio@gmail.com', 1461949289000, 'Biceps'),
+(10757, 'nick.piscopio@gmail.com', 1461949289000, 'Forearms'),
+(10758, 'nick.piscopio@gmail.com', 1461949403000, 'Triceps'),
+(10759, 'nick.piscopio@gmail.com', 1461949403000, 'Chest'),
+(10760, 'nick.piscopio@gmail.com', 1461949553000, 'Triceps'),
+(10761, 'nick.piscopio@gmail.com', 1461949553000, 'Chest'),
+(10762, 'nick.piscopio@gmail.com', 1461949708000, 'Calves'),
+(10763, 'nick.piscopio@gmail.com', 1461949708000, 'Shins'),
+(10764, 'nick.piscopio@gmail.com', 1461949708000, 'Hamstrings'),
+(10765, 'nick.piscopio@gmail.com', 1461949708000, 'Quads'),
+(10766, 'nick.piscopio@gmail.com', 1461949708000, 'Glutes'),
+(10767, 'nick.piscopio@gmail.com', 1461949708000, 'Lower Back'),
+(10768, 'nick.piscopio@gmail.com', 1461949792000, 'Calves'),
+(10769, 'nick.piscopio@gmail.com', 1461949792000, 'Shins'),
+(10770, 'nick.piscopio@gmail.com', 1461949792000, 'Hamstrings'),
+(10771, 'nick.piscopio@gmail.com', 1461949792000, 'Quads'),
+(10772, 'nick.piscopio@gmail.com', 1461949792000, 'Glutes'),
+(10773, 'nick.piscopio@gmail.com', 1461949792000, 'Lower Back'),
+(10774, 'nick.piscopio@gmail.com', 1461950193000, 'Triceps'),
+(10775, 'nick.piscopio@gmail.com', 1461950193000, 'Chest'),
+(10776, 'nick.piscopio@gmail.com', 1461950251000, 'Upper Outer Back'),
+(10777, 'nick.piscopio@gmail.com', 1461950251000, 'Upper Inner Back'),
+(10778, 'nick.piscopio@gmail.com', 1461950251000, 'Biceps'),
+(10779, 'nick.piscopio@gmail.com', 1461950251000, 'Forearms'),
+(10780, 'nick.piscopio@gmail.com', 1461950431000, 'Cardio'),
+(10781, 'nick.piscopio@gmail.com', 1461950502000, 'Traps'),
+(10782, 'nick.piscopio@gmail.com', 1461950502000, 'Neck'),
+(10783, 'nick.piscopio@gmail.com', 1461950502000, 'Shoulders'),
+(10784, 'nick.piscopio@gmail.com', 1461950547000, 'Calves'),
+(10785, 'nick.piscopio@gmail.com', 1461950547000, 'Shins'),
+(10786, 'nick.piscopio@gmail.com', 1461950547000, 'Hamstrings'),
+(10787, 'nick.piscopio@gmail.com', 1461950547000, 'Quads'),
+(10788, 'nick.piscopio@gmail.com', 1461950547000, 'Glutes'),
+(10789, 'nick.piscopio@gmail.com', 1461950547000, 'Lower Back'),
+(10790, 'nick.piscopio@gmail.com', 1461951254000, 'Calves'),
+(10791, 'nick.piscopio@gmail.com', 1461951254000, 'Shins'),
+(10792, 'nick.piscopio@gmail.com', 1461951254000, 'Hamstrings'),
+(10793, 'nick.piscopio@gmail.com', 1461951254000, 'Quads'),
+(10794, 'nick.piscopio@gmail.com', 1461951254000, 'Glutes'),
+(10795, 'nick.piscopio@gmail.com', 1461951254000, 'Lower Back');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CompletedRoutine`
+--
+
+CREATE TABLE IF NOT EXISTS `CompletedRoutine` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Email` varchar(75) NOT NULL,
+  `Date` bigint(20) NOT NULL,
+  `RoutineName` varchar(50) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+
+--
+-- Dumping data for table `CompletedRoutine`
+--
+
+INSERT INTO `CompletedRoutine` (`ID`, `Email`, `Date`, `RoutineName`) VALUES
+(2, 'nick.piscopio@gmail.com', 1461939294000, 'yy'),
+(3, 'nick.piscopio@gmail.com', 1461939381000, 'yy'),
+(4, 'nick.piscopio@gmail.com', 1461939509000, 'yy'),
+(5, 'nick.piscopio@gmail.com', 1461939583000, 'yy'),
+(6, 'nick.piscopio@gmail.com', 1461939912000, 'yy'),
+(7, 'nick.piscopio@gmail.com', 1461939990000, 'yy'),
+(8, 'nick.piscopio@gmail.com', 1461940041000, 'yy'),
+(9, 'nick.piscopio@gmail.com', 1461940146000, 'cust'),
+(10, 'nick.piscopio@gmail.com', 1461940685000, 'cust'),
+(11, 'nick.piscopio@gmail.com', 1461940874000, 'cust'),
+(12, 'nick.piscopio@gmail.com', 1461940999000, 'cust'),
+(13, 'nick.piscopio@gmail.com', 1461941350000, 'cust'),
+(14, 'nick.piscopio@gmail.com', 1461941476000, 'cust'),
+(15, 'nick.piscopio@gmail.com', 1461941848000, 'cust'),
+(16, 'nick.piscopio@gmail.com', 1461941865000, 'cust'),
+(17, 'nick.piscopio@gmail.com', 1461941932000, 'cust'),
+(18, 'nick.piscopio@gmail.com', 1461941972000, 'cust'),
+(19, 'nick.piscopio@gmail.com', 1461942034000, 'cust'),
+(20, 'nick.piscopio@gmail.com', 1461942089000, 'cust'),
+(21, 'nick.piscopio@gmail.com', 1461942183000, 'cust'),
+(22, 'nick.piscopio@gmail.com', 1461942241000, 'cust'),
+(23, 'nick.piscopio@gmail.com', 1461949575000, 'try');
 
 -- --------------------------------------------------------
 
@@ -11306,7 +11488,7 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
   `ExerciseName` varchar(50) NOT NULL,
   `Priority` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=400 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=402 ;
 
 --
 -- Dumping data for table `ExercisePriority`
@@ -11316,6 +11498,8 @@ INSERT INTO `ExercisePriority` (`ID`, `Email`, `ExerciseName`, `Priority`) VALUE
 (393, 'User1461081866060.433838@intencity.fit', 'Box Jump', 10),
 (394, 'User1461081866060.433838@intencity.fit', 'Single Leg Split Squat', 10),
 (395, 'User1461081866060.433838@intencity.fit', 'Squat', 10),
+(401, 'nick.piscopio@gmail.com', 'Isometric Neck Exercise', 10),
+(400, 'nick.piscopio@gmail.com', 'Split Leg Push Press', 10),
 (232, 'dev@gmail.com', 'Standing Cable Fly', 30),
 (399, 'nick.piscopio@gmail.com', 'Decline Back Extension', 10),
 (398, 'nick.piscopio@gmail.com', 'Calf Raise', 40);
@@ -12425,7 +12609,7 @@ CREATE TABLE IF NOT EXISTS `Routine` (
   `ExerciseName` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3281 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3357 ;
 
 --
 -- Dumping data for table `Routine`
@@ -12452,11 +12636,6 @@ INSERT INTO `Routine` (`ID`, `Email`, `RoutineName`, `ExerciseDay`, `ExerciseNam
 (3251, 'User1461081866060.433838@intencity.fit', 'hhh', 9, 'Calf Raise'),
 (3252, 'User1461081866060.433838@intencity.fit', 'hhh', 9, 'Lying Down Back Extension'),
 (3253, 'User1461081866060.433838@intencity.fit', 'hhh', 9, 'Leg'),
-(3266, 'nick.piscopio@gmail.com', 'yy', 8, 'Incline Row'),
-(3265, 'nick.piscopio@gmail.com', 'yy', 8, 'Lying Pronation'),
-(3264, 'nick.piscopio@gmail.com', 'yy', 8, 'Cable Lying Row'),
-(3263, 'nick.piscopio@gmail.com', 'yy', 8, 'Lat Pull Down'),
-(3262, 'nick.piscopio@gmail.com', 'yy', 8, 'Shoulder Blade Hold'),
 (3256, 'User1461081866060.433838@intencity.fit', 'ghy', 10, 'Leg'),
 (3255, 'User1461081866060.433838@intencity.fit', 'ghy', 10, 'Lying Down Back Extension'),
 (1474, 'test@test.gov', 'Routine 3/23/2014', 7, 'Box Jump'),
@@ -12930,7 +13109,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 1165, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-02-27', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$/59tcH8jDpI8d0KgoVkRCOK2pDHrI6T1h5dzJYM73LBp.bN.oAsOe', 'dViDrRljgy6h8HXy', 'A', 1495, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -16844,7 +17023,7 @@ CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
   `RoutineNumber` int(11) NOT NULL,
   `DisplayName` varchar(100) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=300 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=504 ;
 
 --
 -- Dumping data for table `UserMuscleGroupRoutine`

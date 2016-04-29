@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * This file adds a custom routine to the Routine table.
+	 * This file adds a saved routine to the Routine table.
 	 * 
 	 * Accepts:
 	 * 		email 		The email of the user to add the custom routine.
@@ -42,10 +42,7 @@
 		}
 		else
 		{
-			// We start at 7 because 7 would be the next number in the list 
-			// if we continued from the default list of routines from the 
-			// MuscleGroupRoutine table.
-			$routineNumber = 7;
+			$routineNumber = 0;
 		}
 
 		for ($i = 0; $i < $varLength; $i++)
