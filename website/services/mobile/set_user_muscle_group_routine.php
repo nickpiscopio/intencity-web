@@ -27,22 +27,7 @@
 	$variables = explode(',', $v);
 	$varLength = count($variables);
 
-	$insert = "";
 	$routineName = "";
-
-	$routineNumber = mysqli_query($conn, "SELECT " . COLUMN_ROUTINE_NUMBER . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " ORDER BY " . COLUMN_ROUTINE_NUMBER . " DESC LIMIT 1;");
-	if ($row = mysqli_fetch_assoc($routineNumber))
-	{
-		$routineNumber = $row[COLUMN_ROUTINE_NUMBER];
-		$routineNumber++;
-	}
-	else
-	{
-		// We start at 7 because 7 would be the next number in the list 
-		// if we continued from the default list of routines from the 
-		// MuscleGroupRoutine table.
-		$routineNumber = 7;
-	}
 
 	for ($z = 0; $z < $varLength; $z++)
 	{
@@ -60,30 +45,58 @@
 		$select .= ($z > 0 ? " OR " : "") . COLUMN_DISPLAY_NAME . " = '" . $variables[$z] . "'";
 	}
 
-	$muscleGroupNameQuery = mysqli_query($conn, $select);
+	// Check to see if the routine already exists in the database.
+	// We only want to insert the routine if it exists.
+	$routineSelect = mysqli_query($conn, "SELECT " . COLUMN_DISPLAY_NAME . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " AND " . COLUMN_DISPLAY_NAME . " = '" . $routineName . "'");
 
-	while($row = mysqli_fetch_assoc($muscleGroupNameQuery))
+	if ($row1 = mysqli_fetch_assoc($routineSelect))
 	{
-    	$muscleGroupNames[] = $row[COLUMN_MUSCLE_GROUP_NAME];
-	}
-	
-	$muscleGroupNameLength = count($muscleGroupNames);
-
-	for ($i = 0; $i < $muscleGroupNameLength; $i++)
-	{
-		$muscleGroup = $muscleGroupNames[$i];
-
-	    $insert .= "INSERT INTO " . TABLE_USER_MUSCLE_GROUP_ROUTINE . "(" . COLUMN_EMAIL . "," . COLUMN_MUSCLE_GROUP_NAME . "," . COLUMN_ROUTINE_NUMBER . "," . COLUMN_DISPLAY_NAME . ") VALUES (" . $e . ",'" . $muscleGroup . "'," . $routineNumber . ",'" . $routineName . "'); ";
-	}
-
-	$query = mysqli_multi_query($conn, $insert);
-	if($query)
-	{
-		
 		print json_encode(SUCCESS);
 	}
 	else
 	{
-		print json_encode(FAILURE);
-	}
+		$insert = "";
+
+		// Check if the user has a custom routine already.
+		// If he or she does, then increment the routine number by 1.
+		$routineNumber = mysqli_query($conn, "SELECT " . COLUMN_ROUTINE_NUMBER . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " ORDER BY " . COLUMN_ROUTINE_NUMBER . " DESC LIMIT 1;");
+		if ($row = mysqli_fetch_assoc($routineNumber))
+		{
+			$routineNumber = $row[COLUMN_ROUTINE_NUMBER];
+			$routineNumber++;
+		}
+		else
+		{
+			// We start at 7 because 7 would be the next number in the list 
+			// if we continued from the default list of routines from the 
+			// MuscleGroupRoutine table.
+			$routineNumber = 7;
+		}
+
+		$muscleGroupNameQuery = mysqli_query($conn, $select);
+
+		while($row = mysqli_fetch_assoc($muscleGroupNameQuery))
+		{
+	    	$muscleGroupNames[] = $row[COLUMN_MUSCLE_GROUP_NAME];
+		}
+		
+		$muscleGroupNameLength = count($muscleGroupNames);
+
+		for ($i = 0; $i < $muscleGroupNameLength; $i++)
+		{
+			$muscleGroup = $muscleGroupNames[$i];
+
+		    $insert .= "INSERT INTO " . TABLE_USER_MUSCLE_GROUP_ROUTINE . "(" . COLUMN_EMAIL . "," . COLUMN_MUSCLE_GROUP_NAME . "," . COLUMN_ROUTINE_NUMBER . "," . COLUMN_DISPLAY_NAME . ") VALUES (" . $e . ",'" . $muscleGroup . "'," . $routineNumber . ",'" . $routineName . "'); ";
+		}
+
+		$query = mysqli_multi_query($conn, $insert);
+		if($query)
+		{
+			print json_encode(SUCCESS);
+		}
+		else
+		{
+			print json_encode(FAILURE);
+		}
+	}	
 ?>
