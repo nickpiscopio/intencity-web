@@ -1,5 +1,17 @@
-@charset "UTF-8";
+body {
+    letter-spacing: .031em;
+    background: #F6F6FF;
+    margin: 0;
+    padding: 0
+}
+
+a,
+h2 {
+    font-weight: 500
+}
+
 .hero,
+a,
 img {
     vertical-align: middle
 }
@@ -55,8 +67,10 @@ html {
     display: inline-block
 }
 
+a,
 img {
     outline: 0;
+    line-height: 2.5em;
     padding: .75em
 }
 
@@ -158,6 +172,11 @@ h2 {
 
 #footer img {
     padding: .5em .25em
+}
+
+#webApp:hover {
+    color: #FFF;
+    background-color: #309DDB
 }
 
 .descriptionTitle {

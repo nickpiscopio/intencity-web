@@ -5,7 +5,7 @@
 
 		<meta property="og:title" content="Intencity" />
 		<meta property="og:url" content="http://www.Intencity.fit" />
-		<meta property="og:image" content="http://www.intencity.fit/images/web/logo_facebook.png" />
+		<meta property="og:image" content="http://www.intencity.fit/images/logo_facebook.png" />
 		<meta property="og:description" content="Intencity is a free social application that helps users with their everyday fitness goals. It is an application built with the user in mind containing robust features to motivate and prevent injuries." />
 		<meta property="fb:app_id" content="256882641152821" />
 
@@ -16,7 +16,7 @@
 								   	   theBasement, Technology, Basement, Workout App, Workout, Intencity.fit, Intensity.fit, Workout of the Day, Lifting, Lift, Weight Lifting, Gym, Beachbody, Beach body, WOD, Training, Weights, Weight Training, Strong, Body Building, Building, Strong, Android, iOS, Swift, Java, Get Fit, Weight Loss, Personal Trainer, Trainer">
 
 		<meta name="author" content="Intencity.fit">
-		<meta itemprop="image" content="/images/web/logo_facebook.svg">
+		<meta itemprop="image" content="/images/logo_facebook.png">
 		<meta name="dcterms.rights" content="&copy; 2016 All Rights Reserved. Intencity.fit">
 		<meta name="dcterms.dateCopyrighted" content="2016">
 		<meta charset="UTF-8">
@@ -38,11 +38,11 @@
 		<script type = "text/javascript">
 
 			var images = [], x = -1;
-			images[0] = "images/web/demo/intencity_demo_hero.png";
-			images[1] = "images/web/demo/intencity_demo_fitness_guru.png";
-			images[2] = "images/web/demo/intencity_demo_directions.png";
-			images[3] = "images/web/demo/intencity_demo_fitness_log.png";
-			images[4] = "images/web/demo/intencity_demo_rankings.png";
+			images[0] = "images/intencity_demo_hero.png";
+			images[1] = "images/intencity_demo_fitness_guru.png";
+			images[2] = "images/intencity_demo_directions.png";
+			images[3] = "images/intencity_demo_fitness_log.png";
+			images[4] = "images/intencity_demo_rankings.png";
 
 			var titles = [], x = -1;
 			titles[0] = "Inten<span>city</span>";
@@ -77,13 +77,13 @@
 			function setChangeImageListener(identifier, imageName)
 			{
 				$(identifier + " img").hover(function() { 
-			            this.src = "images/web/demo/" + imageName + "_hover.svg";
+			            this.src = "images/" + imageName + "_hover.svg";
 			        }, function () {
-				        this.src = "images/web/demo/" + imageName + ".svg";
+				        this.src = "images/" + imageName + ".svg";
 				    });
 
 				$(identifier + " img").click(function() {
-				        this.src = "images/web/demo/" + imageName + ".svg";
+				        this.src = "images/" + imageName + ".svg";
 				    });
 			}
 
@@ -133,23 +133,23 @@
 
 				$('#swiper').append('<div id="swiper' + i + '" class="swiper-slide">' +
 
-										// '<div id="webAppContainer" class="shadow">' +
-										// 	'<div class="container">' +
+										'<div id="webAppContainer" class="shadow">' +
+											'<div class="container">' +
 												
-										// 		'<a id="webApp" class="rightFloat" href="http://www.intencityapp.com">GO TO WEB APP (v1.0)</a>' +
+												'<a class="rightFloat" href="contribute.html">WANT TO CONTRIBUTE?</a>' +
 
-										// 	'</div>' +
-										// '</div>' +
+											'</div>' +
+										'</div>' +
 
 										'<div id="footer" class="shadow">' +
 
 											'<div class="container">' +
 
 												'<div class="footerContent right">' +
-													'<a id="instagram" href="https://www.instagram.com/intencityapp/" target="_blank"><img src="images/web/demo/social_media_instagram.svg" alt="Intencity Instagram"/></a>'+
-													'<a id="twitter" href="https://twitter.com/intencityapp" target="_blank"><img src="images/web/demo/social_media_twitter.svg"/></a>'+
-													'<a id="facebook" href="https://www.facebook.com/IntencityApp/" target="_blank"><img src="images/web/demo/social_media_facebook.svg" alt="Intencity Facebook"/></a>'+
-													'<a id="youtube" href="https://www.youtube.com/channel/UC6zhYNKLYNidkvjvMq4Vamg" target="_blank"><img src="images/web/demo/social_media_youtube.svg" alt="Intencity YouTube"/></a>'+
+													'<a id="instagram" href="https://www.instagram.com/intencityapp/" target="_blank"><img src="images/social_media_instagram.svg" alt="Intencity Instagram"/></a>'+
+													'<a id="twitter" href="https://twitter.com/intencityapp" target="_blank"><img src="images/social_media_twitter.svg"/></a>'+
+													'<a id="facebook" href="https://www.facebook.com/IntencityApp/" target="_blank"><img src="images/social_media_facebook.svg" alt="Intencity Facebook"/></a>'+
+													'<a id="youtube" href="https://www.youtube.com/channel/UC6zhYNKLYNidkvjvMq4Vamg" target="_blank"><img src="images/social_media_youtube.svg" alt="Intencity YouTube"/></a>'+
 												'</div>'+	
 
 												'<p class="footerContent left">&copy; Intencity 2016. All Rights Reserved.</p>' +									
@@ -160,20 +160,20 @@
 											
 										'<div class="container">' +
 
-											'<img id="heroLogo" src="images/web/demo/intencity_hero.svg" alt="Intencity Logo"/></a>' +
+											'<img id="heroLogo" src="images/intencity_hero.svg" alt="Intencity Logo"/></a>' +
 
 											'<h2>DOWNLOAD FOR FREE</h2>' +
 
 											'<div>' +
 												'<div class="appStore">' +
 													'<a id="iOSDownload" href="https://itunes.apple.com/us/app/intencity/id786650617?mt=8" target="_blank">' +
-														'<img src="images/web/demo/apple-logo.svg" alt="Android App Store Intencity"/>' +
+														'<img src="images/apple-logo.svg" alt="Android App Store Intencity"/>' +
 													// '<p>2.0</p>' +
 												'</div>' +
 
 												'<div class="appStore">' +
 													'<a id="androidDownload" href="https://play.google.com/store/apps/details?id=com.intencity.intencity" target="_blank">' +
-														'<img src="images/web/demo/android-logo.svg" alt="Android Play Store Intencity"/>' +
+														'<img src="images/android-logo.svg" alt="Android Play Store Intencity"/>' +
 													'</a>' +
 													// '<p>2.0</p>' +
 												'</div>' +
@@ -212,7 +212,7 @@
 	        <!-- Add Pagination -->
 	        <div class="swiper-pagination"></div>
 
-	        <a class="next"><img src="images/web/demo/button_next.svg" alt="Next"/></a>
+	        <a class="next"><img src="images/button_next.svg" alt="Next"/></a>
 
 	    </div>
 

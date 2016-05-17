@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+#logo {
+	position:fixed;
+	left:50px;
+	top:10px;
+}
+
+/* ====================================================== */
+/* PAGE LAYOUT STYLES */
+/*#wrapper{ position:relative;  display:none; }
+#main{ margin: 0; auto; background: #fff; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }*/
+.section{ height:1080px;}
+
+/* NAVIGATION STYLES */
+#navContainer {
+	background-color: rgba(255, 255, 255, .5);
+	width: 100%;
+	position:fixed;
+	top:0;
+	z-index: 9;
+}
+
+ul {
+	list-style-type: none;
+	overflow: hidden;
+}
+
+li {
+    float: left;
+}
+
+li a {
+	display: block;
+    text-align: center;
+}
