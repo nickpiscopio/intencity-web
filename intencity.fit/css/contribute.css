@@ -27,7 +27,7 @@ body
 
 .container-margin
 {
-	padding: 5.5em 0 1.5em 0;
+	padding-top: 6em;
 }
 
 .utilizationDescription-wrapper
@@ -59,6 +59,7 @@ body
 {
 	background-color: #414042;
 	color: #FFF;
+	padding-bottom: 1.5em;
 }
 
 #sectionContribute-frame
@@ -133,6 +134,13 @@ body
 	z-index: 9;
 }
 
+#navContainer img
+{
+	padding: .625em .5em .375em .5em;
+	height: 2.125em;
+	width: auto;
+}
+
 p, ul, li, form {
 	margin-bottom: 0;
 } 
@@ -153,11 +161,11 @@ li a {
 
 @media only screen and (max-width:1020px)
 {
-	.container-margin
+	/*.container-margin
 	{
 		margin: 0 auto;
 		width: 90%;
-	}
+	}*/
 
 	h1 
 	{
@@ -172,5 +180,23 @@ li a {
 	#sectionContribute-frame
 	{
 		width: 90%;
+	}
+
+	.utilization img
+	{
+		width: 25%;
+	}
+
+	.utilization .description
+	{
+		width: 65%;
+	}
+}
+
+@media only screen and (max-width:450px)
+{
+	.respHidden
+	{
+		display: none;
 	}
 }
