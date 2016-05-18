@@ -32,6 +32,7 @@
 
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script type="text/javascript" src="js/swiper.jquery.min.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
 
 		<link rel="shortcut icon" href="images/favicon.ico">
 
@@ -72,19 +73,6 @@
 				descriptionTitles[1].innerHTML = titles[x];
 				descriptionDescriptions[0].innerHTML = descriptions[x];
 				descriptionDescriptions[1].innerHTML = descriptions[x];
-			}
-
-			function setChangeImageListener(identifier, imageName)
-			{
-				$(identifier + " img").hover(function() { 
-			            this.src = "images/" + imageName + "_hover.svg";
-			        }, function () {
-				        this.src = "images/" + imageName + ".svg";
-				    });
-
-				$(identifier + " img").click(function() {
-				        this.src = "images/" + imageName + ".svg";
-				    });
 			}
 
 			function initDisplay() {
@@ -134,11 +122,13 @@
 				$('#swiper').append('<div id="swiper' + i + '" class="swiper-slide">' +
 
 										'<div id="webAppContainer" class="shadow">' +
+
 											'<div class="container">' +
 												
-												'<a class="rightFloat" href="contribute.html">WANT TO CONTRIBUTE?</a>' +
+												'<a class="aLink rightFloat" href="contribute.html">WANT TO CONTRIBUTE?</a>' +
 
 											'</div>' +
+
 										'</div>' +
 
 										'<div id="footer" class="shadow">' +
@@ -166,20 +156,18 @@
 
 											'<div>' +
 												'<div class="appStore">' +
-													'<a id="iOSDownload" href="https://itunes.apple.com/us/app/intencity/id786650617?mt=8" target="_blank">' +
+													'<a id="iOSDownload aLink" href="https://itunes.apple.com/us/app/intencity/id786650617?mt=8" target="_blank">' +
 														'<img src="images/apple-logo.svg" alt="Android App Store Intencity"/>' +
 													// '<p>2.0</p>' +
 												'</div>' +
 
 												'<div class="appStore">' +
-													'<a id="androidDownload" href="https://play.google.com/store/apps/details?id=com.intencity.intencity" target="_blank">' +
+													'<a id="androidDownload aLink" href="https://play.google.com/store/apps/details?id=com.intencity.intencity" target="_blank">' +
 														'<img src="images/android-logo.svg" alt="Android Play Store Intencity"/>' +
 													'</a>' +
 													// '<p>2.0</p>' +
 												'</div>' +
 											'</div>' +
-
-											
 											
 										'</div>' +
 
