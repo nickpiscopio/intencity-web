@@ -61,7 +61,7 @@ html {
     align-items: center
 }
 
-#footer p,
+copyright,
 .appStore,
 .hero {
     display: inline-block
@@ -98,6 +98,8 @@ h2 {
     letter-spacing: .125em;
     font-size: .938em
 }
+
+.container { max-width: 60em; margin: 0 auto; }
 
 .demoContainer {
     max-width: 60em;
@@ -138,7 +140,7 @@ h2 {
     padding-right: 1em
 }
 
-#footer p,
+copyright,
 #hero p {
     color: #F6F6FF
 }
@@ -150,10 +152,6 @@ h2 {
 #hero p,
 #webApp {
     font-size: small
-}
-
-#footer p {
-    font-size: x-small
 }
 
 #footer {
@@ -253,7 +251,7 @@ h2 {
         #footer img {
             padding: 1em .25em
         }
-        #footer p {
+        copyright {
             padding-bottom: 1em
         }
         .footerContent {
@@ -273,10 +271,7 @@ h2 {
     #footer img {
         padding: 1em .25em
     }
-    #footer p {
+    copyright {
         padding-bottom: 1em
-    }
-    .footerContent {
-        padding: 0
-    }
+    }    
 }

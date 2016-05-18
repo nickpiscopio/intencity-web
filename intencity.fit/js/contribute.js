@@ -15,12 +15,17 @@ $(document).ready(function(){
 
 	$('#btnDonate').click(function()
 	{
-		//Add a spinner to the page load so the user knows something is happening.
   		addSpinner();
 
 		$('#donateForm').submit();
 
+		// We retrun false so the screen doesn't refresh.
 		return false;
+	});
+
+	$(window).unload(function()
+	{
+    	hideSpinner();
 	});
 	
 	// initiate page scroller plugin
@@ -29,6 +34,9 @@ $(document).ready(function(){
 	});
 });
 
+/**
+ * Adds a spinner to the screen.
+ */
 function addSpinner()
 {
 	var opts = {
@@ -52,6 +60,14 @@ function addSpinner()
 	$("#pageLoader").append(spinner.el);
 }
 
+/**
+ * Removes the spinner from the page view.
+ */
+function hideSpinner()
+{
+	$('#pageLoader').empty();
+}
+
 /** 
  * Loads full size div backgrounds
  */
@@ -61,6 +77,9 @@ function loadBackgrounds()
 	$('#sectionMission').backstretch("images/crossfit_woman.jpg", {fade: fadeInMillis});
 }
 
+/**
+ * Loads the utilization sections.
+ */
 function loadUtilizations()
 {
 	var images = [], x = -1;
@@ -84,21 +103,29 @@ function loadUtilizations()
 	var length = images.length;
 	for (var i = 0; i < length; i++)
 	{
-		$('#utilizations').append('<div class="utilization">' +
+		$('#utilizations').append('<div class="row">' +
 
-									(i > 0 ? '<div class="divider colorPrimary"></div>' : '') +
+      									'<div class="twelve columns">' +
 
-									'<div' + (i == 0 ? ' id="firstUtilization" ' : '') + 'class="utilizationDescription-wrapper">' +
+											'<div class="utilization">' +
 
-										'<img src="' + images[i] + '">' +
+												(i > 0 ? '<div class="divider colorPrimary"></div>' : '') +
 
-										'<div class="description rightFloat">' +
-											'<h2>' + titles[i] + '</h2>' +
-											'<p>' + descriptions[i] + '</p>' +
+												'<div' + (i == 0 ? ' id="firstUtilization" ' : '') + 'class="utilizationDescription-wrapper">' +
+
+													'<img src="' + images[i] + '">' +
+
+													'<div class="description rightFloat">' +
+														'<h2>' + titles[i] + '</h2>' +
+														'<p>' + descriptions[i] + '</p>' +
+													'</div>' +
+
+												'</div>' +
+
+											'</div>' +
+
 										'</div>' +
 
-									'</div>' +
-
-								'</div>');
+									'</div>');
 	}
 }

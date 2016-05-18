@@ -27,7 +27,7 @@ body
 
 .container-margin
 {
-	padding: 5.5em 1.5em 1.5em 1.5em;
+	padding: 5.5em 0 1.5em 0;
 }
 
 .utilizationDescription-wrapper
@@ -75,11 +75,12 @@ body
 
 #btnDonate
 {
-	font-size: 1.5em;
+	font-size: 1.250em;
 	color: #FFF;
 	background-color: #45b29d;
-	padding: 1.5em 3em;
+	padding: 1.375em 3em;
 	border-radius: .313em;
+	letter-spacing: 0.094em;
 }
 
 #btnDonate:hover
@@ -115,7 +116,13 @@ body
 /* PAGE LAYOUT STYLES */
 /*#wrapper{ position:relative;  display:none; }
 #main{ margin: 0; auto; background: #fff; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }*/
-.section{ height:67.5em;}
+/*.section{ height:67.5em;}*/
+
+#sectionUtilization
+{
+	padding-bottom: 7em;
+}
+#sectionMission { height:67.5em; }
 
 /* NAVIGATION STYLES */
 #navContainer {
@@ -125,6 +132,10 @@ body
 	top:0;
 	z-index: 9;
 }
+
+p, ul, li, form {
+	margin-bottom: 0;
+} 
 
 ul {
 	list-style-type: none;
@@ -138,6 +149,22 @@ li {
 li a {
 	display: block;
     text-align: center;
+}
+
+@media only screen and (max-width:1020px)
+{
+	.container-margin
+	{
+		margin: 0 auto;
+		width: 90%;
+	}
+
+	h1 
+	{
+		margin: 0 auto;
+		/*width: 90%;*/
+		text-align: center;
+	}
 }
 
 @media only screen and (max-width:660px)
