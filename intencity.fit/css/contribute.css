@@ -5,6 +5,11 @@ body
 	color: #414042;
 }
 
+p 
+{
+	font-weight: 400;
+}
+
 .colorAccent {
 	background-color: #45b29d;
 }
@@ -136,7 +141,7 @@ body
 
 #navContainer img
 {
-	padding: .625em .5em .375em .5em;
+	padding: .563em .5em .375em .5em;
 	height: 2.125em;
 	width: auto;
 }
