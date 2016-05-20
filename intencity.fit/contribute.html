@@ -55,14 +55,14 @@
 <body>
 	<div id="wrapper">
 		<div id="main">
-			<div id="navContainer" class="shadow">
+			<div id="navContainer" class="shadow-bottom">
 				<div class="container">
 					<a href="index.html"><img src="images/intencity_hero.svg"/></a>
 					<div id="nav" class="pageScrollerNav standardNav rightFloat">
 						<ul>
 							<li><a class="respHidden aLink" href="#">MISSION</a></li>
 							<li><a class="respHidden aLink" href="#">UTILIZATION</a></li>
-							<li><a class="aLink" href="#">CONTRIBUTE</a></li>
+							<li><a id="contribute-button"class="aLink" href="#">CONTRIBUTE</a></li>
 						</ul>
 					</div>
 				</div>
@@ -76,7 +76,7 @@
 								<h2>STORY</h2>
 								<p>Intencity’s founders believe too many things in life require payment. We’ve been influenced by top companies to shed our price tag and offer our services free of charge. Because of this, Intencity will always be a free app. To do this isn’t easy, though. We still have bills that need to be paid. Please read the following page, and if you feel you would like to contribute, that would be greatly appreciated!</p>
 
-								<div class="divider colorAccent"></div>
+								<div id="story-divider" class="divider half colorAccent"></div>
 
 								<h2>MISSION</h2>
 								<p>We strive to deliver the greatest platform that will influence, motivate, and connect people, which will help them achieve their fitness goals.</p>
@@ -84,9 +84,11 @@
 						</div>
 					</div>
 				</div>	
+
+				<div class="shadow-top"></div>
 			</div>
 
-			<div class="section" id="sectionUtilization">
+			<div class="section shadow-bottom" id="sectionUtilization">
 				<div class="container">
 					<div id="utilizations" class="container-margin">
 						<h1>How will contributions be utilized?</h1>
@@ -102,7 +104,7 @@
 
 						<p id="donateDescription">Intencity’s founders jumped head first into the fitness world to help people. This world already has plenty of corporations where their bottom line is their quarterly profits. Intencity promises to be different than the corporate norm.</p>
 
-						<p id="donateQuestion">Like what you read? Want to contribute?</p>
+						<h2 id="donateQuestion">Want to contribute?</h2>
 
 						<form id="donateForm" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 							<input type="hidden" name="cmd" value="_s-xclick">
@@ -112,7 +114,7 @@
 
 						<a id="btnDonate" class="shadow" href="#">DONATE</a>
 
-						<p id="shareDescription">Contribute by sharing &amp; following</p>
+						<div class="divider half colorOffWhite"></div>
 
 						<div id="social">
 							<a id="instagram" href="https://www.instagram.com/intencityapp/" target="_blank"><img src="images/social_media_instagram.svg" alt="Intencity Instagram"/></a>
@@ -120,6 +122,18 @@
 							<a id="facebook" href="https://www.facebook.com/IntencityApp/" target="_blank"><img src="images/social_media_facebook.svg" alt="Intencity Facebook"/></a>
 							<a id="youtube" href="https://www.youtube.com/channel/UC6zhYNKLYNidkvjvMq4Vamg" target="_blank"><img src="images/social_media_youtube.svg" alt="Intencity YouTube"/></a>
 						</div>
+
+					</div>
+
+				</div>
+
+				<div class="shadow-top"></div>
+		
+			</div>
+			
+			<div id="footer">
+
+				<div class="container">
 
 						<div id="downloadDescription">
 							<p>DOWNLOAD FOR FREE</p>

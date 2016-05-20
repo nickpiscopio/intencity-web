@@ -85,7 +85,7 @@ function hideSpinner()
 function loadBackgrounds()
 {
 	var fadeInMillis = 1000;
-	$('#sectionMission').backstretch("images/crossfit_woman.jpg", {fade: fadeInMillis});
+	$('body').backstretch("images/crossfit_woman.jpg", {fade: fadeInMillis});
 }
 
 /**
@@ -120,7 +120,7 @@ function loadUtilizations()
 
 											'<div class="utilization">' +
 
-												(i > 0 ? '<div class="divider colorPrimary"></div>' : '') +
+												(i > 0 ? '<div class="divider full colorPrimary"></div>' : '') +
 
 												'<div' + (i == 0 ? ' id="firstUtilization" ' : '') + 'class="utilizationDescription-wrapper">' +
 
