@@ -108,7 +108,7 @@ function loadUtilizations()
 	var descriptions = [], x = -1;
 	descriptions[0] = "As we scale, our app should continue to run smoothly for our users. To ensure the highest quality product, this means that we may need another web host in the future; a web host with faster speeds and 100% uptime.";
 	descriptions[1] = "Intencity is currently using a server bundled with its web host. As Intencity users increase, the load on our current server will also increase. Because of this, speed may decrease. To allow users to continue utilizing Intencity's services without hiccups, we wish to switch to a more scalable server structure in the future.";
-	descriptions[2] = "Ads have always been an option for Intencity. We could include moderate ads to counter balance the price of development. However, we understand this isn’t the most popular solution among users. If we gather enough funding, Intencity will stays ad free.";
+	descriptions[2] = "Ads have always been an option for Intencity. We could include moderate ads to counter balance the price of development. However, we understand this isn’t the most popular solution among users. If we gather enough funding, Intencity will stay ad free.";
 	descriptions[3] = "Intencity employs a small group of developers passionate about a few things: fitness and making the world a better place. These developers have left secure jobs in pursuit of helping others and work on Intencity full time, so a small percentage of contributions will go towards the livelihood of Intencity’s employees.";
 
 	var length = images.length;
