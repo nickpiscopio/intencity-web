@@ -20,6 +20,15 @@
 	define("TABLE_CUSTOM_ROUTINE_MUSCLE_GROUP", "CustomRoutineMuscleGroup");	
 	define("TABLE_USER_MUSCLE_GROUP_ROUTINE", "UserMuscleGroupRoutine");
 	define("TABLE_ROUTINE", "Routine");	
+	define("TABLE_BADGE", "Badge");
+	define("TABLE_USER_MEDIA", "UserMedia");
+	define("TABLE_SETTINGS", "Settings");
+	define("TABLE_FOLLOWING", "Following");
+	define("TABLE_CURRENT_ROUTINE", "CurrentRoutine");
+	define("TABLE_COMPLETED_MUSCLE_GROUP", "CompletedMuscleGroup");
+	define("TABLE_COMPLETED_EXERCISE", "CompletedExercise");
+	define("TABLE_COMMENT", "Comment");
+	define("TABLE_POST", "Post");
 	
 	//Constants for Column Names.
 	define("COLUMN_FIRST_NAME", "FirstName");
