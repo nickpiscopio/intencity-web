@@ -33,6 +33,7 @@
 	//Constants for Column Names.
 	define("COLUMN_FIRST_NAME", "FirstName");
 	define("COLUMN_LAST_NAME", "LastName");
+	define("COLUMN_LAST_LOGIN_DATE", "LastLoginDate");
 	define("COLUMN_EMAIL", "Email");
 	define("COLUMN_PASSWORD", "Password");
 	define("COLUMN_ACCOUNT_TYPE", "AccountType");
