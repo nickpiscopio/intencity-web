@@ -54,6 +54,7 @@
 	define("COLUMN_ROUTINE_NAME", "RoutineName");
 	define("COLUMN_DISPLAY_NAME", "DisplayName");
 	define("COLUMN_EXERCISE_NAME", "ExerciseName");
+	define("COLUMN_LOCATION", "Location");
 	define("COLUMN_PRIORITY", "Priority");
 	define("COLUMN_EXERCISE_WEIGHT", "ExerciseWeight");
 	define("COLUMN_EXERCISE_REPS", "ExerciseReps");
