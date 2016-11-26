@@ -9,7 +9,7 @@
  	 *		SUCCESS
  	 *		FAILURE
 	 * 
-	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_equipment.php?email=dev@gmail.com&display_name=Home&saved_location=123 Saved Road&location=1234 Street Road&inserts=Cable Pull,Treadmill,Roman Chair
+	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_fitness_equipment.php?email=dev@gmail.com&display_name=Home&saved_location=123 Saved Road&location=1234 Street Road&inserts=Cable Pull,Treadmill,Roman Chair
 	 * 
 	 */
 
@@ -40,7 +40,7 @@
 		
 		for($z = 0; $z < $insertTotal; $z++)
 		{
-			$insertQuery .= "INSERT INTO " . TABLE_USER_EQUIPMENT . " (" . COLUMN_DISPLAY_NAME . "," . COLUMN_LOCATION . "," . COLUMN_EMAIL . ", " . COLUMN_EQUIPMENT_NAME . ") VALUES ('" . $display_name . "','" . $location . "','" . $email . "', '" . $inserts[$z] . "'); ";
+			$insertQuery .= "INSERT INTO " . TABLE_USER_EQUIPMENT . " (" . COLUMN_DISPLAY_NAME . "," . COLUMN_LOCATION . "," . COLUMN_EMAIL . ", " . COLUMN_EQUIPMENT_NAME . ") VALUES ('" . $displayName . "','" . $location . "','" . $email . "', '" . $inserts[$z] . "'); ";
 		}
 	}
 
