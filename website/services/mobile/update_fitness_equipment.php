@@ -30,7 +30,7 @@
 	$insertQuery = "";
 
 	// Deletes every time regardless of whether we are inserting or updating.
-	$insertQuery .= "DELETE FROM  " . TABLE_USER_EQUIPMENT . " WHERE " . COLUMN_EMAIL . "='" . $email . "' AND " . COLUMN_LOCATION . "='" . $savedlocation ."'; ";	
+	$insertQuery .= "DELETE FROM  " . TABLE_USER_EQUIPMENT . " WHERE " . COLUMN_EMAIL . "='" . $email . "' AND (" . COLUMN_LOCATION . "='" . $savedlocation ."' OR " . COLUMN_LOCATION . "='" . $location ."'); ";	
 
 	if (isset($inserts))
 	{
