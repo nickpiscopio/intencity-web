@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Dec 03, 2016 at 02:14 PM
+-- Generation Time: Dec 11, 2016 at 12:59 PM
 -- Server version: 5.5.52-cll
 -- PHP Version: 5.6.20
 
@@ -37,6 +37,12 @@ UPDATE CompletedExercise SET CompletedExercise.ExerciseName = newExerciseName WH
 UPDATE Exclusion SET Exclusion.ExclusionName = newExerciseName WHERE Exclusion.ExclusionName = oldExerciseName;
 
 end$$
+
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists`(IN `email` VARCHAR(75), IN `location` VARCHAR(125))
+SELECT Location
+FROM UserEquipment
+WHERE UserEquipment.Email = email && UserEquipment.Location = location
+GROUP BY UserEquipment.Location$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `copyRoutine`(IN `email` VARCHAR(75))
 begin
@@ -1071,7 +1077,7 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1673 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1676 ;
 
 --
 -- Dumping data for table `Badge`
@@ -1089,7 +1095,10 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (66, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
 (67, 'ccorbi2004@yahoo.com', 1453733856440, 'Kept Swimming'),
 (70, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(1675, 'nick.piscopio@gmail.com', 1481296507234, 'Finisher'),
 (74, 'halendang@gmail.com', 1453733856440, 'Kept Swimming'),
+(1674, 'nick.piscopio@gmail.com', 1481123966020, 'Finisher'),
+(1673, 'nick.piscopio@gmail.com', 1480951427661, 'Finisher'),
 (1672, 'nick.piscopio@gmail.com', 1480790507355, 'Finisher'),
 (1671, 'nick.piscopio@gmail.com', 1480790507343, 'Kept Swimming'),
 (1670, 'nick.piscopio@gmail.com', 1479935132056, 'Finisher'),
@@ -1299,7 +1308,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6507 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6509 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -3952,7 +3961,9 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (6503, 'nick.piscopio@gmail.com', '2016-11-23', '16:05:31', 'Crunch', NULL, 40, NULL, 7, ''),
 (6504, 'nick.piscopio@gmail.com', '2016-11-23', '16:05:31', 'Crunch', NULL, 40, NULL, 7, ''),
 (6505, 'nick.piscopio@gmail.com', '2016-11-23', '16:43:36', 'Roman Chair Dip', NULL, 10, NULL, 8, 'null'),
-(6506, 'nick.piscopio@gmail.com', '2016-11-23', '16:46:00', 'Roman Chair Dip', NULL, 10, NULL, 8, 'null');
+(6506, 'nick.piscopio@gmail.com', '2016-11-23', '16:46:00', 'Roman Chair Dip', NULL, 10, NULL, 8, 'null'),
+(6507, 'nick.piscopio@gmail.com', '2016-12-05', '10:16:14', 'Sit-Up', NULL, 20, NULL, 7, 'null'),
+(6508, 'nick.piscopio@gmail.com', '2016-12-07', '10:14:19', 'Lying Leg Raise', NULL, 40, NULL, 6, '');
 
 -- --------------------------------------------------------
 
@@ -3968,7 +3979,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `RoutineNumber` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14793 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14813 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13000,7 +13011,19 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`, `R
 (14789, 'nick.piscopio@gmail.com', 1480790699000, 'Hamstrings', 1),
 (14790, 'nick.piscopio@gmail.com', 1480790699000, 'Quads', 1),
 (14791, 'nick.piscopio@gmail.com', 1480790699000, 'Glutes', 1),
-(14792, 'nick.piscopio@gmail.com', 1480790699000, 'Lower Back', 1);
+(14792, 'nick.piscopio@gmail.com', 1480790699000, 'Lower Back', 1),
+(14793, 'nick.piscopio@gmail.com', 1480950769000, 'Abs', 5),
+(14794, 'nick.piscopio@gmail.com', 1480950769000, 'Obliques', 5),
+(14795, 'nick.piscopio@gmail.com', 1481123205000, 'Abs', 5),
+(14796, 'nick.piscopio@gmail.com', 1481123205000, 'Obliques', 5),
+(14797, 'nick.piscopio@gmail.com', 1481296008000, 'Abs', 5),
+(14798, 'nick.piscopio@gmail.com', 1481296008000, 'Obliques', 5),
+(14799, 'nick.piscopio@gmail.com', 1481390519000, 'Calves', 1),
+(14800, 'nick.piscopio@gmail.com', 1481390519000, 'Shins', 1),
+(14801, 'nick.piscopio@gmail.com', 1481390519000, 'Hamstrings', 1),
+(14802, 'nick.piscopio@gmail.com', 1481390519000, 'Quads', 1),
+(14803, 'nick.piscopio@gmail.com', 1481390519000, 'Glutes', 1),
+(14804, 'nick.piscopio@gmail.com', 1481390519000, 'Lower Back', 1);
 
 -- --------------------------------------------------------
 
@@ -15699,7 +15722,7 @@ CREATE TABLE IF NOT EXISTS `Settings` (
   `ShowSocialNotifications` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=656 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=658 ;
 
 --
 -- Dumping data for table `Settings`
@@ -16068,7 +16091,7 @@ CREATE TABLE IF NOT EXISTS `User` (
   `EarnedPoints` int(11) NOT NULL,
   `CanRecievePrizes` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=551 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=553 ;
 
 --
 -- Dumping data for table `User`
@@ -16083,7 +16106,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-12-03', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$yA8jmB2fujv0k32y0lblleT9FuqXc9LWUleRsG4lEBJIO/ODq3he2', 'dViDrRljgy6h8HXy', 'A', 1440, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2016-12-10', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$yA8jmB2fujv0k32y0lblleT9FuqXc9LWUleRsG4lEBJIO/ODq3he2', 'dViDrRljgy6h8HXy', 'A', 1605, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -16359,7 +16382,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11301 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11395 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -20521,17 +20544,23 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `DisplayName`, `Location`, `Equipmen
 (10734, 'user1480025132872@intencity.fit', 'Default', '', 'Step'),
 (10735, 'user1480025132872@intencity.fit', 'Default', '', 'Treadmill'),
 (10736, 'user1480025132872@intencity.fit', 'Default', '', 'Wall'),
+(11393, 'nick.piscopio@gmail.com', 'home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Barbell'),
+(11369, 'nick.piscopio@gmail.com', '', 'hb', 'Cable Row Machine'),
+(11368, 'nick.piscopio@gmail.com', '', 'hb', 'Cable Pull'),
+(11367, 'nick.piscopio@gmail.com', '', 'hb', 'Bike'),
+(11366, 'nick.piscopio@gmail.com', '', 'hb', 'Bench Rack'),
 (11291, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Cable Pull'),
 (11289, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Bench'),
 (11294, 'nick.piscopio@gmail.com', '', 'H B Whittington Court, LA, United States', 'Bench Rack'),
 (11293, 'nick.piscopio@gmail.com', '', 'H B Whittington Court, LA, United States', 'Bench'),
 (11292, 'nick.piscopio@gmail.com', '', 'H B Whittington Court, LA, United States', 'Barbell'),
 (11290, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Bench Rack'),
-(11282, 'nick.piscopio@gmail.com', 'hb', 'hb', 'Bench'),
-(11281, 'nick.piscopio@gmail.com', 'hb', 'hb', 'Barbell'),
-(11298, 'nick.piscopio@gmail.com', 'h', 'Nfs 540-2, Paisley, FL, United States', 'Barbell'),
-(11299, 'nick.piscopio@gmail.com', 'h', 'Nfs 540-2, Paisley, FL, United States', 'Bench'),
-(11300, 'nick.piscopio@gmail.com', 'h', 'Nfs 540-2, Paisley, FL, United States', 'Bench Rack');
+(11365, 'nick.piscopio@gmail.com', '', 'hb', 'Bench'),
+(11394, 'nick.piscopio@gmail.com', 'home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Cable Pull'),
+(11364, 'nick.piscopio@gmail.com', '', 'hb', 'Barbell'),
+(11372, 'nick.piscopio@gmail.com', 'h', 'Nfs 540-2, Paisley, FL, United States', 'Bench Rack'),
+(11371, 'nick.piscopio@gmail.com', 'h', 'Nfs 540-2, Paisley, FL, United States', 'Bench'),
+(11370, 'nick.piscopio@gmail.com', 'h', 'Nfs 540-2, Paisley, FL, United States', 'Barbell');
 
 -- --------------------------------------------------------
 
