@@ -24,14 +24,15 @@
 	
 	//NEEDS TO BE CHANGED TO A POST.
 	$e  = "'" . $_POST['email'] . "'";
-	$routineName  = $_POST['routine'];
-	$v  = $_POST['inserts'];
+	$routineName  = str_replace("'", "\'", $_POST['routine']);
+	$v  = $_GET['inserts'];
 	$variables = explode(',', $v);
 	$varLength = count($variables);
 
 	$insert = "";
 
 	$preExistingRoutine = mysqli_query($conn, "SELECT " . COLUMN_ROUTINE_NAME . " FROM " . TABLE_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " AND " . COLUMN_ROUTINE_NAME . " = '" . $routineName . "' LIMIT 1;");
+
 	if (mysqli_num_rows($preExistingRoutine) == 0)
 	{
 		$routineNumber = mysqli_query($conn, "SELECT " . COLUMN_EXERCISE_DAY . " FROM " . TABLE_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " ORDER BY " . COLUMN_EXERCISE_DAY . " DESC LIMIT 1;");

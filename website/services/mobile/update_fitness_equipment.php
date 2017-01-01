@@ -22,7 +22,7 @@
 	
 	//NEEDS TO BE CHANGED TO A POST.
 	$email = $_POST['email'];
-	$displayName = $_POST['display_name'];
+	$displayName  = str_replace("'", "\'", $_POST['display_name']);
 	$savedlocation = $_POST['saved_location'];
 	$location = $_POST['location'];
 	$inserts = $_POST['inserts'];
