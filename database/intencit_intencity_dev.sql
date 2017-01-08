@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 08, 2017 at 11:51 AM
+-- Generation Time: Jan 08, 2017 at 11:56 AM
 -- Server version: 5.5.52-cll
 -- PHP Version: 5.6.20
 
@@ -405,7 +405,7 @@ Inner JOIN Equipment
     ON Exercise.ExerciseName = Equipment.ExerciseName
 LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
            FROM CompletedExercise
-           WHERE CompletedExercise.Email = 'nick.piscopio@gmail.com'
+           WHERE CompletedExercise.Email = email
            ORDER BY CompletedExercise.ID DESC) as completedExercise
     ON completedExercise.ExerciseName = Exercise.ExerciseName 
 LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
