@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 08, 2017 at 11:56 AM
+-- Generation Time: Jan 14, 2017 at 11:56 AM
 -- Server version: 5.5.52-cll
 -- PHP Version: 5.6.20
 
@@ -681,6 +681,42 @@ begin
   ORDER BY Priority DESC, ExerciseName ASC;
 
 end$$
+
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises`(IN `email` VARCHAR(75), IN `userLocation` INT(125))
+SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
+FROM Exercise
+INNER JOIN MuscleGroup 
+    ON Exercise.ExerciseName = MuscleGroup.ExerciseName
+Inner JOIN Equipment
+    ON Exercise.ExerciseName = Equipment.ExerciseName
+LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+           FROM CompletedExercise
+           WHERE CompletedExercise.Email = email
+           ORDER BY CompletedExercise.ID DESC) as completedExercise
+    ON completedExercise.ExerciseName = Exercise.ExerciseName 
+LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
+            FROM ExercisePriority
+            WHERE ExercisePriority.Email = email) as exercisePriority
+    ON exercisePriority.ExerciseName = Exercise.ExerciseName
+WHERE 
+      Exercise.Type = 'E' && 
+      Exercise.Recommended = 1 && 
+      (MuscleGroup.MuscleGroupName IN (SELECT CompletedMuscleGroup.MuscleGroupName
+                                       FROM CompletedMuscleGroup
+                                       WHERE CompletedMuscleGroup.Email = email && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
+                                                                                                                FROM CompletedMuscleGroup
+                                                                                                                WHERE CompletedMuscleGroup.Email = email
+                                                                                                                ORDER BY CompletedMuscleGroup.ID DESC
+                                                                                                                LIMIT 1)) && 
+      MuscleGroup.MuscleGroupExercisePercentage >= 50) && 
+      (Equipment.EquipmentName IN (SELECT UserEquipment.EquipmentName 
+                                   FROM UserEquipment 
+                                   WHERE UserEquipment.Email = email && UserEquipment.Location = userLocation) || Equipment.EquipmentName IS NULL) && 
+      Exercise.ExerciseName NOT IN (SELECT Exclusion.ExclusionName
+                                    FROM Exclusion 
+                                    WHERE Exclusion.Email = email && Exclusion.ExclusionType = 'E')
+GROUP BY Exercise.ExerciseName
+ORDER BY RandomizedPriority DESC$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment`(IN `email` VARCHAR(75), IN `location` VARCHAR(125))
 SELECT Equipment.EquipmentName, 
@@ -4197,7 +4233,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `RoutineNumber` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14886 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14888 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13314,7 +13350,9 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`, `R
 (14882, 'nick.piscopio@gmail.com', 1483370454000, 'Glutes', 1),
 (14883, 'nick.piscopio@gmail.com', 1483370454000, 'Lower Back', 1),
 (14884, 'nick.piscopio@gmail.com', 1483549820000, 'Triceps', 2),
-(14885, 'nick.piscopio@gmail.com', 1483549820000, 'Chest', 2);
+(14885, 'nick.piscopio@gmail.com', 1483549820000, 'Chest', 2),
+(14886, 'nick.piscopio@gmail.com', 1484412841000, 'Triceps', 2),
+(14887, 'nick.piscopio@gmail.com', 1484412841000, 'Chest', 2);
 
 -- --------------------------------------------------------
 
@@ -16371,7 +16409,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2017-01-07', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$yA8jmB2fujv0k32y0lblleT9FuqXc9LWUleRsG4lEBJIO/ODq3he2', 'dViDrRljgy6h8HXy', 'A', 2310, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2017-01-14', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$yA8jmB2fujv0k32y0lblleT9FuqXc9LWUleRsG4lEBJIO/ODq3he2', 'dViDrRljgy6h8HXy', 'A', 2315, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
