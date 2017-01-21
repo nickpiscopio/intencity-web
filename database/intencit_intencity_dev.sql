@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 14, 2017 at 11:56 AM
+-- Generation Time: Jan 21, 2017 at 03:28 PM
 -- Server version: 5.5.52-cll
 -- PHP Version: 5.6.20
 
@@ -682,41 +682,65 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises`(IN `email` VARCHAR(75), IN `userLocation` INT(125))
-SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
-FROM Exercise
-INNER JOIN MuscleGroup 
-    ON Exercise.ExerciseName = MuscleGroup.ExerciseName
-Inner JOIN Equipment
-    ON Exercise.ExerciseName = Equipment.ExerciseName
-LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
-           FROM CompletedExercise
-           WHERE CompletedExercise.Email = email
-           ORDER BY CompletedExercise.ID DESC) as completedExercise
-    ON completedExercise.ExerciseName = Exercise.ExerciseName 
-LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
-            FROM ExercisePriority
-            WHERE ExercisePriority.Email = email) as exercisePriority
-    ON exercisePriority.ExerciseName = Exercise.ExerciseName
-WHERE 
-      Exercise.Type = 'E' && 
-      Exercise.Recommended = 1 && 
-      (MuscleGroup.MuscleGroupName IN (SELECT CompletedMuscleGroup.MuscleGroupName
-                                       FROM CompletedMuscleGroup
-                                       WHERE CompletedMuscleGroup.Email = email && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
-                                                                                                                FROM CompletedMuscleGroup
-                                                                                                                WHERE CompletedMuscleGroup.Email = email
-                                                                                                                ORDER BY CompletedMuscleGroup.ID DESC
-                                                                                                                LIMIT 1)) && 
-      MuscleGroup.MuscleGroupExercisePercentage >= 50) && 
-      (Equipment.EquipmentName IN (SELECT UserEquipment.EquipmentName 
-                                   FROM UserEquipment 
-                                   WHERE UserEquipment.Email = email && UserEquipment.Location = userLocation) || Equipment.EquipmentName IS NULL) && 
-      Exercise.ExerciseName NOT IN (SELECT Exclusion.ExclusionName
-                                    FROM Exclusion 
-                                    WHERE Exclusion.Email = email && Exclusion.ExclusionType = 'E')
-GROUP BY Exercise.ExerciseName
-ORDER BY RandomizedPriority DESC$$
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises`(IN `email` VARCHAR(75), IN `userLocation` INT(125), IN `routineNumber` INT)
+begin	
+
+    /* 	Sets the routine for today.	*/
+    /*  This is the max threshold that Intencity has for its routine numbers.
+        Anything greater than this is a custom rotine created by the user. */
+    declare DEFAULT_INTENCITY_ROUTINE_THRESHOLD int default 6;
+
+    IF (routineNumber > DEFAULT_INTENCITY_ROUTINE_THRESHOLD) THEN
+        /* Pull from the custom routines */
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
+            SELECT email, UNIX_TIMESTAMP() * 1000 , UserMuscleGroupRoutine.MuscleGroupName, routineNumber
+            FROM UserMuscleGroupRoutine
+            WHERE UserMuscleGroupRoutine.Email = email && UserMuscleGroupRoutine.RoutineNumber = routineNumber;
+    ELSE
+        /* Pull from Intencity's routines */
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
+            SELECT email, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName, routineNumber
+            FROM MuscleGroupRoutine
+            WHERE MuscleGroupRoutine.RoutineNumber = routineNumber;
+    END IF;
+
+    /* The alogrithm to get the user's exercises for today.*/
+    SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
+    FROM Exercise
+    INNER JOIN MuscleGroup 
+        ON Exercise.ExerciseName = MuscleGroup.ExerciseName
+    Inner JOIN Equipment
+        ON Exercise.ExerciseName = Equipment.ExerciseName
+    LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+               FROM CompletedExercise
+               WHERE CompletedExercise.Email = email
+               ORDER BY CompletedExercise.ID DESC) as completedExercise
+        ON completedExercise.ExerciseName = Exercise.ExerciseName 
+    LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
+                FROM ExercisePriority
+                WHERE ExercisePriority.Email = email) as exercisePriority
+        ON exercisePriority.ExerciseName = Exercise.ExerciseName
+    WHERE 
+          Exercise.Type = 'E' && 
+          Exercise.Recommended = 1 && 
+          (MuscleGroup.MuscleGroupName IN (SELECT CompletedMuscleGroup.MuscleGroupName
+                                           FROM CompletedMuscleGroup
+                                           WHERE CompletedMuscleGroup.Email = email && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
+                                                                                                                    FROM CompletedMuscleGroup
+                                                                                                                    WHERE CompletedMuscleGroup.Email = email
+                                                                                                                    ORDER BY CompletedMuscleGroup.ID DESC
+                                                                                                                    LIMIT 1)) && 
+          MuscleGroup.MuscleGroupExercisePercentage >= 50) && 
+          (Equipment.EquipmentName IN (SELECT UserEquipment.EquipmentName 
+                                       FROM UserEquipment 
+                                       WHERE UserEquipment.Email = email && UserEquipment.Location = userLocation) || Equipment.EquipmentName IS NULL) && 
+          Exercise.ExerciseName NOT IN (SELECT Exclusion.ExclusionName
+                                        FROM Exclusion 
+                                        WHERE Exclusion.Email = email && Exclusion.ExclusionType = 'E')
+    GROUP BY Exercise.ExerciseName
+    ORDER BY RandomizedPriority DESC;
+
+end$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment`(IN `email` VARCHAR(75), IN `location` VARCHAR(125))
 SELECT Equipment.EquipmentName, 
@@ -1113,7 +1137,7 @@ CREATE TABLE IF NOT EXISTS `Badge` (
   `EarnedDate` bigint(20) NOT NULL,
   `BadgeName` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1739 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1752 ;
 
 --
 -- Dumping data for table `Badge`
@@ -1216,9 +1240,20 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (487, 'User1458245546255.422119@intencity.fit', 1, 'Finisher'),
 (682, 'User1460465770978@intencity.fit', 1460465951765, 'Kept Swimming'),
 (301, 'nick.piscopio@gmail.com', 1, 'Kept Swimming'),
+(1745, 'nick.piscopio@gmail.com', 1484415995249, 'Finisher'),
+(1746, 'nick.piscopio@gmail.com', 1485017271323, 'Kept Swimming'),
+(1747, 'nick.piscopio@gmail.com', 1485017271324, 'Finisher'),
+(1748, 'nick.piscopio@gmail.com', 1485025554057, 'Kept Swimming'),
+(1749, 'nick.piscopio@gmail.com', 1485025554058, 'Finisher'),
+(1744, 'nick.piscopio@gmail.com', 1484415995245, 'Kept Swimming'),
+(1743, 'nick.piscopio@gmail.com', 1484415981799, 'Left it on the Field'),
+(1741, 'nick.piscopio@gmail.com', 1484414961467, 'Left it on the Field'),
+(1742, 'nick.piscopio@gmail.com', 1484415494581, 'Left it on the Field'),
 (1736, 'nick.piscopio@gmail.com', 1483551663237, 'Left it on the Field'),
 (1737, 'nick.piscopio@gmail.com', 1483552679428, 'Left it on the Field'),
 (1738, 'nick.piscopio@gmail.com', 1483552682602, 'Finisher'),
+(1739, 'nick.piscopio@gmail.com', 1484414032264, 'Left it on the Field'),
+(1740, 'nick.piscopio@gmail.com', 1484414487122, 'Left it on the Field'),
 (1696, 'nick.piscopio@gmail.com', 1482538885100, 'Left it on the Field'),
 (1697, 'nick.piscopio@gmail.com', 1482539409802, 'Left it on the Field'),
 (1698, 'nick.piscopio@gmail.com', 1482539438227, 'Finisher'),
@@ -1305,6 +1340,8 @@ INSERT INTO `Badge` (`ID`, `Email`, `EarnedDate`, `BadgeName`) VALUES
 (418, 'User1457890998764.174072@intencity.fit', 1, 'Left it on the Field'),
 (419, 'User1457890998764.174072@intencity.fit', 1, 'Left it on the Field'),
 (420, 'User1457890998764.174072@intencity.fit', 1, 'Left it on the Field'),
+(1750, 'nick.piscopio@gmail.com', 1485025583419, 'Kept Swimming'),
+(1751, 'nick.piscopio@gmail.com', 1485025583427, 'Finisher'),
 (676, 'nick.piscopio@gmail.com', 1459954288124, 'Finish2'),
 (424, 'User1457890998764.174072@intencity.fit', 1, 'Left it on the Field'),
 (425, 'nick.piscopio@gmail.com', 1, 'Finisher'),
@@ -1407,7 +1444,7 @@ CREATE TABLE IF NOT EXISTS `CompletedExercise` (
   `Notes` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6664 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6679 ;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -4217,7 +4254,22 @@ INSERT INTO `CompletedExercise` (`ID`, `Email`, `Date`, `Time`, `ExerciseName`, 
 (6660, 'nick.piscopio@gmail.com', '2017-01-04', '12:41:04', 'Decline Push-Up', NULL, 20, NULL, 9, ''),
 (6661, 'nick.piscopio@gmail.com', '2017-01-04', '12:58:00', 'Dumbbell Press', '60.0', 10, NULL, 9, ''),
 (6662, 'nick.piscopio@gmail.com', '2017-01-04', '12:58:00', 'Dumbbell Press', '60.0', 10, NULL, 9, ''),
-(6663, 'nick.piscopio@gmail.com', '2017-01-04', '12:58:00', 'Dumbbell Press', '60.0', 10, NULL, 9, '');
+(6663, 'nick.piscopio@gmail.com', '2017-01-04', '12:58:00', 'Dumbbell Press', '60.0', 10, NULL, 9, ''),
+(6664, 'nick.piscopio@gmail.com', '2017-01-14', '12:13:54', 'Diamond Push-Up', NULL, 15, NULL, 8, ''),
+(6665, 'nick.piscopio@gmail.com', '2017-01-14', '12:13:54', 'Diamond Push-Up', NULL, 15, NULL, 8, ''),
+(6666, 'nick.piscopio@gmail.com', '2017-01-14', '12:13:54', 'Diamond Push-Up', NULL, 15, NULL, 8, ''),
+(6667, 'nick.piscopio@gmail.com', '2017-01-14', '12:21:29', 'Decline Push-Up', NULL, 20, NULL, 9, ''),
+(6668, 'nick.piscopio@gmail.com', '2017-01-14', '12:21:29', 'Decline Push-Up', NULL, 20, NULL, 9, ''),
+(6669, 'nick.piscopio@gmail.com', '2017-01-14', '12:21:29', 'Decline Push-Up', NULL, 20, NULL, 9, ''),
+(6670, 'nick.piscopio@gmail.com', '2017-01-14', '12:29:23', 'Wide Push-Up', NULL, 20, NULL, 6, ''),
+(6671, 'nick.piscopio@gmail.com', '2017-01-14', '12:29:23', 'Wide Push-Up', NULL, 20, NULL, 6, ''),
+(6672, 'nick.piscopio@gmail.com', '2017-01-14', '12:29:23', 'Wide Push-Up', NULL, 20, NULL, 6, ''),
+(6673, 'nick.piscopio@gmail.com', '2017-01-14', '12:38:16', 'Bench Dip', NULL, 10, NULL, 5, ''),
+(6674, 'nick.piscopio@gmail.com', '2017-01-14', '12:38:16', 'Bench Dip', NULL, 10, NULL, 5, ''),
+(6675, 'nick.piscopio@gmail.com', '2017-01-14', '12:38:16', 'Bench Dip', NULL, 10, NULL, 5, ''),
+(6676, 'nick.piscopio@gmail.com', '2017-01-14', '12:46:24', 'Clap Push-Up', NULL, 10, NULL, 7, ''),
+(6677, 'nick.piscopio@gmail.com', '2017-01-14', '12:46:24', 'Clap Push-Up', NULL, 10, NULL, 7, ''),
+(6678, 'nick.piscopio@gmail.com', '2017-01-14', '12:46:24', 'Clap Push-Up', NULL, 10, NULL, 7, '');
 
 -- --------------------------------------------------------
 
@@ -4233,7 +4285,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `RoutineNumber` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14888 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14919 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13352,7 +13404,38 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `Email`, `Date`, `MuscleGroupName`, `R
 (14884, 'nick.piscopio@gmail.com', 1483549820000, 'Triceps', 2),
 (14885, 'nick.piscopio@gmail.com', 1483549820000, 'Chest', 2),
 (14886, 'nick.piscopio@gmail.com', 1484412841000, 'Triceps', 2),
-(14887, 'nick.piscopio@gmail.com', 1484412841000, 'Chest', 2);
+(14887, 'nick.piscopio@gmail.com', 1484412841000, 'Chest', 2),
+(14888, 'nick.piscopio@gmail.com', 1484419896000, 'Triceps', 2),
+(14889, 'nick.piscopio@gmail.com', 1484419896000, 'Chest', 2),
+(14890, 'nick.piscopio@gmail.com', 1485020465000, 'Calves', 1),
+(14891, 'nick.piscopio@gmail.com', 1485020465000, 'Shins', 1),
+(14892, 'nick.piscopio@gmail.com', 1485020465000, 'Hamstrings', 1),
+(14893, 'nick.piscopio@gmail.com', 1485020465000, 'Quads', 1),
+(14894, 'nick.piscopio@gmail.com', 1485020465000, 'Glutes', 1),
+(14895, 'nick.piscopio@gmail.com', 1485020465000, 'Lower Back', 1),
+(14896, 'nick.piscopio@gmail.com', 1485024845000, 'Calves', 1),
+(14897, 'nick.piscopio@gmail.com', 1485024845000, 'Shins', 1),
+(14898, 'nick.piscopio@gmail.com', 1485024845000, 'Hamstrings', 1),
+(14899, 'nick.piscopio@gmail.com', 1485024845000, 'Quads', 1),
+(14900, 'nick.piscopio@gmail.com', 1485024845000, 'Glutes', 1),
+(14901, 'nick.piscopio@gmail.com', 1485024845000, 'Lower Back', 1),
+(14902, 'nick.piscopio@gmail.com', 1485025350000, 'Triceps', 2),
+(14903, 'nick.piscopio@gmail.com', 1485025350000, 'Chest', 2),
+(14904, 'nick.piscopio@gmail.com', 1485025461000, 'Upper Outer Back', 4),
+(14905, 'nick.piscopio@gmail.com', 1485025461000, 'Upper Inner Back', 4),
+(14906, 'nick.piscopio@gmail.com', 1485025461000, 'Biceps', 4),
+(14907, 'nick.piscopio@gmail.com', 1485025461000, 'Forearms', 4),
+(14908, 'nick.piscopio@gmail.com', 1485025538000, 'Abs', 5),
+(14909, 'nick.piscopio@gmail.com', 1485025538000, 'Obliques', 5),
+(14910, 'nick.piscopio@gmail.com', 1485025572000, 'Traps', 6),
+(14911, 'nick.piscopio@gmail.com', 1485025572000, 'Neck', 6),
+(14912, 'nick.piscopio@gmail.com', 1485025572000, 'Shoulders', 6),
+(14913, 'nick.piscopio@gmail.com', 1485029210000, 'Calves', 1),
+(14914, 'nick.piscopio@gmail.com', 1485029210000, 'Shins', 1),
+(14915, 'nick.piscopio@gmail.com', 1485029210000, 'Hamstrings', 1),
+(14916, 'nick.piscopio@gmail.com', 1485029210000, 'Quads', 1),
+(14917, 'nick.piscopio@gmail.com', 1485029210000, 'Glutes', 1),
+(14918, 'nick.piscopio@gmail.com', 1485029210000, 'Lower Back', 1);
 
 -- --------------------------------------------------------
 
@@ -13366,7 +13449,7 @@ CREATE TABLE IF NOT EXISTS `CompletedRoutine` (
   `Date` bigint(20) NOT NULL,
   `RoutineName` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=106 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=107 ;
 
 --
 -- Dumping data for table `CompletedRoutine`
@@ -13449,7 +13532,8 @@ INSERT INTO `CompletedRoutine` (`ID`, `Email`, `Date`, `RoutineName`) VALUES
 (102, 'nick.piscopio@gmail.com', 1469655725000, 'mega abs again'),
 (103, 'nick.piscopio@gmail.com', 1470436684000, 'test1'),
 (104, 'nick.piscopio@gmail.com', 1479577478000, 'test1'),
-(105, 'nick.piscopio@gmail.com', 1483279273000, 'Leg''');
+(105, 'nick.piscopio@gmail.com', 1483279273000, 'Leg'''),
+(106, 'nick.piscopio@gmail.com', 1485017264000, 'Leg''');
 
 -- --------------------------------------------------------
 
@@ -16409,7 +16493,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `ShowWelcome`
 (6, 'theresa.monaco@gmail.com', '2014-01-19', '2014-02-17', 1, '0000-00-00', 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', NULL, 'B', 0, 1),
 (7, 'alotofmath@gmail.com', '2014-01-19', '2014-05-12', 0, '0000-00-00', 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', NULL, 'B', 0, 1),
 (8, 'wickwolf@yahoo.com', '2014-01-19', '0000-00-00', 1, '0000-00-00', 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', NULL, 'B', 0, 1),
-(10, 'nick.piscopio@gmail.com', '2014-01-19', '2017-01-14', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$yA8jmB2fujv0k32y0lblleT9FuqXc9LWUleRsG4lEBJIO/ODq3he2', 'dViDrRljgy6h8HXy', 'A', 2315, 0),
+(10, 'nick.piscopio@gmail.com', '2014-01-19', '2017-01-21', 0, '2014-07-04', 'Nick', 'Piscopio', '$2a$12$yA8jmB2fujv0k32y0lblleT9FuqXc9LWUleRsG4lEBJIO/ODq3he2', 'dViDrRljgy6h8HXy', 'A', 2415, 0),
 (14, 'mstanley2002@gmail.com', '2014-01-21', '2014-01-27', 1, '2014-01-23', 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', NULL, 'B', 0, 1),
 (18, 'dornvl@gmail.com', '2014-01-23', '2014-03-12', 0, NULL, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'qaEwz9Hu9KLzqfym', 'B', 0, 1),
 (17, 'drewbie736@hotmail.com', '2014-01-22', '2014-01-28', 1, NULL, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', NULL, 'B', 0, 1),
@@ -16685,7 +16769,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Email` (`Email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11624 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11655 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -20847,29 +20931,29 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `DisplayName`, `Location`, `Equipmen
 (10734, 'user1480025132872@intencity.fit', 'Default', '', 'Step'),
 (10735, 'user1480025132872@intencity.fit', 'Default', '', 'Treadmill'),
 (10736, 'user1480025132872@intencity.fit', 'Default', '', 'Wall'),
-(11623, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Bench Rack'),
-(11622, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Bench'),
-(11621, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Barbell'),
-(11615, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Roman Chair'),
-(11616, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Shoulder Press Machine'),
-(11617, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Squat Machine'),
-(11618, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Step'),
-(11619, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Treadmill'),
-(11620, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Wall'),
-(11581, 'nick.piscopio@gmail.com', 'Home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Wall'),
-(11611, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Preacher Curl Bench'),
-(11612, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Preacher Curl Machine'),
-(11613, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Pull Down Machine'),
-(11614, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Pull Up Bar'),
-(11610, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Leg Press Machine'),
-(11609, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Leg Extension Machine'),
-(11608, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Leg Curl Machine'),
-(11607, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Exercise Box'),
-(11606, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Dumbbells'),
-(11605, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Chair'),
-(11604, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Cable Row Machine'),
-(11602, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Bike'),
-(11603, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Cable Pull'),
+(11645, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Wall'),
+(11644, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Treadmill'),
+(11643, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Step'),
+(11642, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Squat Machine'),
+(11641, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Shoulder Press Machine'),
+(11640, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Roman Chair'),
+(11639, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Pull Up Bar'),
+(11638, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Pull Down Machine'),
+(11654, 'nick.piscopio@gmail.com', 'Home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Wall'),
+(11637, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Preacher Curl Machine'),
+(11633, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Leg Curl Machine'),
+(11634, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Leg Extension Machine'),
+(11635, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Leg Press Machine'),
+(11636, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Preacher Curl Bench'),
+(11631, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Dumbbells'),
+(11632, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Exercise Box'),
+(11630, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Chair'),
+(11629, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Cable Row Machine'),
+(11628, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Cable Pull'),
+(11627, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Bike'),
+(11626, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Bench Rack'),
+(11625, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Bench'),
+(11624, 'nick.piscopio@gmail.com', 'Mom''s House', '6150 Mark Cir, Bensalem, PA 19020, USA', 'Barbell'),
 (11440, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Wall'),
 (11439, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Treadmill'),
 (11438, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Step'),
@@ -20885,7 +20969,6 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `DisplayName`, `Location`, `Equipmen
 (11427, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Exercise Box'),
 (11428, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Leg Curl Machine'),
 (11425, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Chair'),
-(11579, 'nick.piscopio@gmail.com', 'Home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Chair'),
 (11426, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Dumbbells'),
 (11369, 'nick.piscopio@gmail.com', '', 'hb', 'Cable Row Machine'),
 (11368, 'nick.piscopio@gmail.com', '', 'hb', 'Cable Pull'),
@@ -20893,12 +20976,13 @@ INSERT INTO `UserEquipment` (`ID`, `Email`, `DisplayName`, `Location`, `Equipmen
 (11424, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Cable Row Machine'),
 (11366, 'nick.piscopio@gmail.com', '', 'hb', 'Bench Rack'),
 (11422, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Bike'),
+(11652, 'nick.piscopio@gmail.com', 'Home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Chair'),
 (11294, 'nick.piscopio@gmail.com', '', 'H B Whittington Court, LA, United States', 'Bench Rack'),
 (11293, 'nick.piscopio@gmail.com', '', 'H B Whittington Court, LA, United States', 'Bench'),
 (11292, 'nick.piscopio@gmail.com', '', 'H B Whittington Court, LA, United States', 'Barbell'),
 (11423, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Cable Pull'),
 (11365, 'nick.piscopio@gmail.com', '', 'hb', 'Bench'),
-(11580, 'nick.piscopio@gmail.com', 'Home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Step'),
+(11653, 'nick.piscopio@gmail.com', 'Home', '36496 Shelley Ct, Newark, CA 94560, USA', 'Step'),
 (11364, 'nick.piscopio@gmail.com', '', 'hb', 'Barbell'),
 (11421, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Bench Rack'),
 (11420, 'nick.piscopio@gmail.com', '', 'HNBLACK Road, Cloverdale, CA, United States', 'Bench'),
