@@ -22,7 +22,7 @@
 	
 	//NEEDS TO BE CHANGED TO A POST.
 	$email = $_POST['email'];
-	$remove = $_POST['remove'];
+	$remove  = str_replace("'", "\'", $_POST['remove']);	
 	
 	$deleteQuery = "";
 
