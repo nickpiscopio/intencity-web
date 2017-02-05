@@ -25,7 +25,7 @@
 	//NEEDS TO BE CHANGED TO A POST.
 	$e  = "'" . $_POST['email'] . "'";
 	$routineName  = str_replace("'", "\'", $_POST['routine']);
-	$v  = $_GET['inserts'];
+	$v  = $_POST['inserts'];
 	$variables = explode(',', $v);
 	$varLength = count($variables);
 
