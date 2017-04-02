@@ -1,0 +1,14 @@
+{
+  "name": "intencity.fit",
+  "version": "1.0.0",
+  "description": "The express version of Intencity.fit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Piscopio",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
