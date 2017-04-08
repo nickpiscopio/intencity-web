@@ -1,0 +1,139 @@
+
+ALTER TABLE Badge
+ADD COLUMN UserId int AFTER ID;
+UPDATE Badge
+SET Badge.UserId = (SELECT User.ID FROM User WHERE User.Email = Badge.Email);
+ALTER TABLE Badge DROP COLUMN Email;
+
+ALTER TABLE CompletedExercise
+ADD COLUMN UserId int AFTER ID;
+ALTER TABLE CompletedExercise
+ADD COLUMN SessionId int AFTER UserId;
+UPDATE CompletedExercise
+SET CompletedExercise.UserId = (SELECT User.ID FROM User WHERE User.Email = CompletedExercise.Email);
+ALTER TABLE CompletedExercise DROP COLUMN Email;
+ALTER TABLE CompletedExercise DROP COLUMN Date;
+ALTER TABLE CompletedExercise DROP COLUMN Time;
+ALTER TABLE CompletedExercise
+ADD COLUMN Date int AFTER SessionId;
+UPDATE CompletedExercise SET Date=0;
+ALTER TABLE CompletedExercise
+ADD COLUMN ExerciseId int AFTER Date;
+UPDATE CompletedExercise
+SET CompletedExercise.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = CompletedExercise.ExerciseName);
+ALTER TABLE CompletedExercise DROP COLUMN ExerciseName;
+
+ALTER TABLE CompletedMuscleGroup
+ADD COLUMN UserId int AFTER ID;
+UPDATE CompletedMuscleGroup
+SET CompletedMuscleGroup.UserId = (SELECT User.ID FROM User WHERE User.Email = CompletedMuscleGroup.Email);
+ALTER TABLE CompletedMuscleGroup DROP COLUMN Email;
+
+ALTER TABLE CompletedRoutine
+ADD COLUMN UserId int AFTER ID;
+UPDATE CompletedRoutine
+SET CompletedRoutine.UserId = (SELECT User.ID FROM User WHERE User.Email = CompletedRoutine.Email);
+ALTER TABLE CompletedRoutine DROP COLUMN Email;
+
+ALTER TABLE UserMuscleGroupRoutine
+ADD COLUMN UserId int AFTER ID;
+UPDATE UserMuscleGroupRoutine
+SET UserMuscleGroupRoutine.UserId = (SELECT User.ID FROM User WHERE User.Email = UserMuscleGroupRoutine.Email);
+ALTER TABLE UserMuscleGroupRoutine DROP COLUMN Email;
+
+ALTER TABLE UserEquipment
+ADD COLUMN UserId int AFTER ID;
+UPDATE UserEquipment
+SET UserEquipment.UserId = (SELECT User.ID FROM User WHERE User.Email = UserEquipment.Email);
+ALTER TABLE UserEquipment DROP COLUMN Email;
+
+ALTER TABLE Exercise
+DROP PRIMARY KEY,
+ADD COLUMN ID INT NOT NULL AUTO_INCREMENT FIRST,
+ADD PRIMARY KEY (ID);
+
+ALTER TABLE Direction
+ADD COLUMN ExerciseId int AFTER ID;
+UPDATE Direction
+SET Direction.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = Direction.ExerciseName);
+ALTER TABLE Direction DROP COLUMN ExerciseName;
+
+ALTER TABLE Equipment
+ADD COLUMN ExerciseId int AFTER ID;
+UPDATE Equipment
+SET Equipment.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = Equipment.ExerciseName);
+ALTER TABLE Equipment DROP COLUMN ExerciseName;
+
+ALTER TABLE Exclusion
+ADD COLUMN UserId int AFTER ID;
+ALTER TABLE Exclusion
+ADD COLUMN ExerciseId int AFTER UserId;
+UPDATE Exclusion
+SET Exclusion.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = Exclusion.ExclusionName);
+ALTER TABLE Exclusion DROP COLUMN ExclusionName;
+UPDATE Exclusion
+SET Exclusion.UserId = (SELECT User.ID FROM User WHERE User.Email = Exclusion.Email);
+ALTER TABLE Exclusion DROP COLUMN Email;
+
+ALTER TABLE ExercisePriority
+ADD COLUMN UserId int AFTER ID;
+ALTER TABLE ExercisePriority
+ADD COLUMN ExerciseId int AFTER UserId;
+UPDATE ExercisePriority
+SET ExercisePriority.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = ExercisePriority.ExerciseName);
+ALTER TABLE ExercisePriority DROP COLUMN ExerciseName;
+UPDATE ExercisePriority
+SET ExercisePriority.UserId = (SELECT User.ID FROM User WHERE User.Email = ExercisePriority.Email);
+ALTER TABLE ExercisePriority DROP COLUMN Email;
+
+ALTER TABLE Following
+ADD COLUMN UserId int AFTER ID;
+ALTER TABLE Following
+ADD COLUMN Following1 int AFTER UserId;
+UPDATE Following
+SET Following.UserId = (SELECT User.ID FROM User WHERE User.Email = Following.Email);
+ALTER TABLE Following DROP COLUMN Email;
+UPDATE Following
+SET Following.Following1 = (SELECT User.ID FROM User WHERE User.Email = Following.Following);
+ALTER TABLE Following DROP COLUMN Following;
+ALTER TABLE Following CHANGE COLUMN Following1 Following VARCHAR(75) NOT NULL;
+
+ALTER TABLE Muscle
+ADD COLUMN ExerciseId int AFTER ID;
+UPDATE Muscle
+SET Muscle.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = Muscle.ExerciseName);
+ALTER TABLE Muscle DROP COLUMN ExerciseName;
+
+ALTER TABLE MuscleGroup
+ADD COLUMN ExerciseId int AFTER ID;
+UPDATE MuscleGroup
+SET MuscleGroup.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = MuscleGroup.ExerciseName);
+ALTER TABLE MuscleGroup DROP COLUMN ExerciseName;
+
+ALTER TABLE Routine
+ADD COLUMN UserId int AFTER ID;
+UPDATE Routine
+SET Routine.UserId = (SELECT User.ID FROM User WHERE User.Email = Routine.Email);
+ALTER TABLE Routine DROP COLUMN Email;
+ALTER TABLE Routine
+ADD COLUMN ExerciseId int;
+UPDATE Routine
+SET Routine.ExerciseId = (SELECT Exercise.ID FROM Exercise WHERE Exercise.ExerciseName = Routine.ExerciseName);
+ALTER TABLE Routine DROP COLUMN ExerciseName;
+
+ALTER TABLE User DROP COLUMN ShowWelcome;
+ALTER TABLE User DROP COLUMN CookieToken;
+ALTER TABLE User DROP COLUMN CanRecievePrizes;
+ALTER TABLE User DROP COLUMN CreatedDate;
+ALTER TABLE User DROP COLUMN LastLoginDate;
+ALTER TABLE User DROP COLUMN EarnedFitnessPointsDate;
+
+ALTER TABLE User
+ADD COLUMN CreatedDate int AFTER Email;
+ALTER TABLE User
+ADD COLUMN LastLoginDate int AFTER CreatedDate;
+ALTER TABLE User
+ADD COLUMN EarnedFitnessPointsDate int AFTER LastLoginDate;
+UPDATE User SET CreatedDate=0;
+UPDATE User SET LastLoginDate=0;
+UPDATE User SET EarnedFitnessPointsDate=0;

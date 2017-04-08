@@ -58,7 +58,6 @@
 
 		$createAccountQuery =  "INSERT INTO User (" . COLUMN_EMAIL . ", " . COLUMN_CREATED_DATE . " , " . COLUMN_FIRST_NAME . ", " . COLUMN_LAST_NAME . ",  " . COLUMN_PASSWORD . ", " . COLUMN_ACCOUNT_TYPE . ", " . COLUMN_EARNED_POINTS . ", " . COLUMN_SHOW_WELCOME . ") VALUES 
 									('" . $email . "', CURDATE() , '" . $firstName . "', '" . $lastName . "', '" . $hash . "', '" . $accountType . "', 100, 1);
-									INSERT INTO Settings (Email) VALUES ('" . $email . "');
 									INSERT INTO " . TABLE_USER_EQUIPMENT . "(" . TABLE_USER_EQUIPMENT . "." . COLUMN_EMAIL . "," . TABLE_USER_EQUIPMENT . "." .  COLUMN_EQUIPMENT_NAME . ")
 										SELECT '" . $email . "', " . TABLE_EQUIPMENT . "." . COLUMN_EQUIPMENT_NAME .
 										" FROM " . TABLE_EQUIPMENT .
