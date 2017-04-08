@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 08, 2017 at 03:00 PM
+-- Generation Time: Apr 08, 2017 at 05:08 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -24,37 +24,21 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `changeExerciseName`(IN `oldExerciseName` VARCHAR(50), IN `newExerciseName` VARCHAR(50))
-begin
-
-UPDATE MuscleGroup SET MuscleGroup.ExerciseName = newExerciseName WHERE MuscleGroup.ExerciseName = oldExerciseName;
-UPDATE Muscle SET Muscle.ExerciseName = newExerciseName WHERE Muscle.ExerciseName = oldExerciseName;
-UPDATE ExerciseNameVariant SET ExerciseNameVariant.ExerciseName = newExerciseName WHERE ExerciseNameVariant.ExerciseName = oldExerciseName;
-UPDATE Exercise SET Exercise.ExerciseName = newExerciseName WHERE Exercise.ExerciseName = oldExerciseName;
-UPDATE Equipment SET Equipment.ExerciseName = newExerciseName WHERE Equipment.ExerciseName = oldExerciseName;
-UPDATE Direction SET Direction.ExerciseName = newExerciseName WHERE Direction.ExerciseName = oldExerciseName;
-UPDATE CompletedExercise SET CompletedExercise.ExerciseName = newExerciseName WHERE CompletedExercise.ExerciseName = oldExerciseName;
-UPDATE Exclusion SET Exclusion.ExclusionName = newExerciseName WHERE Exclusion.ExclusionName = oldExerciseName;
-
-end$$
-
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists`(IN `email` VARCHAR(75), IN `location` VARCHAR(125))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists`(IN `id` INT, IN `location` VARCHAR(125))
 SELECT Location
 FROM UserEquipment
-WHERE UserEquipment.Email = email && UserEquipment.Location = location
+WHERE UserEquipment.UserId = id && UserEquipment.Location = location
 GROUP BY UserEquipment.Location$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise`(IN `email` VARCHAR(75), IN `exerciseName` VARCHAR(50))
-INSERT INTO Exclusion (Exclusion.Email, Exclusion.ExcludeForever, Exclusion.ExclusionName, Exclusion.ExclusionType) 
-VALUES (email, 1, exerciseName, "E")$$
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise`(IN `id` INT, IN `exerciseName` VARCHAR(50))
+INSERT INTO Exclusion (Exclusion.UserId, Exclusion.ExcludeForever, Exclusion.ExerciseId, Exclusion.ExclusionType) 
+VALUES (id, 1, exerciseName, "E")$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser`(IN `email` VARCHAR(75), IN `id` INT)
-INSERT INTO Following (Following.Email, Following.Following) 
-VALUES (email, (SELECT User.Email 
-            FROM User 
-            WHERE User.ID = id))$$
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser`(IN `id` INT, IN `followUserId` INT)
+INSERT INTO Following (Following.UserId, Following.Following) 
+VALUES (id, followUserId)$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups`(IN `id` INT)
 begin
 
 declare routineNumber int default 0;
@@ -67,7 +51,7 @@ set routineNumber = (SELECT MuscleGroupRoutine.RoutineNumber
                      FROM MuscleGroupRoutine
                      INNER JOIN CompletedMuscleGroup
                      ON CompletedMuscleGroup.MuscleGroupName = MuscleGroupRoutine.MuscleGroupName
-                     WHERE CompletedMuscleGroup.Email = email
+                     WHERE CompletedMuscleGroup.UserId = id
                      ORDER BY CompletedMuscleGroup.ID DESC
                      LIMIT 1);
 
@@ -94,7 +78,7 @@ SELECT *
        UNION ALL
        SELECT UserMuscleGroupRoutine.DisplayName as DisplayName, UserMuscleGroupRoutine.RoutineNumber, currentMuscleGroup
        FROM UserMuscleGroupRoutine
-       WHERE UserMuscleGroupRoutine.Email = email
+       WHERE UserMuscleGroupRoutine.UserId = Id
        GROUP BY UserMuscleGroupRoutine.DisplayName) as muscleGroup
   ORDER BY 
     CASE 
@@ -107,9 +91,7 @@ end$$
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getBadges`(IN `id` INT)
 SELECT Badge.BadgeName, COUNT(*) as TotalBadges
 FROM Badge 
-WHERE Badge.Email = (SELECT User.Email
-                    FROM User 
-                    WHERE User.ID = id)
+WHERE Badge.UserId = id
 GROUP BY Badge.BadgeName$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getCustomRoutineMuscleGroup`()
@@ -117,75 +99,71 @@ SELECT DisplayName
 FROM CustomRoutineMuscleGroup
 GROUP BY DisplayName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getDirection`(IN `exerciseName` VARCHAR(50))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getDirection`(IN `exerciseId` INT)
 SELECT Exercise.SubmittedBy, Exercise.VideoURL, Direction.Direction
 FROM Exercise
 INNER JOIN Direction
-    ON Direction.ExerciseName = Exercise.ExerciseName
-WHERE Exercise.ExerciseName = exerciseName
+    ON Direction.ExerciseId = Exercise.ExerciseId
+WHERE Exercise.ExerciseId = exerciseId
 ORDER BY Direction.ID ASC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getEquipment`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getEquipment`(IN `id` INT)
 SELECT Equipment.EquipmentName, 
 	CASE 
-    	WHEN UserEquipment.Email != 'NULL' THEN 'true'
+    	WHEN UserEquipment.UserId != 'NULL' THEN 'true'
 	END AS HasEquipment
 FROM Equipment
 LEFT JOIN UserEquipment
-	ON UserEquipment.EquipmentName = Equipment.EquipmentName && UserEquipment.Email = email
+	ON UserEquipment.EquipmentName = Equipment.EquipmentName && UserEquipment.UserId = id
 WHERE Equipment.EquipmentName != 'NULL'
 GROUP BY Equipment.EquipmentName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday`(IN `id` INT)
 SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
 FROM Exercise
 INNER JOIN MuscleGroup 
-    ON Exercise.ExerciseName = MuscleGroup.ExerciseName
+    ON Exercise.ExerciseId = MuscleGroup.ExerciseId
 Inner JOIN Equipment
-    ON Exercise.ExerciseName = Equipment.ExerciseName
-LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+    ON Exercise.ExerciseId = Equipment.ExerciseId
+LEFT JOIN (SELECT CompletedExercise.ExerciseId, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
             FROM CompletedExercise
-            WHERE CompletedExercise.Email = email
+            WHERE CompletedExercise.UserId = id
             ORDER BY CompletedExercise.ID DESC) as completedExercise
-    ON completedExercise.ExerciseName = Exercise.ExerciseName 
-LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
+    ON completedExercise.ExerciseId = Exercise.ExerciseId 
+LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseId
             FROM ExercisePriority
-            WHERE ExercisePriority.Email = email) as exercisePriority
-    ON exercisePriority.ExerciseName = Exercise.ExerciseName
+            WHERE ExercisePriority.UserId = id) as exercisePriority
+    ON exercisePriority.ExerciseId = Exercise.ExerciseId
 WHERE 
       Exercise.Type = 'E' && 
       Exercise.Recommended = 1 && 
       (MuscleGroup.MuscleGroupName IN (SELECT CompletedMuscleGroup.MuscleGroupName
                                        FROM CompletedMuscleGroup
-                                       WHERE CompletedMuscleGroup.Email = email && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
+                                       WHERE CompletedMuscleGroup.UserId = id && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
                                                                                                                 FROM CompletedMuscleGroup
-                                                                                                                WHERE CompletedMuscleGroup.Email = email
+                                                                                                                WHERE CompletedMuscleGroup.UserId = id
                                                                                                                 ORDER BY CompletedMuscleGroup.ID DESC
                                                                                                                 LIMIT 1)) && 
       MuscleGroup.MuscleGroupExercisePercentage >= 50) && 
       (Equipment.EquipmentName IN (SELECT UserEquipment.EquipmentName 
                                     FROM UserEquipment 
-                                    WHERE UserEquipment.Email = email) || Equipment.EquipmentName IS NULL) && 
-      Exercise.ExerciseName NOT IN (SELECT Exclusion.ExclusionName
-                                    FROM Exclusion 
-                                    WHERE Exclusion.Email = email && Exclusion.ExclusionType = 'E')
+                                    WHERE UserEquipment.UserId = id) || Equipment.EquipmentName IS NULL) && 
+      Exercise.ExerciseId NOT IN (SELECT Exclusion.ExerciseId
+                                  FROM Exclusion 
+                                  WHERE Exclusion.UserId = id && Exclusion.ExclusionType = 'E')
 GROUP BY Exercise.ExerciseName
 ORDER BY RandomizedPriority DESC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getFollowing`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getFollowing`(IN `id` INT)
 SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
     (SELECT COUNT(Badge.BadgeName)
          FROM Badge 
-         WHERE Badge.Email = User.Email) AS TotalBadges, 
-    (SELECT UserMedia.URL 
-         FROM UserMedia 
-         WHERE UserMedia.Email = User.Email 
-         ORDER BY UserMedia.ID DESC LIMIT 1) as URL, 
+         WHERE Badge.UserId = User.ID) AS TotalBadges, 
     Following.ID AS FollowingId
 FROM User 
 LEFT JOIN Following
-  ON Following.Following = User.Email AND Following.Email = email
-WHERE Following.Email = email OR User.Email = email
+  ON Following.Following = User.ID AND Following.UserId = id
+WHERE Following.UserId = id OR User.ID = id
 ORDER BY User.EarnedPoints DESC$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjuryPreventionWorkouts`(IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))
@@ -196,7 +174,7 @@ BEGIN
   SET hasExercise = (SELECT COUNT(Exercise.ExerciseName)
                      FROM Exercise
                      INNER JOIN MuscleGroup
-                       ON MuscleGroup.ExerciseName = Exercise.ExerciseName
+                       ON MuscleGroup.ExerciseId = Exercise.ExerciseId
                      WHERE Exercise.Type = type && MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
                                                                                    FROM MuscleGroupRoutine
                                                                                    WHERE MuscleGroupRoutine.DisplayName = displayName)
@@ -208,7 +186,7 @@ BEGIN
     SELECT Exercise.ExerciseName
     FROM Exercise
     INNER JOIN MuscleGroup
-      ON MuscleGroup.ExerciseName = Exercise.ExerciseName
+      ON MuscleGroup.ExerciseId = Exercise.ExerciseId
     WHERE Exercise.Type = type && MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
                                                                   FROM MuscleGroupRoutine
                                                                   WHERE MuscleGroupRoutine.DisplayName = displayName)
@@ -239,7 +217,7 @@ begin
        INNER JOIN CompletedMuscleGroup
          ON CompletedMuscleGroup.RoutineNumber = MuscleGroupRoutine.RoutineNumber
        /* We are subtracting 7 days. */
-       WHERE CompletedMuscleGroup.Email = (SELECT User.Email
+       WHERE CompletedMuscleGroup.UserId = (SELECT User.ID
                                            FROM User 
                                            WHERE User.ID = id) AND CompletedMuscleGroup.Date > SEVEN_DAY_AGO
        GROUP BY CompletedMuscleGroup.Date
@@ -249,14 +227,14 @@ begin
        INNER JOIN CompletedMuscleGroup
          ON CompletedMuscleGroup.RoutineNumber = UserMuscleGroupRoutine.RoutineNumber
        /* We are subtracting 7 days. */
-       WHERE CompletedMuscleGroup.Email = (SELECT User.Email
+       WHERE CompletedMuscleGroup.UserId = (SELECT User.ID
                                            FROM User 
                                            WHERE User.ID = id) AND CompletedMuscleGroup.Date > SEVEN_DAY_AGO
        GROUP BY CompletedMuscleGroup.Date
        UNION ALL
        SELECT CompletedRoutine.RoutineName, CompletedRoutine.Date
        FROM CompletedRoutine
-       WHERE CompletedRoutine.Email = (SELECT User.Email
+       WHERE CompletedRoutine.UserId = (SELECT User.ID
                                        FROM User 
                                        WHERE User.ID = id) AND CompletedRoutine.Date > SEVEN_DAY_AGO
        GROUP BY CompletedRoutine.Date) as routine
