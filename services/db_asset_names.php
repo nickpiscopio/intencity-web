@@ -49,6 +49,7 @@
 	define("COLUMN_SHOW_WELCOME", "ShowWelcome");
 	
 	define("COLUMN_ID", "ID");
+	define("COLUMN_USER_ID", "UserId");
 	define("COLUMN_MUSCLE_GROUP_NAME", "MuscleGroupName");
 	define("COLUMN_ROUTINE_NUMBER", "RoutineNumber");
 	define("COLUMN_ROUTINE_NAME", "RoutineName");

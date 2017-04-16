@@ -24,13 +24,13 @@
 # Obviously, since this code is in the public domain, the above are not
 # requirements (there can be none), but merely suggestions.
 #
-class PasswordHash {
+class TextHash {
 	var $itoa64;
 	var $iteration_count_log2;
 	var $portable_hashes;
 	var $random_state;
 
-	function PasswordHash($iteration_count_log2, $portable_hashes)
+	function TextHash($iteration_count_log2, $portable_hashes)
 	{
 		$this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
@@ -205,7 +205,7 @@ class PasswordHash {
 		return $output;
 	}
 
-	function HashPassword($password)
+	function HashText($password)
 	{
 		$random = '';
 
@@ -240,7 +240,7 @@ class PasswordHash {
 		return '*';
 	}
 
-	function CheckPassword($password, $stored_hash)
+	function CheckText($password, $stored_hash)
 	{
 		$hash = $this->crypt_private($password, $stored_hash);
 		if ($hash[0] == '*')

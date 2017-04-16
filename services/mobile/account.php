@@ -2,14 +2,17 @@
 	/**
 	 * This file creates a new account only if the email hasn't already been used.
 	 * 
-	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/mobile/account.php?first_name=John&last_name=Smith&email=john.smith@gmail.com&password=hello123&account_type=n
+	 * URL GET EXAMPLE		http://intencity.fit/dev/services/mobile/account.php?first_name=John&last_name=Smith&email=john.smith@gmail.com&password=hello123&account_type=n
 	 * 						This example does not work when we are using $_POST. We ARE using $_POST.
 	 */
 
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
-	include_once '../PasswordHash.php';
+	include_once '../status_codes.php';
+	include_once '../TextHash.php';
+	include_once '../Time.php';
+	include_once '../Response.php';
 	
 	//Constants for having and not having beta access for Intencity.
 	define(ACCOUNT_ADMIN, "A");
@@ -17,11 +20,10 @@
 	define(ACCOUNT_NORMAL, "N");
 	define(ACCOUNT_TRIAL, "T");
 	// Account for mobile trials.
-	define(ACCOUNT_MOBILE_TRIAL, "M");
-	
-	//Constants for the response from the database.
-	define(RESPONSE_EMAIL_ERROR, "Email already exists");
-	define(RESPONSE_ACCOUNT_CREATED, "Account created");
+	define(ACCOUNT_MOBILE_TRIAL, "M");	
+
+	// Utility class to create a JSON response.
+	$response = new Response();
 	
 	//Capitalize first letter.
 	$firstName = addslashes(ucfirst($_POST['first_name']));
@@ -47,27 +49,79 @@
 	
 	if($row[COLUMN_EMAIL] == $email)
 	{
-		//Return the account exists.
-		print json_encode(RESPONSE_EMAIL_ERROR);
+		// Return the account exists.
+		$response->send(false, RESPONSE_FAILURE_EMAIL_ERROR, NULL);
 	}
 	else
 	{
-		$phpass = new PasswordHash(12, false);
+		$phpass = new TextHash(12, false);
 
-		$hash = $phpass->HashPassword($password);
+		$hashedPassword = $phpass->HashText($password);
 
-		$createAccountQuery =  "INSERT INTO User (" . COLUMN_EMAIL . ", " . COLUMN_CREATED_DATE . " , " . COLUMN_FIRST_NAME . ", " . COLUMN_LAST_NAME . ",  " . COLUMN_PASSWORD . ", " . COLUMN_ACCOUNT_TYPE . ", " . COLUMN_EARNED_POINTS . ", " . COLUMN_SHOW_WELCOME . ") VALUES 
-									('" . $email . "', CURDATE() , '" . $firstName . "', '" . $lastName . "', '" . $hash . "', '" . $accountType . "', 100, 1);
-									INSERT INTO " . TABLE_USER_EQUIPMENT . "(" . TABLE_USER_EQUIPMENT . "." . COLUMN_EMAIL . "," . TABLE_USER_EQUIPMENT . "." .  COLUMN_EQUIPMENT_NAME . ")
-										SELECT '" . $email . "', " . TABLE_EQUIPMENT . "." . COLUMN_EQUIPMENT_NAME .
-										" FROM " . TABLE_EQUIPMENT .
-										" WHERE " . TABLE_EQUIPMENT . "." . COLUMN_EQUIPMENT_NAME . " != 'NULL'" .
-										" GROUP BY " . TABLE_EQUIPMENT . "." . COLUMN_EQUIPMENT_NAME . ";";
-		
-		//Create the account.
-		mysqli_multi_query($conn, $createAccountQuery);
-	
-		//Return the account was created.
-		print json_encode(RESPONSE_ACCOUNT_CREATED);
+		$time = new Time();
+		$now = $time->getMillis();
+
+		$createAccountQuery =  "INSERT INTO " . TABLE_USER . " (" . COLUMN_EMAIL . ", " 
+																	. COLUMN_CREATED_DATE . ", " 
+																	. COLUMN_LAST_LOGIN_DATE . ", " 
+																	. COLUMN_FIRST_NAME . ", " 
+																	. COLUMN_LAST_NAME . ",  " 
+																	. COLUMN_PASSWORD . ", " 
+																	. COLUMN_ACCOUNT_TYPE . ", " 
+																	. COLUMN_EARNED_POINTS . ") 
+															VALUES ('" . $email . "', " 
+																		. $now . ", " 
+																		. $now . ", 
+																		'" . $firstName . "', 
+																		'" . $lastName . "', 
+																		'" . $hashedPassword . "', 
+																		'" . $accountType . "', 100);
+								SELECT " . COLUMN_ID . "
+								FROM " . TABLE_USER . "
+								WHERE " . COLUMN_EMAIL . "='" . $email . "';";
+
+		if (mysqli_multi_query($conn, $createAccountQuery))
+		{
+			if (mysqli_next_result($conn))
+			{
+		        // Store first result set.
+		        if ($result = mysqli_store_result($conn)) {
+		            $row = mysqli_fetch_row($result);
+
+		            $userId = $row[0];
+		            // The user was created if the ID is greater than 0.
+					if($userId > 0)
+					{
+						
+
+						$insertEquipmentQuery = "INSERT INTO " . TABLE_USER_EQUIPMENT . "(" . TABLE_USER_EQUIPMENT . "." . COLUMN_USER_ID . "," 
+																							. TABLE_USER_EQUIPMENT . "." .  COLUMN_EQUIPMENT_NAME . ")
+													SELECT '" . $userId . "', " 
+																. TABLE_EQUIPMENT . "." . COLUMN_EQUIPMENT_NAME .
+													" FROM " . TABLE_EQUIPMENT .
+													" WHERE " . TABLE_EQUIPMENT . "." . COLUMN_EQUIPMENT_NAME . " != 'NULL'" .
+													" GROUP BY " . TABLE_EQUIPMENT . "." . COLUMN_EQUIPMENT_NAME . ";";
+
+						mysqli_multi_query($conn, $insertEquipmentQuery);
+
+						$response->send(true, RESPONSE_SUCCESS_ACCOUNT_CREATION, $userId);
+					}
+					else
+					{
+						$response->send(false, RESPONSE_FAILURE_ACCOUNT_CREATION, NULL);
+					}
+		       
+		            mysqli_free_result($result);
+		        }
+		        else
+		        {
+		        	$response->send(false, RESPONSE_FAILURE_ACCOUNT_CREATION, NULL);
+		        }
+		    }
+		}
+		else
+		{
+			$response->send(false, RESPONSE_FAILURE_ACCOUNT_CREATION, NULL);
+		}		
 	}
 ?>

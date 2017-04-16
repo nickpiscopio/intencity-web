@@ -9,7 +9,7 @@
 	// Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
-	include_once '../PasswordHash.php';
+	include_once '../TextHash.php';
 	
 	// Constants for having and not having beta access for Intencity.
 	define(ACCOUNT_NORMAL, "N");
@@ -45,9 +45,9 @@
 	}
 	else
 	{
-		$phpass = new PasswordHash(12, false);
+		$phpass = new TextHash(12, false);
 
-		$hash = $phpass->HashPassword($password);
+		$hash = $phpass->HashText($password);
 
 		$updateAccountQuery =  "UPDATE " . TABLE_USER .
 									" SET " . COLUMN_EMAIL . "='" . $email . "',

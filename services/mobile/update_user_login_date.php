@@ -2,25 +2,25 @@
 	/**
 	 * This file updates the last time the user logged in.
 	 * 
-	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/mobile/update_user_login.php?email=john.smith@gmail.com
+	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/mobile/update_user_login.php?id=10
 	 * 						This example does not work when we are using $_POST. We ARE using $_POST.
 	 */
 
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
+	include_once '../Time.php';
+	include_once '../Response.php';
 
-	//Constants for the response from the database.
-	define(RESPONSE_UPDATED_LOGIN, "Updated user login");
+	$userId = $_POST['user_id'];
 
-	$email = $_POST['email'];
+	$time = new Time();
+	$now = $time->getMillis();
 
 	// Query to update the user's login date.
-	$updateLogin =  "UPDATE " . TABLE_USER . " SET " . COLUMN_LAST_LOGIN_DATE . " = CURDATE() WHERE Email = '" . $email . "'";
+	$updateLogin =  "UPDATE " . TABLE_USER . " SET " . COLUMN_LAST_LOGIN_DATE . " = " . $now . " WHERE ID = '" . $userId . "'";
 	
-	//Create the account.
 	mysqli_query($conn, $updateLogin);
 
-	//Return the account was created.
-	print json_encode(RESPONSE_UPDATED_LOGIN);
+	$response->send(true, RESPONSE_SUCCESS_DATE_LOGIN_UPDATED, $userId);
 ?>

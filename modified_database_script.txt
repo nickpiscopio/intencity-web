@@ -129,9 +129,9 @@ ALTER TABLE User DROP COLUMN LastLoginDate;
 ALTER TABLE User DROP COLUMN EarnedFitnessPointsDate;
 
 ALTER TABLE User
-ADD COLUMN CreatedDate int AFTER Email;
+ADD COLUMN CreatedDate bigint AFTER Email;
 ALTER TABLE User
-ADD COLUMN LastLoginDate int AFTER CreatedDate;
+ADD COLUMN LastLoginDate bigint AFTER CreatedDate;
 ALTER TABLE User
 ADD COLUMN EarnedFitnessPointsDate int AFTER LastLoginDate;
 UPDATE User SET CreatedDate=0;

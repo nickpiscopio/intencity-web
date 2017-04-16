@@ -10,7 +10,7 @@
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
-	include_once '../PasswordHash.php';
+	include_once '../TextHash.php';
 	
 	//Constants for the response from the database.
 	define("RESPONSE_VALID_CREDENTIALS", "Valid credentials");
@@ -33,9 +33,9 @@
 	
 	if($row[COLUMN_EMAIL] == $email)
 	{
-		$phpass = new PasswordHash(12, false);
+		$phpass = new TextHash(12, false);
 		
-		if($phpass->CheckPassword($password, $row[COLUMN_PASSWORD]))
+		if($phpass->CheckText($password, $row[COLUMN_PASSWORD]))
 		{
 			print json_encode($row);
 		}

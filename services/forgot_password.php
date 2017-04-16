@@ -6,16 +6,16 @@
 	//Includes the database connection information.
 	include_once 'db_connection.php';
 	include_once 'db_asset_names.php';
-	include_once 'PasswordHash.php';
+	include_once 'TextHash.php';
 	include_once 'random_generator.php';
 	
 	$email = $_POST['email'];
 	
 	$token = getToken(8);
 	
-	$phpass = new PasswordHash(12, false);
+	$phpass = new TextHash(12, false);
 	
-	$hash = $phpass->HashPassword($token);
+	$hash = $phpass->HashText($token);
 	
 	$query = mysqli_query($conn, "SELECT Email FROM User WHERE Email = '" . $email . "'");
 	
