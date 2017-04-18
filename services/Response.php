@@ -13,7 +13,7 @@ class Response {
 	 */
 	function send($success, $code, $data)
 	{
-		$response = array("SUCCESS" => $success, "STATUS_CODE" => $code, "DATA" => $data);
+		$response = array("SUCCESS" => $success, "STATUS" => unserialize($code), "DATA" => $data);
 
 		//Return the account couldn't be created.
 		print json_encode($response);
