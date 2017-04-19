@@ -22,5 +22,5 @@
 	
 	mysqli_query($conn, $updateLogin);
 
-	$response->send(true, RESPONSE_SUCCESS_DATE_LOGIN_UPDATED, $userId);
+	$response->send(RESPONSE_SUCCESS_DATE_LOGIN_UPDATED, $userId);
 ?>

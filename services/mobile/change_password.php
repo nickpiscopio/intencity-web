@@ -32,15 +32,15 @@
 	
 		if($query)
 		{
-			$response->send(true, RESPONSE_SUCCESS_PASSWORD_CHANGE, NULL);
+			$response->send(RESPONSE_SUCCESS_PASSWORD_CHANGE, NULL);
 		}
 		else
 		{
-			$response->send(true, RESPONSE_FAILURE_PASSWORD_CHANGE, NULL);
+			$response->send(RESPONSE_FAILURE_PASSWORD_CHANGE, NULL);
 		}
 	}
 	else
 	{			
-		$response->send(false, RESPONSE_FAILURE_PASSWORD_INVALID, NULL);
+		$response->send(RESPONSE_FAILURE_PASSWORD_INVALID, NULL);
 	}
 ?>
