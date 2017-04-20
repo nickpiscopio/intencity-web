@@ -17,7 +17,15 @@ class Response {
 		$status = unserialize($code);
 		$response = array("STATUS" => array("SUCCESS" => $status[0], "CODE" => $status[1]), "DATA" => $data);
 
-		//Return the account couldn't be created.
+		// Send the JSON response.
+		// The response should be as follows:
+		// {
+		//		"STATUS": {
+		//			"SUCCESS": true,
+		//			"CODE": 201	
+		//		},
+		//		"DATA": " [DATA TO SEND AS A RESPONSE] " 
+		// }
 		print json_encode($response);
 	}
 }

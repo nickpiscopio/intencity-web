@@ -1,6 +1,8 @@
 <?php
 	/**
 	 * This file has all of the status code constants.
+	 *
+	 * We send an array for each for when we want a successful flag, but don't send data.
 	 */
 
 	// Success status codes.
