@@ -6,6 +6,7 @@
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
+	include_once '../status_codes.php';
 	include_once '../TextHash.php';
 	include_once '../Response.php';
 
