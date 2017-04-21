@@ -33,15 +33,15 @@
 	
 		if($query)
 		{
-			$response->send(RESPONSE_SUCCESS_PASSWORD_CHANGE, NULL);
+			$response->send(STATUS_CODE_SUCCESS_PASSWORD_CHANGED, NULL);
 		}
 		else
 		{
-			$response->send(RESPONSE_FAILURE_PASSWORD_CHANGE, NULL);
+			$response->send(STATUS_CODE_FAILURE_PASSWORD_CHANGE, NULL);
 		}
 	}
 	else
 	{			
-		$response->send(RESPONSE_FAILURE_PASSWORD_INVALID, NULL);
+		$response->send(STATUS_CODE_FAILURE_PASSWORD_INVALID, NULL);
 	}
 ?>

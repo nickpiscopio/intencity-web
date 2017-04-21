@@ -50,7 +50,7 @@
 	if($row[COLUMN_EMAIL] == $email)
 	{
 		// Return the account exists.
-		$response->send(RESPONSE_FAILURE_EMAIL_ERROR, NULL);
+		$response->send(STATUS_CODE_FAILURE_EMAIL_ERROR, NULL);
 	}
 	else
 	{
@@ -104,24 +104,24 @@
 
 						mysqli_multi_query($conn, $insertEquipmentQuery);
 
-						$response->send(RESPONSE_SUCCESS_ACCOUNT_CREATION, $userId);
+						$response->send(STATUS_CODE_SUCCESS_ACCOUNT_CREATION, $userId);
 					}
 					else
 					{
-						$response->send(RESPONSE_FAILURE_ACCOUNT_CREATION, NULL);
+						$response->send(STATUS_CODE_FAILURE_ACCOUNT_CREATION, NULL);
 					}
 		       
 		            mysqli_free_result($result);
 		        }
 		        else
 		        {
-		        	$response->send(RESPONSE_FAILURE_ACCOUNT_CREATION, NULL);
+		        	$response->send(STATUS_CODE_FAILURE_ACCOUNT_CREATION, NULL);
 		        }
 		    }
 		}
 		else
 		{
-			$response->send(RESPONSE_FAILURE_ACCOUNT_CREATION, NULL);
+			$response->send(STATUS_CODE_FAILURE_ACCOUNT_CREATION, NULL);
 		}		
 	}
 ?>

@@ -10,7 +10,12 @@
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
+	include_once '../status_codes.php';
 	include_once '../TextHash.php';
+	include_once '../Response.php';
+
+	// Utility class to create a JSON response.
+	$response = new Response();
 	
 	//Constants for the response from the database.
 	define("RESPONSE_VALID_CREDENTIALS", "Valid credentials");
@@ -37,15 +42,15 @@
 		
 		if($phpass->CheckText($password, $row[COLUMN_PASSWORD]))
 		{
-			print json_encode($row);
+			$response->send(STATUS_CODE_SUCCESS_CREDENTIALS_VALID, $row);
 		}
 		else
 		{			
-			print json_encode(RESPONSE_PASSWORD_ERROR);
+			$response->send(STATUS_CODE_FAILURE_CREDENTIALS_PASSWORD_INVALID, NULL);
 		}
 	}
 	else
 	{
-		print json_encode(RESPONSE_EMAIL_ERROR);
+		$response->send(STATUS_CODE_FAILURE_CREDENTIALS_EMAIL_INVALID, NULL);
 	}
 ?>
