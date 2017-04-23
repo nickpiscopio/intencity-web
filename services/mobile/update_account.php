@@ -2,7 +2,7 @@
 	/**
 	 * This file updates a user's trial account to a full account.
 	 * 
-	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/mobile/update_account.php?user_id=100&first_name=John&last_name=Smith&email=john.smith@gmail.com&password=hello123
+	 * URL GET EXAMPLE		http://intencity.fit/dev/services/mobile/update_account.php?user_id=100&first_name=John&last_name=Smith&email=john.smith@gmail.com&password=hello123
 	 * 						This example does not work when we are using $_POST. We ARE using $_POST.
 	 */
 

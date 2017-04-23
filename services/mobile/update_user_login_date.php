@@ -2,7 +2,7 @@
 	/**
 	 * This file updates the last time the user logged in.
 	 * 
-	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/mobile/update_user_login.php?id=10
+	 * URL GET EXAMPLE		http://intencity.fit/dev/services/mobile/update_user_login.php?id=10
 	 * 						This example does not work when we are using $_POST. We ARE using $_POST.
 	 */
 
