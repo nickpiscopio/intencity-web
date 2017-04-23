@@ -18,7 +18,7 @@
 	$new = $_POST['password'];
 	
 	// Get the user from the database.
-	$query = mysqli_query($conn, "SELECT " . COLUMN_ID . ", " . COLUMN_PASSWORD . " FROM " . TABLE_USER . " WHERE " . COLUMN_ID . " = '" . $userId . "'");
+	$query = mysqli_query($conn, "SELECT " . COLUMN_ID . ", " . COLUMN_PASSWORD . " FROM " . TABLE_USER . " WHERE " . COLUMN_ID . " = " . $userId);
 	
 	// Get any data that came back from the database.
 	$row = mysqli_fetch_assoc($query);	
@@ -29,7 +29,7 @@
 	{	
 		$hash = $phpass->HashText($new);
 		
-		$query = mysqli_query($conn, "UPDATE " . TABLE_USER . " SET " . COLUMN_PASSWORD . " = '" . $hash . "' WHERE " . COLUMN_ID . " = '" . $userId . "'");
+		$query = mysqli_query($conn, "UPDATE " . TABLE_USER . " SET " . COLUMN_PASSWORD . " = '" . $hash . "' WHERE " . COLUMN_ID . " = " . $userId);
 	
 		if($query)
 		{

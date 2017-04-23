@@ -118,6 +118,10 @@
 		        	$response->send(STATUS_CODE_FAILURE_ACCOUNT_CREATION, NULL);
 		        }
 		    }
+		    else
+	        {
+	        	$response->send(STATUS_CODE_FAILURE_ACCOUNT_CREATION, NULL);
+	        }
 		}
 		else
 		{

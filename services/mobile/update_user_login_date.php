@@ -10,7 +10,11 @@
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
 	include_once '../Time.php';
+	include_once '../status_codes.php';
 	include_once '../Response.php';
+
+	// Utility class to create a JSON response.
+	$response = new Response();
 
 	$userId = $_POST['user_id'];
 
@@ -18,9 +22,14 @@
 	$now = $time->getMillis();
 
 	// Query to update the user's login date.
-	$updateLogin =  "UPDATE " . TABLE_USER . " SET " . COLUMN_LAST_LOGIN_DATE . " = " . $now . " WHERE ID = '" . $userId . "'";
+	$updateLogin =  "UPDATE " . TABLE_USER . " SET " . COLUMN_LAST_LOGIN_DATE . " = " . $now . " WHERE " . COLUMN_ID . " = " . $userId;
 	
-	mysqli_query($conn, $updateLogin);
-
-	$response->send(STATUS_CODE_SUCCESS_DATE_LOGIN_UPDATED, $userId);
+	if (mysqli_query($conn, $updateLogin))
+	{
+		$response->send(STATUS_CODE_SUCCESS_DATE_LOGIN_UPDATED, NULL);
+	}
+	else
+	{
+		$response->send(STATUS_CODE_FAILURE_DATE_LOGIN_UPDATE, NULL);
+	}
 ?>
