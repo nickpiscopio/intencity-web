@@ -3,7 +3,11 @@
 	 * This file retrieves the email and password from the database 
 	 * and will return to the user whether the information provided is correct.
 	 *
-	 * URL GET EXAMPLE		http://intencityapp.com/services/user_credentials.php?email=nick.piscopio@gmail.com&password=hello123
+	 * URL GET EXAMPLE		http://intencity.fit/dev/services/mobile/user_credentials.php?user_id=100&email=dev@gmail.com&password=hello123
+	 *
+	 *						user_id 	(Optional) If user_id isn't set, then we are loggin in.
+	 *									If user_id isn't set, then we are deleting the account.
+	 *
 	 * 						This example does not work when we are using $_GET. We ARE using $_GET.
 	 */
 
@@ -16,12 +20,8 @@
 
 	// Utility class to create a JSON response.
 	$response = new Response();
-	
-	//Constants for the response from the database.
-	define("RESPONSE_VALID_CREDENTIALS", "Valid credentials");
-	define("RESPONSE_PASSWORD_ERROR", "Invalid password");
-	define("RESPONSE_EMAIL_ERROR", "Could not find email");
 
+	$userId = $_POST['user_id'];
 	$email = strtolower($_POST['email']);
 	$password = $_POST['password'];
 	
@@ -29,14 +29,20 @@
 	{
 		$email = $_SESSION['email'];
 	}
+
+	$whereClause = (isset($userId)) ? 
+						COLUMN_ID . " = " . $userId :
+						COLUMN_EMAIL . " = '" . $email . "'";
 	
-	//Check to see if the email is already in use.
-	$query = mysqli_query($conn, "SELECT " . COLUMN_ID . ", " . COLUMN_EMAIL . ", " . COLUMN_PASSWORD . ", " . COLUMN_ACCOUNT_TYPE . " FROM " . TABLE_USER . " WHERE " . COLUMN_EMAIL . " = '" . $email . "'");
+	// Check to see if the account exists.
+	$query = mysqli_query($conn, "SELECT " . COLUMN_ID . ", " . COLUMN_EMAIL . ", " . COLUMN_PASSWORD . ", " . COLUMN_ACCOUNT_TYPE . 
+									" FROM " . TABLE_USER . 
+									" WHERE " . $whereClause);
 	
-	//Get any data that came back from the database.
+	// Get any data that came back from the database.
 	$row = mysqli_fetch_assoc($query);
 	
-	if($row[COLUMN_EMAIL] == $email)
+	if($row[COLUMN_EMAIL] == $email || $row[COLUMN_ID] == $userId)
 	{
 		$phpass = new TextHash(12, false);
 		
