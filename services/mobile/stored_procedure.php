@@ -41,8 +41,12 @@
 		{
 			$output[] = $entry;
 		}
+		
+		// Return the information from the stored procedure.
+		$response->send(STATUS_CODE_SUCCESS_STORED_PROCEDURE, $output);	
 	}
-
-	// Return the information from the stored procedure.
-	$response->send(STATUS_CODE_STORED_PROCEDURE, $output);	
+	else
+	{
+		$response->send(STATUS_CODE_FAILURE_STORED_PROCEDURE, NULL);	
+	}
 ?>

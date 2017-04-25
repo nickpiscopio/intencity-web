@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 23, 2017 at 03:28 PM
+-- Generation Time: Apr 25, 2017 at 05:39 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -38,7 +38,7 @@ CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser`(IN `id` INT, IN `fo
 INSERT INTO Following (Following.UserId, Following.Following) 
 VALUES (id, followUserId)$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups`(IN `id` INT)
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups`(IN `userId` INT)
 begin
 
 declare routineNumber int default 0;
@@ -51,7 +51,7 @@ set routineNumber = (SELECT MuscleGroupRoutine.RoutineNumber
                      FROM MuscleGroupRoutine
                      INNER JOIN CompletedMuscleGroup
                      ON CompletedMuscleGroup.MuscleGroupName = MuscleGroupRoutine.MuscleGroupName
-                     WHERE CompletedMuscleGroup.UserId = id
+                     WHERE CompletedMuscleGroup.UserId = userId
                      ORDER BY CompletedMuscleGroup.ID DESC
                      LIMIT 1);
 
@@ -78,7 +78,7 @@ SELECT *
        UNION ALL
        SELECT UserMuscleGroupRoutine.DisplayName as DisplayName, UserMuscleGroupRoutine.RoutineNumber, currentMuscleGroup
        FROM UserMuscleGroupRoutine
-       WHERE UserMuscleGroupRoutine.UserId = Id
+       WHERE UserMuscleGroupRoutine.UserId = userId
        GROUP BY UserMuscleGroupRoutine.DisplayName) as muscleGroup
   ORDER BY 
     CASE 
@@ -332,10 +332,10 @@ LEFT JOIN UserEquipment
 WHERE Equipment.EquipmentName != 'NULL'
 GROUP BY Equipment.EquipmentName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserFitnessLocations`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserFitnessLocations`(IN `userId` INT)
 SELECT UserEquipment.DisplayName, UserEquipment.Location
 FROM UserEquipment
-WHERE UserEquipment.Email = email
+WHERE UserEquipment.UserId = userId
 GROUP BY UserEquipment.DisplayName, UserEquipment.Location
 ORDER BY UserEquipment.DisplayName, UserEquipment.Location$$
 
