@@ -17,8 +17,8 @@
 	$response = new Response();
 	
 	//NEEDS TO BE CHANGED TO A POST.
-	$storedProcedure = $_GET['d'];
-	$urlV  = $_GET['v'];
+	$storedProcedure = $_POST['d'];
+	$urlV  = $_POST['v'];
 	$v = addslashes($urlV);
 	$variables = explode('|', $v);
 	$varLength = count($variables);
