@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 25, 2017 at 05:39 PM
+-- Generation Time: Apr 26, 2017 at 10:28 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -106,17 +106,6 @@ INNER JOIN Direction
     ON Direction.ExerciseId = Exercise.ExerciseId
 WHERE Exercise.ExerciseId = exerciseId
 ORDER BY Direction.ID ASC$$
-
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getEquipment`(IN `id` INT)
-SELECT Equipment.EquipmentName, 
-	CASE 
-    	WHEN UserEquipment.UserId != 'NULL' THEN 'true'
-	END AS HasEquipment
-FROM Equipment
-LEFT JOIN UserEquipment
-	ON UserEquipment.EquipmentName = Equipment.EquipmentName && UserEquipment.UserId = id
-WHERE Equipment.EquipmentName != 'NULL'
-GROUP BY Equipment.EquipmentName$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday`(IN `id` INT)
 SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
@@ -319,15 +308,15 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment`(IN `email` VARCHAR(75), IN `location` VARCHAR(125))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment`(IN `userId` INT, IN `location` VARCHAR(125))
 SELECT Equipment.EquipmentName, 
 	CASE 
-    	WHEN UserEquipment.Email != 'NULL' THEN 'true'
+    	WHEN UserEquipment.UserId != 'NULL' THEN 'true'
 	END AS HasEquipment
 FROM Equipment
 LEFT JOIN UserEquipment
 	ON UserEquipment.EquipmentName = Equipment.EquipmentName && 
-	   UserEquipment.Email = email && 
+	   UserEquipment.UserId = userId && 
 	   UserEquipment.Location = location
 WHERE Equipment.EquipmentName != 'NULL'
 GROUP BY Equipment.EquipmentName$$
