@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 26, 2017 at 10:28 PM
+-- Generation Time: Apr 27, 2017 at 10:26 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -24,10 +24,10 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists`(IN `id` INT, IN `location` VARCHAR(125))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists`(IN `userId` INT, IN `location` VARCHAR(125))
 SELECT Location
 FROM UserEquipment
-WHERE UserEquipment.UserId = id && UserEquipment.Location = location
+WHERE UserEquipment.UserId = userId && UserEquipment.Location = location
 GROUP BY UserEquipment.Location$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise`(IN `id` INT, IN `exerciseName` VARCHAR(50))
@@ -15905,7 +15905,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13193 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13197 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -16839,6 +16839,7 @@ INSERT INTO `UserEquipment` (`ID`, `DisplayName`, `Location`, `EquipmentName`, `
 (13029, '', 'Default', 'Step', 43466),
 (13030, '', 'Default', 'Treadmill', 43466),
 (13031, '', 'Default', 'Wall', 43466),
+(13196, '', '36496 Shelley Ct, Newark, CA 94560, USA', 'Bike', 43471),
 (13055, '', 'Default', 'Barbell', 43468),
 (13056, '', 'Default', 'Bench', 43468),
 (13057, '', 'Default', 'Bench Rack', 43468),
