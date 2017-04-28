@@ -3,12 +3,8 @@
 	 * This file is to delete muscle group routines from the UserMuscleGroupRoutine table.
 	 *
 	 * Accepts:
-	 *		email 		The email of the user.
+	 *		userId 		The email of the user.
 	 * 		remove		The equipment to insert to the database. Separate with a "|".
-	 *
- 	 * Returns:
- 	 *		SUCCESS
- 	 *		FAILURE
 	 * 
 	 * EXAMPLE URL	http://intencity.fit/dev/services/mobile/update_user_fitness_location.php?user_id=100&remove=Tesla Road, Livermore, CA, Uni|H G Trueman Road, Lusby, MD, U
 	 */
@@ -22,7 +18,7 @@
 	$response = new Response();
 	
 	//NEEDS TO BE CHANGED TO A POST.
-	$email = $_POST['user_id'];
+	$userId = $_POST['user_id'];
 	$remove = $_POST['remove'];
 	
 	$deleteQuery = "";
@@ -35,7 +31,7 @@
 		
 		for($z = 0; $z < $total; $z++)
 		{
-			$deleteQuery .= "DELETE FROM " . TABLE_USER_EQUIPMENT . " WHERE " . COLUMN_EMAIL . "=" . "'" . $email . "' AND " . COLUMN_LOCATION . " = '" . $remove[$z] . "'; ";
+			$deleteQuery .= "DELETE FROM " . TABLE_USER_EQUIPMENT . " WHERE " . COLUMN_USER_ID . "=" . "'" . $userId . "' AND " . COLUMN_LOCATION . " = '" . $remove[$z] . "'; ";
 		}
 	}
 
