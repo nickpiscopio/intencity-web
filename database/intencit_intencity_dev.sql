@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 30, 2017 at 11:50 AM
+-- Generation Time: Apr 30, 2017 at 12:22 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -613,7 +613,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority`(IN `email` VARCHAR(75), IN `exerciseName` VARCHAR(50), IN `incrementing` CHAR(1))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority`(IN `userId` INT, IN `exerciseId` INT, IN `incrementing` CHAR(1))
 begin
 
     declare IS_TRUE char(1) default "1";
@@ -631,7 +631,7 @@ begin
 
     set tempPriority = (SELECT ExercisePriority.Priority
                         FROM ExercisePriority
-                        WHERE ExercisePriority.Email = email && ExercisePriority.ExerciseName = exerciseName);
+                        WHERE ExercisePriority.UserId = userId && ExercisePriority.ExerciseId = exerciseId);
 
     IF (tempPriority IS NOT NULL) THEN
     
@@ -641,9 +641,9 @@ begin
 
     IF (priority < PRIORITY_LIMIT_UPPER && incrementing = IS_TRUE) THEN
 
-        set excludedExercise = (SELECT Exclusion.ExclusionName
+        set excludedExercise = (SELECT Exclusion.ExerciseId
                                 FROM Exclusion 
-                                WHERE Exclusion.Email = email && Exclusion.ExclusionName = exerciseName);
+                                WHERE Exclusion.UserId = userId && Exclusion.ExerciseId = exerciseId);
 
         IF (excludedExercise IS NULL) THEN
 
@@ -652,7 +652,7 @@ begin
         ELSE
 
             DELETE FROM Exclusion 
-            WHERE Exclusion.Email = email && Exclusion.ExclusionName = excludedExercise;
+            WHERE Exclusion.UserId = userId && Exclusion.ExerciseId = excludedExercise;
 
         END IF;
   
@@ -664,24 +664,24 @@ begin
 
     /* We delete from ExercisePriority because we want to set a new value or we want to add to the exclusion list. */
     DELETE FROM ExercisePriority 
-    WHERE ExercisePriority.Email = email && ExercisePriority.ExerciseName = exerciseName;
+    WHERE ExercisePriority.UserId = userId && ExercisePriority.ExerciseId = exerciseId;
 
     IF (priority <= PRIORITY_LIMIT_LOWER) THEN
 
-        set excludedExercise = (SELECT Exclusion.ExclusionName
+        set excludedExercise = (SELECT Exclusion.ExerciseId
                                 FROM Exclusion 
-                                WHERE Exclusion.Email = email && Exclusion.ExclusionName = exerciseName);
+                                WHERE Exclusion.UserId = userId && Exclusion.ExerciseId = exerciseId);
 
         IF (excludedExercise IS NULL) THEN
 
-            INSERT INTO Exclusion (Email, ExcludeForever, ExclusionName, ExclusionType)
-            VALUES (email, 1, exerciseName, 'E');
+            INSERT INTO Exclusion (UserId, ExcludeForever, ExerciseId, ExclusionType)
+            VALUES (userId, 1, exerciseId, 'E');
 
         END IF;
 
     ELSEIF ((priority > PRIORITY_LIMIT_LOWER && priority < PRIORITY_LIMIT_MID) || (priority > PRIORITY_LIMIT_MID && priority <= PRIORITY_LIMIT_UPPER)) THEN
 
-        INSERT INTO ExercisePriority (Email, ExerciseName, Priority) VALUES (email, exerciseName, priority);
+        INSERT INTO ExercisePriority (UserId, ExerciseId, Priority) VALUES (userId, exerciseId, priority);
 
     END IF;
 
@@ -3699,7 +3699,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15134 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15146 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13058,7 +13058,19 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 (15130, 43471, 1493567276000, 'Hamstrings', 1),
 (15131, 43471, 1493567276000, 'Quads', 1),
 (15132, 43471, 1493567276000, 'Glutes', 1),
-(15133, 43471, 1493567276000, 'Lower Back', 1);
+(15133, 43471, 1493567276000, 'Lower Back', 1),
+(15134, 43471, 1493568710000, 'Triceps', 2),
+(15135, 43471, 1493568710000, 'Chest', 2),
+(15136, 43471, 1493568972000, 'Calves', 1),
+(15137, 43471, 1493568972000, 'Shins', 1),
+(15138, 43471, 1493568972000, 'Hamstrings', 1),
+(15139, 43471, 1493568972000, 'Quads', 1),
+(15140, 43471, 1493568972000, 'Glutes', 1),
+(15141, 43471, 1493568972000, 'Lower Back', 1),
+(15142, 43471, 1493569041000, 'Triceps', 2),
+(15143, 43471, 1493569041000, 'Chest', 2),
+(15144, 43471, 1493569167000, 'Triceps', 2),
+(15145, 43471, 1493569167000, 'Chest', 2);
 
 -- --------------------------------------------------------
 
@@ -14354,7 +14366,7 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
   `ExerciseId` int(11) DEFAULT NULL,
   `Priority` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=740 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=746 ;
 
 --
 -- Dumping data for table `ExercisePriority`
@@ -14371,7 +14383,8 @@ INSERT INTO `ExercisePriority` (`ID`, `UserId`, `ExerciseId`, `Priority`) VALUES
 (395, 515, 15, 10),
 (484, 525, 26, 40),
 (232, 135, 104, 30),
-(735, 10, 136, 10);
+(735, 10, 136, 10),
+(745, 43471, 29, 30);
 
 -- --------------------------------------------------------
 
