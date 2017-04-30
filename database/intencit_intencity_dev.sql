@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 30, 2017 at 12:22 PM
+-- Generation Time: Apr 30, 2017 at 03:02 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -231,19 +231,23 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getPriority`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getPriority`(IN `userId` INT)
 begin
 
   declare EXCLUSION_LIST_PRIORITY int default 0;
 
   SELECT * 
-  FROM(SELECT ExercisePriority.ExerciseName as ExerciseName, ExercisePriority.Priority as Priority
+  FROM(SELECT Exercise.ID, Exercise.ExerciseName, ExercisePriority.Priority as Priority
        FROM ExercisePriority
-       WHERE ExercisePriority.Email = email
+          INNER JOIN Exercise
+          ON Exercise.ID = ExercisePriority.ExerciseId
+       WHERE ExercisePriority.UserId = userId
        UNION ALL
-       SELECT Exclusion.ExclusionName, EXCLUSION_LIST_PRIORITY
+       SELECT Exercise.ID, Exercise.ExerciseName, EXCLUSION_LIST_PRIORITY
        FROM Exclusion
-       WHERE Exclusion.Email = email) as priority
+          INNER JOIN Exercise
+          ON Exercise.ID = Exclusion.ExerciseId
+       WHERE Exclusion.UserId = userId) as priority
   ORDER BY Priority DESC, ExerciseName ASC;
 
 end$$
@@ -334,35 +338,35 @@ FROM UserMuscleGroupRoutine
 WHERE UserMuscleGroupRoutine.Email = email
 GROUP BY UserMuscleGroupRoutine.DisplayName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine`(IN `userId` INT)
 SELECT Routine.RoutineName, Routine.ExerciseDay
 FROM Routine
-WHERE Routine.Email = email 
+WHERE Routine.UserId = userId 
 GROUP BY Routine.RoutineName
 ORDER BY Routine.RoutineName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutineExercises`(IN `email` VARCHAR(75), IN `routineNumber` INT(1))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutineExercises`(IN `userId` INT, IN `routineNumber` INT(1))
 begin 
 
   /* We insert into the CompletedRoutine table, so we can later pull to show what the user has exercised in the last 7 days. */
-  INSERT INTO CompletedRoutine (CompletedRoutine.Email, CompletedRoutine.Date, CompletedRoutine.RoutineName)
-      SELECT email, UNIX_TIMESTAMP() * 1000 , Routine.RoutineName
+  INSERT INTO CompletedRoutine (CompletedRoutine.UserId, CompletedRoutine.Date, CompletedRoutine.RoutineName)
+      SELECT userId, UNIX_TIMESTAMP() * 1000 , Routine.RoutineName
       FROM Routine
-      WHERE Routine.Email = email && Routine.ExerciseDay = routineNumber
+      WHERE Routine.UserId = userId && Routine.ExerciseDay = routineNumber
       GROUP BY Routine.RoutineName;
 
-  SELECT Routine.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes, exercise.ExerciseTableExerciseName
+  SELECT Routine.ExerciseId as ID, exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
   FROM Routine
-  LEFT JOIN (SELECT Exercise.ExerciseName AS ExerciseTableExerciseName
+  LEFT JOIN (SELECT Exercise.ID as ExerciseTableExerciseId, Exercise.ExerciseName
              FROM Exercise) as exercise
-      ON exercise.ExerciseTableExerciseName = Routine.ExerciseName
-  LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+      ON exercise.ExerciseTableExerciseId = Routine.ExerciseId
+  LEFT JOIN (SELECT CompletedExercise.ExerciseId, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
               FROM CompletedExercise
-              WHERE CompletedExercise.Email = email
+              WHERE CompletedExercise.UserId = userId
               ORDER BY CompletedExercise.ID DESC) as completedExercise
-      ON completedExercise.ExerciseName = Routine.ExerciseName 
-  WHERE Routine.Email = email && Routine.ExerciseDay = routineNumber
-  GROUP BY Routine.ExerciseName
+      ON completedExercise.ExerciseId = Routine.ExerciseId 
+  WHERE Routine.UserId = userId && Routine.ExerciseDay = routineNumber
+  GROUP BY Routine.ExerciseId
   ORDER BY Routine.ID ASC;
 
 end$$
@@ -3699,7 +3703,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15146 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15166 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13070,7 +13074,27 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 (15142, 43471, 1493569041000, 'Triceps', 2),
 (15143, 43471, 1493569041000, 'Chest', 2),
 (15144, 43471, 1493569167000, 'Triceps', 2),
-(15145, 43471, 1493569167000, 'Chest', 2);
+(15145, 43471, 1493569167000, 'Chest', 2),
+(15146, 43471, 1493571686000, 'Triceps', 2),
+(15147, 43471, 1493571686000, 'Chest', 2),
+(15148, 43471, 1493571736000, 'Calves', 1),
+(15149, 43471, 1493571736000, 'Shins', 1),
+(15150, 43471, 1493571736000, 'Hamstrings', 1),
+(15151, 43471, 1493571736000, 'Quads', 1),
+(15152, 43471, 1493571736000, 'Glutes', 1),
+(15153, 43471, 1493571736000, 'Lower Back', 1),
+(15154, 43471, 1493573462000, 'Calves', 1),
+(15155, 43471, 1493573462000, 'Shins', 1),
+(15156, 43471, 1493573462000, 'Hamstrings', 1),
+(15157, 43471, 1493573462000, 'Quads', 1),
+(15158, 43471, 1493573462000, 'Glutes', 1),
+(15159, 43471, 1493573462000, 'Lower Back', 1),
+(15160, 43471, 1493574802000, 'Triceps', 2),
+(15161, 43471, 1493574802000, 'Chest', 2),
+(15162, 43471, 1493575109000, 'Upper Outer Back', 4),
+(15163, 43471, 1493575109000, 'Upper Inner Back', 4),
+(15164, 43471, 1493575109000, 'Biceps', 4),
+(15165, 43471, 1493575109000, 'Forearms', 4);
 
 -- --------------------------------------------------------
 
@@ -13084,7 +13108,7 @@ CREATE TABLE IF NOT EXISTS `CompletedRoutine` (
   `Date` bigint(20) NOT NULL,
   `RoutineName` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=114 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=122 ;
 
 --
 -- Dumping data for table `CompletedRoutine`
@@ -13175,7 +13199,15 @@ INSERT INTO `CompletedRoutine` (`ID`, `UserId`, `Date`, `RoutineName`) VALUES
 (110, 10, 1486312275000, 'test12345'),
 (111, 10, 1486312360000, 'trs'),
 (112, 10, 1486312491000, 'asd'),
-(113, 10, 1486319392000, 'upper''');
+(113, 10, 1486319392000, 'upper'''),
+(114, 43471, 1493577845000, 'tes1'),
+(115, 43471, 1493577953000, 'tes1'),
+(116, 43471, 1493578611000, 'tes1'),
+(117, 43471, 1493578672000, 'tes1'),
+(118, 43471, 1493578747000, 'tes1'),
+(119, 43471, 1493578773000, 'tes1'),
+(120, 43471, 1493578829000, 'tes1'),
+(121, 43471, 1493578893000, 'tes1');
 
 -- --------------------------------------------------------
 
@@ -14104,7 +14136,7 @@ CREATE TABLE IF NOT EXISTS `Exclusion` (
   `ExcludeForever` tinyint(1) NOT NULL,
   `ExclusionType` char(1) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=868 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=884 ;
 
 --
 -- Dumping data for table `Exclusion`
@@ -14153,7 +14185,7 @@ INSERT INTO `Exclusion` (`ID`, `UserId`, `ExerciseId`, `ExcludeForever`, `Exclus
 (866, 10, 117, 1, 'E'),
 (865, 10, 41, 1, 'E'),
 (864, 10, 47, 1, 'E'),
-(863, 10, 47, 1, 'E');
+(883, 43471, 96, 1, 'E');
 
 -- --------------------------------------------------------
 
@@ -14366,7 +14398,7 @@ CREATE TABLE IF NOT EXISTS `ExercisePriority` (
   `ExerciseId` int(11) DEFAULT NULL,
   `Priority` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=746 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=800 ;
 
 --
 -- Dumping data for table `ExercisePriority`
@@ -14384,7 +14416,10 @@ INSERT INTO `ExercisePriority` (`ID`, `UserId`, `ExerciseId`, `Priority`) VALUES
 (484, 525, 26, 40),
 (232, 135, 104, 30),
 (735, 10, 136, 10),
-(745, 43471, 29, 30);
+(799, 43471, 138, 10),
+(798, 43471, 135, 10),
+(797, 43471, 32, 30),
+(796, 43471, 141, 40);
 
 -- --------------------------------------------------------
 
@@ -15458,7 +15493,7 @@ CREATE TABLE IF NOT EXISTS `Routine` (
   `ExerciseDay` tinyint(4) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3497 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3508 ;
 
 --
 -- Dumping data for table `Routine`
@@ -15631,7 +15666,18 @@ INSERT INTO `Routine` (`ID`, `UserId`, `RoutineName`, `ExerciseDay`, `ExerciseId
 (3463, 525, 's', 13, 94),
 (3464, 525, 's', 13, 98),
 (3465, 525, 's', 13, 103),
-(3466, 525, 's', 13, 27);
+(3466, 525, 's', 13, 27),
+(3497, 43471, 'test', 0, 0),
+(3498, 43471, 'test', 0, 0),
+(3499, 43471, 'test', 0, 0),
+(3500, 43471, 'test', 0, 0),
+(3501, 43471, 'test', 0, 0),
+(3502, 43471, 'tes', 1, 0),
+(3503, 43471, 'tes', 1, 0),
+(3504, 43471, 'tes', 1, 0),
+(3505, 43471, 'tes1', 2, 98),
+(3506, 43471, 'tes1', 2, 20),
+(3507, 43471, 'tes1', 2, 46);
 
 -- --------------------------------------------------------
 
