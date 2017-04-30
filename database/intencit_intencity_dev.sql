@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 27, 2017 at 10:26 PM
+-- Generation Time: Apr 30, 2017 at 11:50 AM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -248,62 +248,62 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises`(IN `email` VARCHAR(75), IN `userLocation` VARCHAR(125), IN `routineNumber` INT)
-begin	
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises`(IN `userId` INT, IN `userLocation` VARCHAR(125), IN `routineNumber` INT)
+begin 
 
-    /* 	Sets the routine for today.	*/
+    /*  Sets the routine for today. */
     /*  This is the max threshold that Intencity has for its routine numbers.
         Anything greater than this is a custom rotine created by the user. */
     declare DEFAULT_INTENCITY_ROUTINE_THRESHOLD int default 6;
 
     IF (routineNumber > DEFAULT_INTENCITY_ROUTINE_THRESHOLD) THEN
         /* Pull from the custom routines */
-        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
-            SELECT email, UNIX_TIMESTAMP() * 1000 , UserMuscleGroupRoutine.MuscleGroupName, routineNumber
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.UserId, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
+            SELECT userId, UNIX_TIMESTAMP() * 1000 , UserMuscleGroupRoutine.MuscleGroupName, routineNumber
             FROM UserMuscleGroupRoutine
-            WHERE UserMuscleGroupRoutine.Email = email && UserMuscleGroupRoutine.RoutineNumber = routineNumber;
+            WHERE UserMuscleGroupRoutine.UserId = userId && UserMuscleGroupRoutine.RoutineNumber = routineNumber;
     ELSE
         /* Pull from Intencity's routines */
-        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
-            SELECT email, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName, routineNumber
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.UserId, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
+            SELECT userId, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName, routineNumber
             FROM MuscleGroupRoutine
             WHERE MuscleGroupRoutine.RoutineNumber = routineNumber;
     END IF;
 
     /* The alogrithm to get the user's exercises for today.*/
-    SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
+    SELECT Exercise.ID, Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
     FROM Exercise
     INNER JOIN MuscleGroup 
-        ON Exercise.ExerciseName = MuscleGroup.ExerciseName
+        ON Exercise.ID = MuscleGroup.ExerciseId
     Inner JOIN Equipment
-        ON Exercise.ExerciseName = Equipment.ExerciseName
-    LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+        ON Exercise.ID = Equipment.ExerciseId
+    LEFT JOIN (SELECT CompletedExercise.ExerciseId, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
                FROM CompletedExercise
-               WHERE CompletedExercise.Email = email
+               WHERE CompletedExercise.UserId = userId
                ORDER BY CompletedExercise.ID DESC) as completedExercise
-        ON completedExercise.ExerciseName = Exercise.ExerciseName 
-    LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
+        ON completedExercise.ExerciseId = Exercise.ID 
+    LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseId
                 FROM ExercisePriority
-                WHERE ExercisePriority.Email = email) as exercisePriority
-        ON exercisePriority.ExerciseName = Exercise.ExerciseName
+                WHERE ExercisePriority.UserId = userId) as exercisePriority
+        ON exercisePriority.ExerciseId = Exercise.ID
     WHERE 
           Exercise.Type = 'E' && 
           Exercise.Recommended = 1 && 
           (MuscleGroup.MuscleGroupName IN (SELECT CompletedMuscleGroup.MuscleGroupName
                                            FROM CompletedMuscleGroup
-                                           WHERE CompletedMuscleGroup.Email = email && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
-                                                                                                                    FROM CompletedMuscleGroup
-                                                                                                                    WHERE CompletedMuscleGroup.Email = email
-                                                                                                                    ORDER BY CompletedMuscleGroup.ID DESC
-                                                                                                                    LIMIT 1)) && 
+                                           WHERE CompletedMuscleGroup.UserId = userId && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
+                                                                                                                      FROM CompletedMuscleGroup
+                                                                                                                      WHERE CompletedMuscleGroup.UserId = userId
+                                                                                                                      ORDER BY CompletedMuscleGroup.ID DESC
+                                                                                                                      LIMIT 1)) && 
           MuscleGroup.MuscleGroupExercisePercentage >= 50) && 
           (Equipment.EquipmentName IN (SELECT UserEquipment.EquipmentName 
                                        FROM UserEquipment 
-                                       WHERE UserEquipment.Email = email && UserEquipment.Location = userLocation) || Equipment.EquipmentName IS NULL) && 
-          Exercise.ExerciseName NOT IN (SELECT Exclusion.ExclusionName
+                                       WHERE UserEquipment.UserId = userId && UserEquipment.Location = userLocation) || Equipment.EquipmentName IS NULL) && 
+          Exercise.ID NOT IN (SELECT Exclusion.ExerciseId
                                         FROM Exclusion 
-                                        WHERE Exclusion.Email = email && Exclusion.ExclusionType = 'E')
-    GROUP BY Exercise.ExerciseName
+                                        WHERE Exclusion.UserId = userId && Exclusion.ExclusionType = 'E')
+    GROUP BY Exercise.ID
     ORDER BY RandomizedPriority DESC;
 
 end$$
@@ -3699,7 +3699,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15118 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15134 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13042,7 +13042,23 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 (15112, 10, 1486312465000, 'Biceps', 4),
 (15113, 10, 1486312465000, 'Forearms', 4),
 (15116, 10, 1486318743000, 'Triceps', 2),
-(15117, 10, 1486318743000, 'Chest', 2);
+(15117, 10, 1486318743000, 'Chest', 2),
+(15118, 43471, 1493566312000, 'Calves', 1),
+(15119, 43471, 1493566312000, 'Shins', 1),
+(15120, 43471, 1493566312000, 'Hamstrings', 1),
+(15121, 43471, 1493566312000, 'Quads', 1),
+(15122, 43471, 1493566312000, 'Glutes', 1),
+(15123, 43471, 1493566312000, 'Lower Back', 1),
+(15124, 43471, 1493566348000, 'Triceps', 2),
+(15125, 43471, 1493566348000, 'Chest', 2),
+(15126, 43471, 1493566780000, 'Triceps', 2),
+(15127, 43471, 1493566780000, 'Chest', 2),
+(15128, 43471, 1493567276000, 'Calves', 1),
+(15129, 43471, 1493567276000, 'Shins', 1),
+(15130, 43471, 1493567276000, 'Hamstrings', 1),
+(15131, 43471, 1493567276000, 'Quads', 1),
+(15132, 43471, 1493567276000, 'Glutes', 1),
+(15133, 43471, 1493567276000, 'Lower Back', 1);
 
 -- --------------------------------------------------------
 
@@ -16908,30 +16924,7 @@ INSERT INTO `UserEquipment` (`ID`, `DisplayName`, `Location`, `EquipmentName`, `
 (13120, '', 'Default', 'Squat Machine', 43470),
 (13121, '', 'Default', 'Step', 43470),
 (13122, '', 'Default', 'Treadmill', 43470),
-(13123, '', 'Default', 'Wall', 43470),
-(13124, '', 'Default', 'Barbell', 43471),
-(13125, '', 'Default', 'Bench', 43471),
-(13126, '', 'Default', 'Bench Rack', 43471),
-(13127, '', 'Default', 'Bike', 43471),
-(13128, '', 'Default', 'Cable Pull', 43471),
-(13129, '', 'Default', 'Cable Row Machine', 43471),
-(13130, '', 'Default', 'Chair', 43471),
-(13131, '', 'Default', 'Dumbbells', 43471),
-(13132, '', 'Default', 'Elliptical', 43471),
-(13133, '', 'Default', 'Exercise Box', 43471),
-(13134, '', 'Default', 'Leg Curl Machine', 43471),
-(13135, '', 'Default', 'Leg Extension Machine', 43471),
-(13136, '', 'Default', 'Leg Press Machine', 43471),
-(13137, '', 'Default', 'Preacher Curl Bench', 43471),
-(13138, '', 'Default', 'Preacher Curl Machine', 43471),
-(13139, '', 'Default', 'Pull Down Machine', 43471),
-(13140, '', 'Default', 'Pull Up Bar', 43471),
-(13141, '', 'Default', 'Roman Chair', 43471),
-(13142, '', 'Default', 'Shoulder Press Machine', 43471),
-(13143, '', 'Default', 'Squat Machine', 43471),
-(13144, '', 'Default', 'Step', 43471),
-(13145, '', 'Default', 'Treadmill', 43471),
-(13146, '', 'Default', 'Wall', 43471);
+(13123, '', 'Default', 'Wall', 43470);
 
 -- --------------------------------------------------------
 
