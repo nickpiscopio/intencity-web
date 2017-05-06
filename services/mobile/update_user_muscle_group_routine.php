@@ -3,25 +3,22 @@
 	 * This file is to delete muscle group routines from the UserMuscleGroupRoutine table.
 	 *
 	 * Accepts:
-	 *		email 		The email of the user.
+	 *		user_id		The user id of the user.
 	 * 		remove		The equipment to insert to the database. Separate with a "|".
-	 *
- 	 * Returns:
- 	 *		SUCCESS
- 	 *		FAILURE
 	 * 
-	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_user_muscle_group_routine.php?email=dev@gmail.com&remove=Upper Back, Lower Back, L| Cardio %26 Chest
+	 * EXAMPLE URL	http://intencity.fit/dev/services/mobile/update_user_muscle_group_routine.php?user_id=100&remove=Upper Back, Lower Back, L| Cardio %26 Chest
 	 */
 
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
+	include_once '../status_codes.php';
+	include_once '../Response.php';
 
-	define("SUCCESS", "SUCCESS");
-	define("FAILURE", "FAILURE");
+	$response = new Response();
 	
 	//NEEDS TO BE CHANGED TO A POST.
-	$email = $_POST['email'];
+	$userId = $_POST['user_id'];
 	$remove = $_POST['remove'];
 	
 	$deleteQuery = "";
@@ -34,7 +31,7 @@
 		
 		for($z = 0; $z < $total; $z++)
 		{
-			$deleteQuery .= "DELETE FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_EMAIL . "=" . "'" . $email . "' AND " . COLUMN_DISPLAY_NAME . " = '" . $remove[$z] . "'; ";
+			$deleteQuery .= "DELETE FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_USER_ID . "=" . $userId . " AND " . COLUMN_DISPLAY_NAME . " = '" . $remove[$z] . "'; ";
 		}
 	}
 
@@ -42,11 +39,11 @@
 
 	//Check if the query was successful.
 	if($query)
-	{		
-		print json_encode(SUCCESS);
+	{
+		$response->send(STATUS_CODE_SUCCESS_MUSCLE_GROUP_UPDATED, NULL);
 	}
 	else
 	{
-		print json_encode(FAILURE);
+		$response->send(STATUS_CODE_FAILURE_MUSCLE_GROUP_UPDATED, NULL);
 	}
 ?>

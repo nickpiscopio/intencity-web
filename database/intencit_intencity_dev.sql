@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Apr 30, 2017 at 03:02 PM
+-- Generation Time: May 06, 2017 at 01:17 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -332,10 +332,10 @@ WHERE UserEquipment.UserId = userId
 GROUP BY UserEquipment.DisplayName, UserEquipment.Location
 ORDER BY UserEquipment.DisplayName, UserEquipment.Location$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine`(IN `email` VARCHAR(75))
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine`(IN `userId` INT)
 SELECT UserMuscleGroupRoutine.DisplayName
 FROM UserMuscleGroupRoutine
-WHERE UserMuscleGroupRoutine.Email = email
+WHERE UserMuscleGroupRoutine.UserId = userId
 GROUP BY UserMuscleGroupRoutine.DisplayName$$
 
 CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine`(IN `userId` INT)
@@ -3703,7 +3703,7 @@ CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15166 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15178 ;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13094,7 +13094,19 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 (15162, 43471, 1493575109000, 'Upper Outer Back', 4),
 (15163, 43471, 1493575109000, 'Upper Inner Back', 4),
 (15164, 43471, 1493575109000, 'Biceps', 4),
-(15165, 43471, 1493575109000, 'Forearms', 4);
+(15165, 43471, 1493575109000, 'Forearms', 4),
+(15166, 43471, 1494090779000, 'Upper Inner Back', 8),
+(15167, 43471, 1494090779000, 'Upper Outer Back', 8),
+(15168, 43471, 1494090779000, 'Triceps', 8),
+(15169, 43471, 1494090779000, 'Calves', 8),
+(15170, 43471, 1494090779000, 'Shins', 8),
+(15171, 43471, 1494090779000, 'Hamstrings', 8),
+(15172, 43471, 1494090779000, 'Quads', 8),
+(15173, 43471, 1494090779000, 'Glutes', 8),
+(15174, 43471, 1494090779000, 'Lower Back', 8),
+(15175, 43471, 1494090779000, 'Traps', 8),
+(15176, 43471, 1494090779000, 'Neck', 8),
+(15177, 43471, 1494090779000, 'Shoulders', 8);
 
 -- --------------------------------------------------------
 
@@ -15697,7 +15709,7 @@ CREATE TABLE IF NOT EXISTS `User` (
   `AccountType` char(1) NOT NULL,
   `EarnedPoints` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43475 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43476 ;
 
 --
 -- Dumping data for table `User`
@@ -15965,7 +15977,8 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `EarnedFitnes
 (43468, 'nick.piscopio123@gmail.com', 1492789018930, 1492789018930, NULL, 'Nick', 'Piscopios', '$2a$12$BZ74D1vx.scFXPBhtbJZVuDqPhCocBhTO3eSd3TGw/aCPq1dQRjqO', 'N', 100),
 (43469, 'user1492789027603@intencity.fit', 1492789029230, 1492789029230, NULL, 'Anonymous', 'User', '$2a$12$bPbG8jlkHqu.PMENIusZgOQFM8Lv0SZa5hTc/T4oqkrfh.oZLJd.O', 'M', 100),
 (43470, 'john.smit@gmail.com', 1492962104250, 1492962104250, NULL, 'John', 'Smith', '$2a$12$CNzR8XLBR5iMM/JD96MiUOZJkqja3Ebg4steqwCjejjKqB..7OtCa', 'N', 100),
-(43471, 'john.smt@gmail.com', 1492962125560, 1492962125560, NULL, 'John', 'Smith', '$2a$12$9XXqo9sDeUooGuc2bYxL3ef2K.xBY0lRsOiVc87dNWwyGgPCNRsPC', 'N', 100);
+(43471, 'john.smt@gmail.com', 1492962125560, 1494089560320, NULL, 'John', 'Smith', '$2a$12$9XXqo9sDeUooGuc2bYxL3ef2K.xBY0lRsOiVc87dNWwyGgPCNRsPC', 'N', 100),
+(43475, 'gregdalfonso@gmail.com', 1493580622850, 1494037599630, NULL, 'Greg', 'Dalfonso', '$2a$12$ZU9HACKQzNVL02eZNyvS5.Fe5/GyNvoTPXXMyU4Gsp792Hf1OSyvi', 'N', 100);
 
 -- --------------------------------------------------------
 
@@ -15980,7 +15993,7 @@ CREATE TABLE IF NOT EXISTS `UserEquipment` (
   `EquipmentName` varchar(75) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13197 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13542 ;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -16983,7 +16996,30 @@ INSERT INTO `UserEquipment` (`ID`, `DisplayName`, `Location`, `EquipmentName`, `
 (13120, '', 'Default', 'Squat Machine', 43470),
 (13121, '', 'Default', 'Step', 43470),
 (13122, '', 'Default', 'Treadmill', 43470),
-(13123, '', 'Default', 'Wall', 43470);
+(13123, '', 'Default', 'Wall', 43470),
+(13541, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Wall', 43475),
+(13540, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Treadmill', 43475),
+(13539, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Step', 43475),
+(13538, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Squat Machine', 43475),
+(13537, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Shoulder Press Machine', 43475),
+(13536, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Roman Chair', 43475),
+(13535, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Pull Up Bar', 43475),
+(13534, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Pull Down Machine', 43475),
+(13533, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Preacher Curl Machine', 43475),
+(13530, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Leg Extension Machine', 43475),
+(13531, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Leg Press Machine', 43475),
+(13532, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Preacher Curl Bench', 43475),
+(13529, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Leg Curl Machine', 43475),
+(13528, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Exercise Box', 43475),
+(13527, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Elliptical', 43475),
+(13526, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Dumbbells', 43475),
+(13525, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Chair', 43475),
+(13524, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Cable Row Machine', 43475),
+(13523, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Cable Pull', 43475),
+(13522, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Bike', 43475),
+(13521, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Bench Rack', 43475),
+(13520, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Bench', 43475),
+(13519, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Barbell', 43475);
 
 -- --------------------------------------------------------
 
@@ -16998,7 +17034,7 @@ CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
   `RoutineNumber` int(11) NOT NULL,
   `DisplayName` varchar(100) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=961 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=984 ;
 
 --
 -- Dumping data for table `UserMuscleGroupRoutine`
@@ -17078,7 +17114,14 @@ INSERT INTO `UserMuscleGroupRoutine` (`ID`, `UserId`, `MuscleGroupName`, `Routin
 (937, 10, 'Quads', 25, 'Abs & Legs'),
 (938, 10, 'Glutes', 25, 'Abs & Legs'),
 (939, 10, 'Abs', 25, 'Abs & Legs'),
-(940, 10, 'Obliques', 25, 'Abs & Legs');
+(940, 10, 'Obliques', 25, 'Abs & Legs'),
+(977, 43471, 'Upper Inner Back', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(978, 43471, 'Upper Outer Back', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(979, 43471, 'Triceps', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(980, 43471, 'Lower Back', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(981, 43471, 'Traps', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(982, 43471, 'Neck', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(983, 43471, 'Shoulders', 9, 'Lower Back, Shoulders, Triceps, & Upper Back');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

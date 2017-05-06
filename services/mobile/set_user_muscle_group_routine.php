@@ -3,26 +3,23 @@
 	 * This file adds a custom muscle group routine.
 	 * 
 	 * Accepts:
-	 * 		email 		The email of the user to add the custom routine.
+	 * 		user_id		The ID of the user.
 	 * 		inserts 	The muscle groups we are inserting into the database.
-	 *
- 	 * Returns:
- 	 *		SUCCESS
- 	 *		FAILURE	
 	 * 
 	 * EXAMPLE URL	
-	 * http://intencityapp.com/dev/services/mobile/set_user_muscle_group_routine.php?email=dev@gmail.com&inserts=Upper%20Back,Lower%20Back
+	 * http://intencity.fit/dev/services/mobile/set_user_muscle_group_routine.php?user_id=dev@gmail.com&inserts=Upper%20Back,Lower%20Back
 	 */
 
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
+	include_once '../status_codes.php';
+	include_once '../Response.php';
 
-	define("SUCCESS", "SUCCESS");
-	define("FAILURE", "FAILURE");
+	$response = new Response();
 	
 	//NEEDS TO BE CHANGED TO A POST.
-	$e  = "'" . $_POST['email'] . "'";
+	$userId  = $_POST['user_id'];
 	$v  = $_POST['inserts'];
 	$variables = explode(',', $v);
 	$varLength = count($variables);
@@ -47,11 +44,11 @@
 
 	// Check to see if the routine already exists in the database.
 	// We only want to insert the routine if it exists.
-	$routineSelect = mysqli_query($conn, "SELECT " . COLUMN_DISPLAY_NAME . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " AND " . COLUMN_DISPLAY_NAME . " = '" . $routineName . "'");
+	$routineSelect = mysqli_query($conn, "SELECT " . COLUMN_DISPLAY_NAME . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_USER_ID . " = " . $userId . " AND " . COLUMN_DISPLAY_NAME . " = '" . $routineName . "'");
 
 	if ($row1 = mysqli_fetch_assoc($routineSelect))
 	{
-		print json_encode(SUCCESS);
+		$response->send(STATUS_CODE_SUCCESS_MUSCLE_GROUP_SET, NULL);
 	}
 	else
 	{
@@ -59,7 +56,7 @@
 
 		// Check if the user has a custom routine already.
 		// If he or she does, then increment the routine number by 1.
-		$routineNumber = mysqli_query($conn, "SELECT " . COLUMN_ROUTINE_NUMBER . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_EMAIL . " = " . $e . " ORDER BY " . COLUMN_ROUTINE_NUMBER . " DESC LIMIT 1;");
+		$routineNumber = mysqli_query($conn, "SELECT " . COLUMN_ROUTINE_NUMBER . " FROM " . TABLE_USER_MUSCLE_GROUP_ROUTINE . " WHERE " . COLUMN_USER_ID . " = " . $userId . " ORDER BY " . COLUMN_ROUTINE_NUMBER . " DESC LIMIT 1;");
 		if ($row = mysqli_fetch_assoc($routineNumber))
 		{
 			$routineNumber = $row[COLUMN_ROUTINE_NUMBER];
@@ -86,17 +83,17 @@
 		{
 			$muscleGroup = $muscleGroupNames[$i];
 
-		    $insert .= "INSERT INTO " . TABLE_USER_MUSCLE_GROUP_ROUTINE . "(" . COLUMN_EMAIL . "," . COLUMN_MUSCLE_GROUP_NAME . "," . COLUMN_ROUTINE_NUMBER . "," . COLUMN_DISPLAY_NAME . ") VALUES (" . $e . ",'" . $muscleGroup . "'," . $routineNumber . ",'" . $routineName . "'); ";
+		    $insert .= "INSERT INTO " . TABLE_USER_MUSCLE_GROUP_ROUTINE . "(" . COLUMN_USER_ID . "," . COLUMN_MUSCLE_GROUP_NAME . "," . COLUMN_ROUTINE_NUMBER . "," . COLUMN_DISPLAY_NAME . ") VALUES (" . $userId . ",'" . $muscleGroup . "'," . $routineNumber . ",'" . $routineName . "'); ";
 		}
 
 		$query = mysqli_multi_query($conn, $insert);
 		if($query)
 		{
-			print json_encode(SUCCESS);
+			$response->send(STATUS_CODE_SUCCESS_MUSCLE_GROUP_SET, NULL);
 		}
 		else
 		{
-			print json_encode(FAILURE);
+			$response->send(STATUS_CODE_FAILURE_MUSCLE_GROUP_SET, NULL);
 		}
 	}	
 ?>
