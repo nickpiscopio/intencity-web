@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10.18
--- https://www.phpmyadmin.net
+-- version 4.6.6
+-- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 06, 2017 at 01:17 PM
+-- Generation Time: May 13, 2017 at 02:36 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `intencit_intencity_3_dev`
@@ -24,22 +24,18 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists`(IN `userId` INT, IN `location` VARCHAR(125))
-SELECT Location
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists` (IN `userId` INT, IN `location` VARCHAR(125))  SELECT Location
 FROM UserEquipment
 WHERE UserEquipment.UserId = userId && UserEquipment.Location = location
 GROUP BY UserEquipment.Location$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise`(IN `id` INT, IN `exerciseName` VARCHAR(50))
-INSERT INTO Exclusion (Exclusion.UserId, Exclusion.ExcludeForever, Exclusion.ExerciseId, Exclusion.ExclusionType) 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise` (IN `id` INT, IN `exerciseName` VARCHAR(50))  INSERT INTO Exclusion (Exclusion.UserId, Exclusion.ExcludeForever, Exclusion.ExerciseId, Exclusion.ExclusionType) 
 VALUES (id, 1, exerciseName, "E")$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser`(IN `id` INT, IN `followUserId` INT)
-INSERT INTO Following (Following.UserId, Following.Following) 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser` (IN `id` INT, IN `followUserId` INT)  INSERT INTO Following (Following.UserId, Following.Following) 
 VALUES (id, followUserId)$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups`(IN `userId` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups` (IN `userId` INT)  begin
 
 declare routineNumber int default 0;
 
@@ -88,27 +84,23 @@ SELECT *
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getBadges`(IN `id` INT)
-SELECT Badge.BadgeName, COUNT(*) as TotalBadges
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getBadges` (IN `id` INT)  SELECT Badge.BadgeName, COUNT(*) as TotalBadges
 FROM Badge 
 WHERE Badge.UserId = id
 GROUP BY Badge.BadgeName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getCustomRoutineMuscleGroup`()
-SELECT DisplayName
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getCustomRoutineMuscleGroup` ()  SELECT DisplayName
 FROM CustomRoutineMuscleGroup
 GROUP BY DisplayName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getDirection`(IN `exerciseId` INT)
-SELECT Exercise.SubmittedBy, Exercise.VideoURL, Direction.Direction
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getDirection` (IN `exerciseId` INT)  SELECT Exercise.SubmittedBy, Exercise.VideoURL, Direction.Direction
 FROM Exercise
 INNER JOIN Direction
-    ON Direction.ExerciseId = Exercise.ExerciseId
-WHERE Exercise.ExerciseId = exerciseId
+    ON Direction.ExerciseId = Exercise.ID
+WHERE Exercise.ID = exerciseId
 ORDER BY Direction.ID ASC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday`(IN `id` INT)
-SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday` (IN `id` INT)  SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
 FROM Exercise
 INNER JOIN MuscleGroup 
     ON Exercise.ExerciseId = MuscleGroup.ExerciseId
@@ -143,8 +135,7 @@ WHERE
 GROUP BY Exercise.ExerciseName
 ORDER BY RandomizedPriority DESC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getFollowing`(IN `id` INT)
-SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getFollowing` (IN `id` INT)  SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
     (SELECT COUNT(Badge.BadgeName)
          FROM Badge 
          WHERE Badge.UserId = User.ID) AS TotalBadges, 
@@ -155,15 +146,14 @@ LEFT JOIN Following
 WHERE Following.UserId = id OR User.ID = id
 ORDER BY User.EarnedPoints DESC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjuryPreventionWorkouts`(IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))
-BEGIN
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjuryPreventionWorkouts` (IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))  BEGIN
 
   DECLARE hasExercise int default 0;
 
   SET hasExercise = (SELECT COUNT(Exercise.ExerciseName)
                      FROM Exercise
                      INNER JOIN MuscleGroup
-                       ON MuscleGroup.ExerciseId = Exercise.ExerciseId
+                       ON MuscleGroup.ExerciseId = Exercise.ID
                      WHERE Exercise.Type = type && MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
                                                                                    FROM MuscleGroupRoutine
                                                                                    WHERE MuscleGroupRoutine.DisplayName = displayName)
@@ -175,7 +165,7 @@ BEGIN
     SELECT Exercise.ExerciseName
     FROM Exercise
     INNER JOIN MuscleGroup
-      ON MuscleGroup.ExerciseId = Exercise.ExerciseId
+      ON MuscleGroup.ExerciseId = Exercise.ID
     WHERE Exercise.Type = type && MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
                                                                   FROM MuscleGroupRoutine
                                                                   WHERE MuscleGroupRoutine.DisplayName = displayName)
@@ -194,8 +184,7 @@ BEGIN
 
 END$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getLastWeekRoutines`(IN `id` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getLastWeekRoutines` (IN `id` INT)  begin
 
   declare SEVEN_DAY_MILLIS int default 604800000;
   declare SEVEN_DAY_AGO int default UNIX_TIMESTAMP() * 1000 - SEVEN_DAY_MILLIS;
@@ -231,8 +220,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getPriority`(IN `userId` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getPriority` (IN `userId` INT)  begin
 
   declare EXCLUSION_LIST_PRIORITY int default 0;
 
@@ -252,8 +240,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises`(IN `userId` INT, IN `userLocation` VARCHAR(125), IN `routineNumber` INT)
-begin 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises` (IN `userId` INT, IN `userLocation` VARCHAR(125), IN `routineNumber` INT)  begin 
 
     /*  Sets the routine for today. */
     /*  This is the max threshold that Intencity has for its routine numbers.
@@ -312,8 +299,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment`(IN `userId` INT, IN `location` VARCHAR(125))
-SELECT Equipment.EquipmentName, 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment` (IN `userId` INT, IN `location` VARCHAR(125))  SELECT Equipment.EquipmentName, 
 	CASE 
     	WHEN UserEquipment.UserId != 'NULL' THEN 'true'
 	END AS HasEquipment
@@ -325,28 +311,24 @@ LEFT JOIN UserEquipment
 WHERE Equipment.EquipmentName != 'NULL'
 GROUP BY Equipment.EquipmentName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserFitnessLocations`(IN `userId` INT)
-SELECT UserEquipment.DisplayName, UserEquipment.Location
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserFitnessLocations` (IN `userId` INT)  SELECT UserEquipment.DisplayName, UserEquipment.Location
 FROM UserEquipment
 WHERE UserEquipment.UserId = userId
 GROUP BY UserEquipment.DisplayName, UserEquipment.Location
 ORDER BY UserEquipment.DisplayName, UserEquipment.Location$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine`(IN `userId` INT)
-SELECT UserMuscleGroupRoutine.DisplayName
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine` (IN `userId` INT)  SELECT UserMuscleGroupRoutine.DisplayName
 FROM UserMuscleGroupRoutine
 WHERE UserMuscleGroupRoutine.UserId = userId
 GROUP BY UserMuscleGroupRoutine.DisplayName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine`(IN `userId` INT)
-SELECT Routine.RoutineName, Routine.ExerciseDay
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine` (IN `userId` INT)  SELECT Routine.RoutineName, Routine.ExerciseDay
 FROM Routine
 WHERE Routine.UserId = userId 
 GROUP BY Routine.RoutineName
 ORDER BY Routine.RoutineName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutineExercises`(IN `userId` INT, IN `routineNumber` INT(1))
-begin 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutineExercises` (IN `userId` INT, IN `routineNumber` INT(1))  begin 
 
   /* We insert into the CompletedRoutine table, so we can later pull to show what the user has exercised in the last 7 days. */
   INSERT INTO CompletedRoutine (CompletedRoutine.UserId, CompletedRoutine.Date, CompletedRoutine.RoutineName)
@@ -371,12 +353,10 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantBadgeToUser`(IN `email` VARCHAR(75), IN `date` BIGINT, IN `badgeName` VARCHAR(30))
-INSERT INTO Badge(Email, EarnedDate, BadgeName)
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantBadgeToUser` (IN `email` VARCHAR(75), IN `date` BIGINT, IN `badgeName` VARCHAR(30))  INSERT INTO Badge(Email, EarnedDate, BadgeName)
 VALUES(email, date, badgeName)$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantPointsToUser`(IN `email` VARCHAR(75), IN `points` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantPointsToUser` (IN `email` VARCHAR(75), IN `points` INT)  begin
 
 declare currentPoints int default 0;
 
@@ -390,8 +370,7 @@ WHERE User.Email = email;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeAccount`(IN `userId` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeAccount` (IN `userId` INT)  begin
 
 DELETE FROM Badge WHERE Badge.UserId = userId;
 DELETE FROM CompletedExercise WHERE CompletedExercise.UserId = userId;
@@ -408,8 +387,7 @@ DELETE FROM User WHERE User.ID = userId;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeExercise`(IN `exerciseName` VARCHAR(50))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeExercise` (IN `exerciseName` VARCHAR(50))  begin
 
 DELETE FROM Exercise WHERE Exercise.ExerciseName = exerciseName;
 DELETE FROM Muscle WHERE Muscle.ExerciseName = exerciseName;
@@ -420,12 +398,10 @@ DELETE FROM Direction WHERE Direction.ExerciseName = exerciseName;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeFromFollowing`(IN `id` INT(11))
-DELETE FROM Following
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeFromFollowing` (IN `id` INT(11))  DELETE FROM Following
 WHERE Following.ID = id$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeTrialAccounts`()
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeTrialAccounts` ()  begin
 
 DELETE Comment.*
 FROM Comment
@@ -511,8 +487,7 @@ WHERE (User.AccountType = 'T' && User.LastLoginDate <= CURDATE() - INTERVAL 4 WE
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAccount`(IN `email` VARCHAR(75))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAccount` (IN `email` VARCHAR(75))  begin
 
 DELETE FROM Exclusion WHERE Exclusion.Email = email;
 DELETE FROM CompletedExercise WHERE CompletedExercise.Email = email;
@@ -531,8 +506,7 @@ DELETE FROM Badge WHERE Badge.Email = email;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAwards`()
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAwards` ()  begin
 
     DELETE FROM Badge;
     
@@ -540,8 +514,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchExercises`(IN `email` VARCHAR(75), IN `name` VARCHAR(50))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchExercises` (IN `userId` INT, IN `name` VARCHAR(50))  begin
 
   declare CHARACTER_LENGTH_TO_REMOVE int default 1;
   declare queryLength int default 0;
@@ -560,42 +533,40 @@ begin
 
   END IF;  
 
-  SELECT Exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes, exercisePriority.Priority as Priority
+  SELECT Exercise.ID, Exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes, exercisePriority.Priority as Priority
   FROM Exercise
-  LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+  LEFT JOIN (SELECT CompletedExercise.ExerciseId, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
               FROM CompletedExercise
-              WHERE CompletedExercise.Email = email
+              WHERE CompletedExercise.UserId = userId
               ORDER BY CompletedExercise.ID DESC) as completedExercise
-  ON completedExercise.ExerciseName = Exercise.ExerciseName 
+  ON completedExercise.ExerciseId = Exercise.ID 
   LEFT JOIN ExerciseNameVariant
     ON Exercise.ExerciseName = ExerciseNameVariant.ExerciseName
-  LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
+  LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseId
             FROM ExercisePriority
-            WHERE ExercisePriority.Email = email) as exercisePriority
-    ON exercisePriority.ExerciseName = Exercise.ExerciseName
+            WHERE ExercisePriority.UserId = userId) as exercisePriority
+    ON exercisePriority.ExerciseId = Exercise.ID
   /* Need % before and after name variable*/
   WHERE Exercise.ExerciseName LIKE CONCAT('%', query, '%') OR ExerciseNameVariant.NameVariant LIKE CONCAT('%', query, '%') 
   GROUP BY Exercise.ExerciseName;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchUsers`(IN `email` VARCHAR(75), IN `name` VARCHAR(75))
-SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchUsers` (IN `userId` INT, IN `name` VARCHAR(75))  SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
 		Following.ID AS FollowingId, (SELECT COUNT(Badge.BadgeName)
                                          FROM Badge 
-                                         WHERE Badge.Email = User.Email) AS TotalBadges
+                                         WHERE Badge.UserId = User.ID) AS TotalBadges
 FROM User
 LEFT JOIN Following
-	ON User.Email = Following.Following AND Following.Email = email
+	ON User.ID = Following.Following AND Following.UserId = userId
 /* term must include % before and after variable. */
 WHERE CONCAT(User.FirstName, User.LastName) LIKE CONCAT('%', name, '%') AND
-		User.Email != email AND
+		User.ID != userId AND
 		User.AccountType != 'T' AND
 		User.AccountType != 'M' AND
 		User.AccountType != 'D'$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setCurrentMuscleGroup`(IN `email` VARCHAR(75), IN `routineNumber` INT)
-begin 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setCurrentMuscleGroup` (IN `email` VARCHAR(75), IN `routineNumber` INT)  begin 
 
     /*  This is the max threshold that Intencity has for its routine numbers.
         Anything greater than this is a custom rotine created by the user. */
@@ -617,8 +588,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority`(IN `userId` INT, IN `exerciseId` INT, IN `incrementing` CHAR(1))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority` (IN `userId` INT, IN `exerciseId` INT, IN `incrementing` CHAR(1))  begin
 
     declare IS_TRUE char(1) default "1";
     declare IS_FALSE char(1) default "0";
@@ -699,13 +669,12 @@ DELIMITER ;
 -- Table structure for table `Badge`
 --
 
-CREATE TABLE IF NOT EXISTS `Badge` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Badge` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `EarnedDate` bigint(20) NOT NULL,
-  `BadgeName` varchar(30) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1806 ;
+  `BadgeName` varchar(30) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Badge`
@@ -818,19 +787,18 @@ INSERT INTO `Badge` (`ID`, `UserId`, `EarnedDate`, `BadgeName`) VALUES
 -- Table structure for table `CompletedExercise`
 --
 
-CREATE TABLE IF NOT EXISTS `CompletedExercise` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CompletedExercise` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) NOT NULL,
   `SessionId` int(11) DEFAULT NULL COMMENT 'This is the ID that groups all the exercises together so we can retrieve them in the web overview.',
-  `Date` int(11) DEFAULT NULL,
+  `Date` bigint(20) DEFAULT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
   `ExerciseWeight` decimal(6,1) DEFAULT NULL,
   `ExerciseReps` smallint(6) DEFAULT NULL,
   `ExerciseDuration` varchar(8) DEFAULT NULL,
   `ExerciseDifficulty` tinyint(4) DEFAULT NULL,
-  `Notes` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6715 ;
+  `Notes` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -3688,7 +3656,15 @@ INSERT INTO `CompletedExercise` (`ID`, `UserId`, `SessionId`, `Date`, `ExerciseI
 (6711, 10, NULL, 0, 20, '26.0', 10, NULL, 7, ''),
 (6712, 10, NULL, 0, 20, '26.0', 8, NULL, 7, ''),
 (6713, 567, NULL, 0, 5, '-1.0', 11, NULL, 10, NULL),
-(6714, 567, NULL, 0, 28, NULL, 13, NULL, 10, '');
+(6714, 567, NULL, 0, 28, NULL, 13, NULL, 10, ''),
+(6715, 43471, NULL, 2147483647, 32, '1.0', 2, NULL, 3, 'null'),
+(6716, 43471, NULL, 2147483647, 141, '1.0', 2, NULL, 6, 'null'),
+(6717, 43471, NULL, 2147483647, 32, '1.0', 2, NULL, 3, 'null'),
+(6718, 43471, NULL, 2147483647, 137, '56.0', NULL, '00:00:05', 4, NULL),
+(6719, 43471, NULL, 2147483647, 137, '3.0', NULL, '00:00:50', 7, ''),
+(6720, 43471, NULL, 2147483647, 23, '5.0', 10, NULL, 10, 'null'),
+(6721, 43471, NULL, 2147483647, 33, '3.0', 4, NULL, 7, NULL),
+(6722, 43471, NULL, 1494697709276, 89, '8.0', 6, NULL, 8, 'null');
 
 -- --------------------------------------------------------
 
@@ -3696,14 +3672,13 @@ INSERT INTO `CompletedExercise` (`ID`, `UserId`, `SessionId`, `Date`, `ExerciseI
 -- Table structure for table `CompletedMuscleGroup`
 --
 
-CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CompletedMuscleGroup` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `Date` bigint(20) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
-  `RoutineNumber` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15178 ;
+  `RoutineNumber` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13106,7 +13081,45 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 (15174, 43471, 1494090779000, 'Lower Back', 8),
 (15175, 43471, 1494090779000, 'Traps', 8),
 (15176, 43471, 1494090779000, 'Neck', 8),
-(15177, 43471, 1494090779000, 'Shoulders', 8);
+(15177, 43471, 1494090779000, 'Shoulders', 8),
+(15178, 43471, 1494171664000, 'Triceps', 2),
+(15179, 43471, 1494171664000, 'Chest', 2),
+(15180, 43471, 1494695271000, 'Triceps', 2),
+(15181, 43471, 1494695271000, 'Chest', 2),
+(15182, 43471, 1494696120000, 'Triceps', 2),
+(15183, 43471, 1494696120000, 'Chest', 2),
+(15184, 43471, 1494696420000, 'Upper Outer Back', 4),
+(15185, 43471, 1494696420000, 'Upper Inner Back', 4),
+(15186, 43471, 1494696420000, 'Biceps', 4),
+(15187, 43471, 1494696420000, 'Forearms', 4),
+(15188, 43471, 1494696469000, 'Triceps', 2),
+(15189, 43471, 1494696469000, 'Chest', 2),
+(15190, 43471, 1494696969000, 'Calves', 1),
+(15191, 43471, 1494696969000, 'Shins', 1),
+(15192, 43471, 1494696969000, 'Hamstrings', 1),
+(15193, 43471, 1494696969000, 'Quads', 1),
+(15194, 43471, 1494696969000, 'Glutes', 1),
+(15195, 43471, 1494696969000, 'Lower Back', 1),
+(15196, 43471, 1494697005000, 'Calves', 1),
+(15197, 43471, 1494697005000, 'Shins', 1),
+(15198, 43471, 1494697005000, 'Hamstrings', 1),
+(15199, 43471, 1494697005000, 'Quads', 1),
+(15200, 43471, 1494697005000, 'Glutes', 1),
+(15201, 43471, 1494697005000, 'Lower Back', 1),
+(15202, 43471, 1494697065000, 'Calves', 1),
+(15203, 43471, 1494697065000, 'Shins', 1),
+(15204, 43471, 1494697065000, 'Hamstrings', 1),
+(15205, 43471, 1494697065000, 'Quads', 1),
+(15206, 43471, 1494697065000, 'Glutes', 1),
+(15207, 43471, 1494697065000, 'Lower Back', 1),
+(15208, 43471, 1494697343000, 'Calves', 1),
+(15209, 43471, 1494697343000, 'Shins', 1),
+(15210, 43471, 1494697343000, 'Hamstrings', 1),
+(15211, 43471, 1494697343000, 'Quads', 1),
+(15212, 43471, 1494697343000, 'Glutes', 1),
+(15213, 43471, 1494697343000, 'Lower Back', 1),
+(15214, 43471, 1494697557000, 'Abs', 5),
+(15215, 43471, 1494697557000, 'Obliques', 5);
 
 -- --------------------------------------------------------
 
@@ -13114,13 +13127,12 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 -- Table structure for table `CompletedRoutine`
 --
 
-CREATE TABLE IF NOT EXISTS `CompletedRoutine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CompletedRoutine` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `Date` bigint(20) NOT NULL,
-  `RoutineName` varchar(50) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=122 ;
+  `RoutineName` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `CompletedRoutine`
@@ -13203,15 +13215,15 @@ INSERT INTO `CompletedRoutine` (`ID`, `UserId`, `Date`, `RoutineName`) VALUES
 (102, 10, 1469655725000, 'mega abs again'),
 (103, 10, 1470436684000, 'test1'),
 (104, 10, 1479577478000, 'test1'),
-(105, 10, 1483279273000, 'Leg'''),
-(106, 10, 1485017264000, 'Leg'''),
+(105, 10, 1483279273000, 'Leg\''),
+(106, 10, 1485017264000, 'Leg\''),
 (107, 10, 1486311655000, 't'),
-(108, 10, 1486311697000, 'Leg'''),
+(108, 10, 1486311697000, 'Leg\''),
 (109, 10, 1486311750000, 'yu'),
 (110, 10, 1486312275000, 'test12345'),
 (111, 10, 1486312360000, 'trs'),
 (112, 10, 1486312491000, 'asd'),
-(113, 10, 1486319392000, 'upper'''),
+(113, 10, 1486319392000, 'upper\''),
 (114, 43471, 1493577845000, 'tes1'),
 (115, 43471, 1493577953000, 'tes1'),
 (116, 43471, 1493578611000, 'tes1'),
@@ -13219,7 +13231,8 @@ INSERT INTO `CompletedRoutine` (`ID`, `UserId`, `Date`, `RoutineName`) VALUES
 (118, 43471, 1493578747000, 'tes1'),
 (119, 43471, 1493578773000, 'tes1'),
 (120, 43471, 1493578829000, 'tes1'),
-(121, 43471, 1493578893000, 'tes1');
+(121, 43471, 1493578893000, 'tes1'),
+(122, 43471, 1494171543000, 'tes1');
 
 -- --------------------------------------------------------
 
@@ -13227,12 +13240,11 @@ INSERT INTO `CompletedRoutine` (`ID`, `UserId`, `Date`, `RoutineName`) VALUES
 -- Table structure for table `CustomRoutineMuscleGroup`
 --
 
-CREATE TABLE IF NOT EXISTS `CustomRoutineMuscleGroup` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CustomRoutineMuscleGroup` (
+  `ID` int(11) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
-  `DisplayName` varchar(25) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+  `DisplayName` varchar(25) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `CustomRoutineMuscleGroup`
@@ -13264,12 +13276,11 @@ INSERT INTO `CustomRoutineMuscleGroup` (`ID`, `MuscleGroupName`, `DisplayName`) 
 -- Table structure for table `Direction`
 --
 
-CREATE TABLE IF NOT EXISTS `Direction` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Direction` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `Direction` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=723 ;
+  `Direction` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Direction`
@@ -13471,7 +13482,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (195, 80, '2. Skip forward.'),
 (196, 80, '3. Repeat steps 1 and 2 until the exercise is done.'),
 (197, 79, '1. Start in a standing position.'),
-(198, 79, '2. Raise your arms to make a "T" formation.'),
+(198, 79, '2. Raise your arms to make a \"T\" formation.'),
 (199, 79, '3. Move to the side and place the back leg in front of the leading leg by going around the front of it.'),
 (200, 79, '4. Move to the side and place the back leg in front of the leading leg by going around the back of it.'),
 (201, 79, '5. Move to the side and place the back leg in front of the leading leg by going around the back of it.'),
@@ -13658,7 +13669,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (398, 90, '3. Slowly lower the weights back to the starting position.'),
 (399, 90, '4. Repeat steps 2 and 3 until the exercise is complete.'),
 (400, 91, '1. Start with the dumbbells at your sides.'),
-(401, 91, '2. With your arms straight, slowly raise your arms until you make a "T" with your body.'),
+(401, 91, '2. With your arms straight, slowly raise your arms until you make a \"T\" with your body.'),
 (402, 91, '3. Slowly lower the weights back to the starting position.'),
 (403, 91, '4. Repeat steps 2 and 3 until the exercise is complete.'),
 (404, 92, '1. Start with the dumbbells at your sides.'),
@@ -13693,7 +13704,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (479, 97, '5. Slowly lower your chest back to the starting position.'),
 (480, 97, '6. Repeat steps 4 and 5 until the exercise is complete.'),
 (481, 98, '1. Lay on the ground with your back facing upward.'),
-(482, 98, '2. Extend your arms out to put your body in a "T" formation.'),
+(482, 98, '2. Extend your arms out to put your body in a \"T\" formation.'),
 (483, 98, '3. Lift your arms off the ground.'),
 (484, 99, '1. Start in a standing position.'),
 (485, 99, '2. Push your shoulder blades together.'),
@@ -13870,7 +13881,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (660, 131, '4. Repeat steps 2 and 3 until your exercise is complete.'),
 (661, 132, '1. Stand facing the bench with dumbbells in your hands. '),
 (662, 132, '2. Step up onto the bench with one of your feet.'),
-(663, 132, '3. Step backwards off the bench with the foot that didn''t lift your body onto the bench.'),
+(663, 132, '3. Step backwards off the bench with the foot that didn\'t lift your body onto the bench.'),
 (664, 132, '4. Repeat with the other leg.'),
 (665, 132, '5. Repeat steps 2 through 4 until the exercise is complete.'),
 (666, 133, '1. Place dumbbells in front of the head of the bench.'),
@@ -13914,7 +13925,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (709, 139, '1. Find a solid wall.'),
 (710, 139, '2. With your back touching the wall and your feet a few inches apart, slide down the wall until your legs make a 90 degree angle.'),
 (711, 139, '3. Hold this position until the exercise is complete.'),
-(712, 140, '1. Find your zen and possibly a chair so you don''t lose balance.'),
+(712, 140, '1. Find your zen and possibly a chair so you don\'t lose balance.'),
 (713, 140, '2. Put your weight on 1 leg.'),
 (714, 140, '3. Bend both legs and have the leg without weight on it sweep behind the other.'),
 (715, 140, '4. Straighten the leg that is supporting you.'),
@@ -13933,12 +13944,11 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 -- Table structure for table `Equipment`
 --
 
-CREATE TABLE IF NOT EXISTS `Equipment` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Equipment` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `EquipmentName` varchar(75) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=312 ;
+  `EquipmentName` varchar(75) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Equipment`
@@ -14141,14 +14151,13 @@ INSERT INTO `Equipment` (`ID`, `ExerciseId`, `EquipmentName`) VALUES
 -- Table structure for table `Exclusion`
 --
 
-CREATE TABLE IF NOT EXISTS `Exclusion` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Exclusion` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
   `ExcludeForever` tinyint(1) NOT NULL,
-  `ExclusionType` char(1) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=884 ;
+  `ExclusionType` char(1) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Exclusion`
@@ -14197,7 +14206,7 @@ INSERT INTO `Exclusion` (`ID`, `UserId`, `ExerciseId`, `ExcludeForever`, `Exclus
 (866, 10, 117, 1, 'E'),
 (865, 10, 41, 1, 'E'),
 (864, 10, 47, 1, 'E'),
-(883, 43471, 96, 1, 'E');
+(885, 43471, 96, 1, 'E');
 
 -- --------------------------------------------------------
 
@@ -14205,15 +14214,14 @@ INSERT INTO `Exclusion` (`ID`, `UserId`, `ExerciseId`, `ExcludeForever`, `Exclus
 -- Table structure for table `Exercise`
 --
 
-CREATE TABLE IF NOT EXISTS `Exercise` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Exercise` (
+  `ID` int(11) NOT NULL,
   `ExerciseName` varchar(50) NOT NULL,
   `Type` char(1) NOT NULL,
   `SubmittedBy` varchar(75) NOT NULL,
   `Recommended` tinyint(1) NOT NULL,
-  `VideoURL` varchar(150) DEFAULT 'videos/coming_soon',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=142 ;
+  `VideoURL` varchar(150) DEFAULT 'videos/coming_soon'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Exercise`
@@ -14368,13 +14376,11 @@ INSERT INTO `Exercise` (`ID`, `ExerciseName`, `Type`, `SubmittedBy`, `Recommende
 -- Table structure for table `ExerciseNameVariant`
 --
 
-CREATE TABLE IF NOT EXISTS `ExerciseNameVariant` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ExerciseNameVariant` (
+  `ID` int(11) NOT NULL,
   `ExerciseName` varchar(50) NOT NULL,
-  `NameVariant` varchar(50) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `ExerciseName` (`ExerciseName`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+  `NameVariant` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ExerciseNameVariant`
@@ -14404,13 +14410,12 @@ INSERT INTO `ExerciseNameVariant` (`ID`, `ExerciseName`, `NameVariant`) VALUES
 -- Table structure for table `ExercisePriority`
 --
 
-CREATE TABLE IF NOT EXISTS `ExercisePriority` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ExercisePriority` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `Priority` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=800 ;
+  `Priority` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `ExercisePriority`
@@ -14428,10 +14433,12 @@ INSERT INTO `ExercisePriority` (`ID`, `UserId`, `ExerciseId`, `Priority`) VALUES
 (484, 525, 26, 40),
 (232, 135, 104, 30),
 (735, 10, 136, 10),
-(799, 43471, 138, 10),
-(798, 43471, 135, 10),
-(797, 43471, 32, 30),
-(796, 43471, 141, 40);
+(809, 43471, 7, 30),
+(808, 43471, 29, 10),
+(807, 43471, 135, 10),
+(806, 43471, 138, 30),
+(805, 43471, 32, 30),
+(804, 43471, 141, 40);
 
 -- --------------------------------------------------------
 
@@ -14439,12 +14446,11 @@ INSERT INTO `ExercisePriority` (`ID`, `UserId`, `ExerciseId`, `Priority`) VALUES
 -- Table structure for table `Following`
 --
 
-CREATE TABLE IF NOT EXISTS `Following` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Following` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
-  `Following` varchar(75) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=225 ;
+  `Following` varchar(75) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Following`
@@ -14482,7 +14488,10 @@ INSERT INTO `Following` (`ID`, `UserId`, `Following`) VALUES
 (153, 508, '343'),
 (216, 10, '4'),
 (217, 529, '7'),
-(198, 10, '5');
+(198, 10, '5'),
+(226, 43471, '5'),
+(227, 43471, '4'),
+(228, 43471, '7');
 
 -- --------------------------------------------------------
 
@@ -14490,12 +14499,11 @@ INSERT INTO `Following` (`ID`, `UserId`, `Following`) VALUES
 -- Table structure for table `Muscle`
 --
 
-CREATE TABLE IF NOT EXISTS `Muscle` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Muscle` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `MuscleName` varchar(47) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=682 ;
+  `MuscleName` varchar(47) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Muscle`
@@ -15061,13 +15069,12 @@ INSERT INTO `Muscle` (`ID`, `ExerciseId`, `MuscleName`) VALUES
 -- Table structure for table `MuscleGroup`
 --
 
-CREATE TABLE IF NOT EXISTS `MuscleGroup` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `MuscleGroup` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
-  `MuscleGroupExercisePercentage` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=432 ;
+  `MuscleGroupExercisePercentage` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `MuscleGroup`
@@ -15460,13 +15467,12 @@ INSERT INTO `MuscleGroup` (`ID`, `ExerciseId`, `MuscleGroupName`, `MuscleGroupEx
 -- Table structure for table `MuscleGroupRoutine`
 --
 
-CREATE TABLE IF NOT EXISTS `MuscleGroupRoutine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `MuscleGroupRoutine` (
+  `ID` int(11) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
-  `DisplayName` varchar(25) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+  `DisplayName` varchar(25) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `MuscleGroupRoutine`
@@ -15498,14 +15504,13 @@ INSERT INTO `MuscleGroupRoutine` (`ID`, `MuscleGroupName`, `RoutineNumber`, `Dis
 -- Table structure for table `Routine`
 --
 
-CREATE TABLE IF NOT EXISTS `Routine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Routine` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `RoutineName` varchar(30) NOT NULL,
   `ExerciseDay` tinyint(4) NOT NULL,
-  `ExerciseId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3508 ;
+  `ExerciseId` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Routine`
@@ -15538,10 +15543,10 @@ INSERT INTO `Routine` (`ID`, `UserId`, `RoutineName`, `ExerciseDay`, `ExerciseId
 (3418, 525, '2', 1, 67),
 (3419, 525, 'h', 2, 94),
 (3378, NULL, 'hu', 0, 67),
-(3481, 135, 'Leg''', 1, NULL),
-(3482, 10, 'Leg''', 0, NULL),
-(3483, 10, 'Leg''', 0, NULL),
-(3480, 135, 'Leg''', 1, NULL),
+(3481, 135, 'Leg\'', 1, NULL),
+(3482, 10, 'Leg\'', 0, NULL),
+(3483, 10, 'Leg\'', 0, NULL),
+(3480, 135, 'Leg\'', 1, NULL),
 (3478, 135, 'Leg', 0, NULL),
 (3479, 135, 'Leg', 0, NULL),
 (3256, 515, 'ghy', 10, NULL),
@@ -15679,17 +15684,10 @@ INSERT INTO `Routine` (`ID`, `UserId`, `RoutineName`, `ExerciseDay`, `ExerciseId
 (3464, 525, 's', 13, 98),
 (3465, 525, 's', 13, 103),
 (3466, 525, 's', 13, 27),
-(3497, 43471, 'test', 0, 0),
-(3498, 43471, 'test', 0, 0),
-(3499, 43471, 'test', 0, 0),
-(3500, 43471, 'test', 0, 0),
-(3501, 43471, 'test', 0, 0),
-(3502, 43471, 'tes', 1, 0),
-(3503, 43471, 'tes', 1, 0),
-(3504, 43471, 'tes', 1, 0),
-(3505, 43471, 'tes1', 2, 98),
-(3506, 43471, 'tes1', 2, 20),
-(3507, 43471, 'tes1', 2, 46);
+(3511, 43471, 'teft', 1, 29),
+(3510, 43471, 'teft', 1, 7),
+(3509, 43471, 'tes', 0, 29),
+(3508, 43471, 'tes', 0, 7);
 
 -- --------------------------------------------------------
 
@@ -15697,8 +15695,8 @@ INSERT INTO `Routine` (`ID`, `UserId`, `RoutineName`, `ExerciseDay`, `ExerciseId
 -- Table structure for table `User`
 --
 
-CREATE TABLE IF NOT EXISTS `User` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `User` (
+  `ID` int(11) NOT NULL,
   `Email` varchar(75) NOT NULL,
   `CreatedDate` bigint(13) DEFAULT NULL,
   `LastLoginDate` bigint(13) DEFAULT NULL,
@@ -15707,9 +15705,8 @@ CREATE TABLE IF NOT EXISTS `User` (
   `LastName` varchar(30) NOT NULL,
   `Password` varchar(75) NOT NULL,
   `AccountType` char(1) NOT NULL,
-  `EarnedPoints` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43476 ;
+  `EarnedPoints` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `User`
@@ -15941,8 +15938,8 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `EarnedFitnes
 (491, 'nick-_+1@gmail.com', 0, 0, 0, 'Nick Jr.', 'Piscopio', '$2a$12$Kq5ZyYJG8wFZM5aHjeY8iuFKI9Z.aXzHQr5aiKu382LFiigpzzS8u', 'N', 100),
 (493, 'nick.piscopio+1a@gmail.com', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$45ZEUIAEGg.PNHXCCOBFW.27UT24XVt.iLR2FDeOWE6c3pbZjub6S', 'N', 100),
 (494, 'nick.piscopio+123a@gmail.com', 0, 0, 0, 'Hnfhnh', 'Gthggrg', '$2a$12$xVpw/ALxdXDdlZUX5I0ZUu3S3GDQDU13iy/ljAgCzfL3Ea9WxdD6y', 'N', 100),
-(498, 'nicks123testintencity+12@gmail.com', 0, 0, 0, 'John''', 'Smith''-.', '$2a$12$FwLknVrTtF2j7WtV0uCYL.Ot5UMscyr.ciIfVhXHejm1zAPkCh/jy', 'N', 120),
-(497, 'nicks123testintencity+1@gmail.com', 0, 0, 0, 'John''', 'Smith', '$2a$12$qBS3lo6cXD4otSwic.gci.VZERBbxH4hdFmyOgQV6fKGkmZMXtY/u', 'N', 100),
+(498, 'nicks123testintencity+12@gmail.com', 0, 0, 0, 'John\'', 'Smith\'-.', '$2a$12$FwLknVrTtF2j7WtV0uCYL.Ot5UMscyr.ciIfVhXHejm1zAPkCh/jy', 'N', 120),
+(497, 'nicks123testintencity+1@gmail.com', 0, 0, 0, 'John\'', 'Smith', '$2a$12$qBS3lo6cXD4otSwic.gci.VZERBbxH4hdFmyOgQV6fKGkmZMXtY/u', 'N', 100),
 (43440, 'john.smith24@gmail.com', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$mcTWlupKGGQUOnRYZSKkIenMVqIial.yS0guLDO83yBvup8nWhB7S', 'N', 100),
 (43439, 'john.smith23@gmail.com', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$5sPjh2/VfHqP6OZz5R0F6upa78KOERTohz9J4s5RFUZayy/HuilCK', 'N', 100),
 (43438, 'john.smith22@gmail.com', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$TMpMSVmrI.UmCSRfWI4olOG6TbqNySkDtms4bsyhsA9yqxP//0JPW', 'N', 100),
@@ -15977,7 +15974,7 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `EarnedFitnes
 (43468, 'nick.piscopio123@gmail.com', 1492789018930, 1492789018930, NULL, 'Nick', 'Piscopios', '$2a$12$BZ74D1vx.scFXPBhtbJZVuDqPhCocBhTO3eSd3TGw/aCPq1dQRjqO', 'N', 100),
 (43469, 'user1492789027603@intencity.fit', 1492789029230, 1492789029230, NULL, 'Anonymous', 'User', '$2a$12$bPbG8jlkHqu.PMENIusZgOQFM8Lv0SZa5hTc/T4oqkrfh.oZLJd.O', 'M', 100),
 (43470, 'john.smit@gmail.com', 1492962104250, 1492962104250, NULL, 'John', 'Smith', '$2a$12$CNzR8XLBR5iMM/JD96MiUOZJkqja3Ebg4steqwCjejjKqB..7OtCa', 'N', 100),
-(43471, 'john.smt@gmail.com', 1492962125560, 1494089560320, NULL, 'John', 'Smith', '$2a$12$9XXqo9sDeUooGuc2bYxL3ef2K.xBY0lRsOiVc87dNWwyGgPCNRsPC', 'N', 100),
+(43471, 'john.smt@gmail.com', 1492962125560, 1494693243780, NULL, 'John', 'Smith', '$2a$12$9XXqo9sDeUooGuc2bYxL3ef2K.xBY0lRsOiVc87dNWwyGgPCNRsPC', 'N', 100),
 (43475, 'gregdalfonso@gmail.com', 1493580622850, 1494037599630, NULL, 'Greg', 'Dalfonso', '$2a$12$ZU9HACKQzNVL02eZNyvS5.Fe5/GyNvoTPXXMyU4Gsp792Hf1OSyvi', 'N', 100);
 
 -- --------------------------------------------------------
@@ -15986,14 +15983,13 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `EarnedFitnes
 -- Table structure for table `UserEquipment`
 --
 
-CREATE TABLE IF NOT EXISTS `UserEquipment` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `UserEquipment` (
+  `ID` int(11) NOT NULL,
   `DisplayName` varchar(30) NOT NULL,
   `Location` varchar(125) NOT NULL DEFAULT 'Default',
   `EquipmentName` varchar(75) NOT NULL,
-  `UserId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13542 ;
+  `UserId` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -17027,14 +17023,13 @@ INSERT INTO `UserEquipment` (`ID`, `DisplayName`, `Location`, `EquipmentName`, `
 -- Table structure for table `UserMuscleGroupRoutine`
 --
 
-CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `UserMuscleGroupRoutine` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
-  `DisplayName` varchar(100) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=984 ;
+  `DisplayName` varchar(100) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `UserMuscleGroupRoutine`
@@ -17123,6 +17118,224 @@ INSERT INTO `UserMuscleGroupRoutine` (`ID`, `UserId`, `MuscleGroupName`, `Routin
 (982, 43471, 'Neck', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
 (983, 43471, 'Shoulders', 9, 'Lower Back, Shoulders, Triceps, & Upper Back');
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Badge`
+--
+ALTER TABLE `Badge`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CompletedExercise`
+--
+ALTER TABLE `CompletedExercise`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CompletedMuscleGroup`
+--
+ALTER TABLE `CompletedMuscleGroup`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CompletedRoutine`
+--
+ALTER TABLE `CompletedRoutine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CustomRoutineMuscleGroup`
+--
+ALTER TABLE `CustomRoutineMuscleGroup`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Direction`
+--
+ALTER TABLE `Direction`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Equipment`
+--
+ALTER TABLE `Equipment`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Exclusion`
+--
+ALTER TABLE `Exclusion`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Exercise`
+--
+ALTER TABLE `Exercise`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `ExerciseNameVariant`
+--
+ALTER TABLE `ExerciseNameVariant`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ExerciseName` (`ExerciseName`);
+
+--
+-- Indexes for table `ExercisePriority`
+--
+ALTER TABLE `ExercisePriority`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Following`
+--
+ALTER TABLE `Following`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Muscle`
+--
+ALTER TABLE `Muscle`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `MuscleGroup`
+--
+ALTER TABLE `MuscleGroup`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `MuscleGroupRoutine`
+--
+ALTER TABLE `MuscleGroupRoutine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Routine`
+--
+ALTER TABLE `Routine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `User`
+--
+ALTER TABLE `User`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `UserEquipment`
+--
+ALTER TABLE `UserEquipment`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `UserMuscleGroupRoutine`
+--
+ALTER TABLE `UserMuscleGroupRoutine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `Badge`
+--
+ALTER TABLE `Badge`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1806;
+--
+-- AUTO_INCREMENT for table `CompletedExercise`
+--
+ALTER TABLE `CompletedExercise`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6723;
+--
+-- AUTO_INCREMENT for table `CompletedMuscleGroup`
+--
+ALTER TABLE `CompletedMuscleGroup`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15216;
+--
+-- AUTO_INCREMENT for table `CompletedRoutine`
+--
+ALTER TABLE `CompletedRoutine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+--
+-- AUTO_INCREMENT for table `CustomRoutineMuscleGroup`
+--
+ALTER TABLE `CustomRoutineMuscleGroup`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `Direction`
+--
+ALTER TABLE `Direction`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=723;
+--
+-- AUTO_INCREMENT for table `Equipment`
+--
+ALTER TABLE `Equipment`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=312;
+--
+-- AUTO_INCREMENT for table `Exclusion`
+--
+ALTER TABLE `Exclusion`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=886;
+--
+-- AUTO_INCREMENT for table `Exercise`
+--
+ALTER TABLE `Exercise`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
+--
+-- AUTO_INCREMENT for table `ExerciseNameVariant`
+--
+ALTER TABLE `ExerciseNameVariant`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+--
+-- AUTO_INCREMENT for table `ExercisePriority`
+--
+ALTER TABLE `ExercisePriority`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=810;
+--
+-- AUTO_INCREMENT for table `Following`
+--
+ALTER TABLE `Following`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
+--
+-- AUTO_INCREMENT for table `Muscle`
+--
+ALTER TABLE `Muscle`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=682;
+--
+-- AUTO_INCREMENT for table `MuscleGroup`
+--
+ALTER TABLE `MuscleGroup`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=432;
+--
+-- AUTO_INCREMENT for table `MuscleGroupRoutine`
+--
+ALTER TABLE `MuscleGroupRoutine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `Routine`
+--
+ALTER TABLE `Routine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3518;
+--
+-- AUTO_INCREMENT for table `User`
+--
+ALTER TABLE `User`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43476;
+--
+-- AUTO_INCREMENT for table `UserEquipment`
+--
+ALTER TABLE `UserEquipment`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13542;
+--
+-- AUTO_INCREMENT for table `UserMuscleGroupRoutine`
+--
+ALTER TABLE `UserMuscleGroupRoutine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=984;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

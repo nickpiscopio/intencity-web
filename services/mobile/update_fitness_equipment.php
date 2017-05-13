@@ -9,7 +9,7 @@
 	 * 
 	 */
 
-	//Includes the database connection information.
+	// Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
 	include_once '../status_codes.php';
@@ -43,7 +43,7 @@
 
 	$query = mysqli_multi_query($conn, $insertQuery);
 
-	//Check if the query was successful.
+	// Check if the query was successful.
 	if($query)
 	{		
 		$response->send(STATUS_CODE_SUCCESS_FITNESS_EQUIPMENT_UPDATED, NULL);

@@ -15,7 +15,7 @@ ALTER TABLE CompletedExercise DROP COLUMN Email;
 ALTER TABLE CompletedExercise DROP COLUMN Date;
 ALTER TABLE CompletedExercise DROP COLUMN Time;
 ALTER TABLE CompletedExercise
-ADD COLUMN Date int AFTER SessionId;
+ADD COLUMN Date bigint AFTER SessionId;
 UPDATE CompletedExercise SET Date=0;
 ALTER TABLE CompletedExercise
 ADD COLUMN ExerciseId int AFTER Date;
