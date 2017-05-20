@@ -137,3 +137,5 @@ ADD COLUMN EarnedFitnessPointsDate int AFTER LastLoginDate;
 UPDATE User SET CreatedDate=0;
 UPDATE User SET LastLoginDate=0;
 UPDATE User SET EarnedFitnessPointsDate=0;
+
+run services/mobile/encode_emails.php

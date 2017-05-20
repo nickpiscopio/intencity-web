@@ -14,7 +14,9 @@
 	include_once 'status_codes.php';
 	include_once 'Response.php';
 	
+	// This needs to be an unhashed email.
 	$email = $_POST['email'];
+	$hashedEmail = hash('sha256', $email);
 
 	$response = new Response();
 	
@@ -24,18 +26,19 @@
 	
 	$hash = $phpass->HashText($token);
 	
-	$query = mysqli_query($conn, "SELECT " . COLUMN_EMAIL . " FROM " . TABLE_USER . " WHERE " . COLUMN_EMAIL . " = '" . $email . "'");
+	$query = mysqli_query($conn, "SELECT " . COLUMN_EMAIL . " FROM " . TABLE_USER . " WHERE " . COLUMN_EMAIL . " = '" . $hashedEmail . "'");
 
 	// Get any data that came back from the database.
 	$row = mysqli_fetch_assoc($query);
 	
-	if($row[COLUMN_EMAIL] == $email)
+	if($row[COLUMN_EMAIL] == $hashedEmail)
 	{
-		$query = mysqli_query($conn, "UPDATE " . TABLE_USER . " SET " . COLUMN_PASSWORD . " = '" . $hash . "' WHERE " . COLUMN_EMAIL . " = '" . $email . "'");
+		$query = mysqli_query($conn, "UPDATE " . TABLE_USER . " SET " . COLUMN_PASSWORD . " = '" . $hash . "' WHERE " . COLUMN_EMAIL . " = '" . $hashedEmail . "'");
 		
 		if($query)
 		{
-		    $to = $_REQUEST['email']; 
+			// This needs to be the unhashed email so we can send an email to the user.
+		    $to = $email; 
 		    $subject = "Your New Password!";
 		    $message = "<html>
 				            <body style='width: 100%; margin: 0 auto;'>
