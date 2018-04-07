@@ -1,0 +1,350 @@
+body {
+    font-family: "Open Sans", sans-serif;
+    font-weight: normal;
+    color: #5B5D5F;
+    line-height: 1.5;
+}
+
+#nav a {
+    font-size: .875em;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 2.5em;
+    vertical-align: middle;
+    font-weight: 500;
+    outline: 0
+}
+
+#nav .active .aLink {
+    color: #309DDB
+}
+
+#nav .aLink {
+    color: #647082;
+    padding: .75em
+}
+
+#nav .aLink:hover {
+    color: #FFF;
+    background-color: #309DDB
+}
+
+.section {
+    padding: 40px;
+}
+
+.section-large {
+    padding: 60px;
+}
+
+.hero {
+    height: 100vh;
+    background: url(../images/hero_runner.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.style-italic {
+    font-style: italic;
+}
+
+.shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.vertical-align, .section-vertical-align {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.section-icon {
+    width: 75px;
+    margin-right: 20px;
+}
+
+.section-icon img {
+    width: 75px;
+}
+
+#hero .overlay {
+    background-color: rgba(26, 68, 86, .6);
+}
+
+#pie {
+    background: #59ADD3;
+}
+
+.text-color-white {
+    color: #fff;
+}
+
+.text-color-blue {
+    color: #59ADD3;
+}
+
+.text-color-green {
+    color: #2CB673;
+}
+
+.text-spacing-more {
+    letter-spacing: 1.5px;
+}
+
+.layout {
+    display: flex;
+}
+
+.match-parent {
+    flex: 1;
+}
+
+#pie p, #question p {
+    margin: 50px 0;
+}
+
+#app-0 {
+    background: #F6F6FF;
+}
+
+#app-1 {
+    background: #647082;
+}
+
+#app-2 {
+    background: #45B29D;
+}
+
+#survey, .panel-footer {
+    background-color: #fafafa !important;
+}
+
+#app-span-0, #approve-0, #paid-span {
+    line-height: 0;
+}
+
+button {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 0;
+    border-radius: 4px;
+    background-color: #45B29D;
+    color: #fff;
+    padding: 15px 30px !important;
+    font-size: 14px;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.19);
+}
+
+.form-control {
+    width: 75% !important;
+    height: 52px;
+    border: 0;
+    background: #fff;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.19);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.btn:hover, .btn:focus, .btn.focus,
+.panel-footer input:hover, .panel-footer input:focus, .panel-footer input.focus {
+    color: #fff;
+    background-color: #23915C;
+}
+
+.form-control:focus {
+    outline:none;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.19);
+    border: 0;
+}
+
+.copyright {
+    font-size: 12px;
+    font-weight: 400;
+    font-style: normal;
+}
+
+footer {
+    background-color: #414042;
+    color: #CCCCCC;
+}
+
+.social-link {
+    padding: 3px 0 36px 0;
+}
+
+.subscribe-info #title-subscribe {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.subscribe-info #description-subscribe {
+    margin-bottom: 16px;
+}
+
+.social [class*="fa fa-"] {
+    background-color: #CCCCCC;
+    border-radius: 30px;
+    color: #414042;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    margin: auto 3px;
+    width: 30px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.social [class*="fa fa-"]:hover {
+    background-color: #fff;
+}
+
+#down {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    margin: 0 auto;
+    cursor: pointer;
+    text-align: center;
+}
+
+#down p {
+    font-size: 14px;
+    color: #afafaf;
+}
+
+#down i {
+    font-size: 22px;
+    margin-top: 2px;
+}
+
+#down p:hover {
+    color: #fff !important;
+}
+
+#surveyContainer .form-inline {
+    text-align: left;
+    margin-left: 43%;
+}
+
+.description {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.light {
+    color: #fff;
+}
+
+#share-description {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+ul {
+    list-style: none;
+    display: table;
+    padding: 0;
+}
+
+ul li:before {
+    color: #2CB673;
+    display: table-cell;
+    padding-right: 12px;
+    width: 26px;
+    height: 26px;
+}
+
+.list-style-blue li:before {
+    content: url(../images/ic_check_blue.svg);
+}
+
+.list-style-green li:before {
+    content: url(../images/ic_check_green.svg);
+}
+
+.list-style-grey li:before {
+    content: url(../images/ic_check_grey.svg);
+}
+
+ul > li {
+    display: table-row;
+}
+
+.text-small-xx {
+    font-size: 16px;
+}
+
+.text-small-x {
+    font-size: 18px;
+}
+
+/*http://getbootstrap.com/css/*/
+@media (max-width: 750px) {
+    .text-small {
+        font-size: 14px;
+    }
+
+    body {
+        font-size: 18px;
+    }
+
+    button {
+        margin-top: 12px;
+    }
+
+    button, .form-control {
+        width: 100% !important;
+    }
+
+    .social-link {
+        padding-top: 12px;
+    }
+
+    .section-vertical-align {
+        display: block;
+    }
+}
+
+@media (min-width: 750px) {
+    .text-small {
+        font-size: 26px;
+    }
+
+    body {
+        font-size: 30px;
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+    .text-small {
+        font-size: 26px;
+    }
+
+    body {
+        font-size: 35px;
+    }
+
+    body, .text-small {
+        font-size: 30px;
+    }
+}
