@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <g transform="matrix(1,0,0,1,-897.895,-2734.77)">
+        <g transform="matrix(1,0,0,1,-235.837,2616.02)">
+            <g transform="matrix(-1.11022e-16,1,-1,-1.11022e-16,2724.09,-392.2)">
+                <g transform="matrix(0.607416,0,0,0.607416,154.261,524.639)">
+                    <circle cx="669.529" cy="1672.19" r="82.316" style="fill:rgb(48,157,219);"/>
+                </g>
+                <g transform="matrix(0.0809871,0,0,0.0809871,521.621,1487.22)">
+                    <g transform="matrix(1.54641,0,0,1.54641,-999.008,19.0425)">
+                        <rect x="839.056" y="524.576" width="241.889" height="51.311" style="fill:white;"/>
+                    </g>
+                    <g transform="matrix(1.54641,0,0,1.54641,-999.008,-836.592)">
+                        <rect x="839.056" y="801.229" width="241.889" height="51.309" style="fill:white;"/>
+                    </g>
+                    <g transform="matrix(1.54641,0,0,1.54641,-999.008,-986.486)">
+                        <rect x="899.53" y="862.521" width="120.941" height="25.655" style="fill:white;"/>
+                    </g>
+                    <g transform="matrix(1.54641,0,0,1.54641,-999.008,168.931)">
+                        <rect x="899.53" y="488.94" width="120.941" height="25.656" style="fill:white;"/>
+                    </g>
+                    <g transform="matrix(1.54641,0,0,1.54641,525.219,793.827)">
+                        <path d="M0,-178.233L34.816,-178.233L34.816,-201.788L-86.125,-201.788L-86.125,-178.233L-51.31,-178.233L-51.31,-2.101L-86.125,-2.101L-86.125,23.555L34.816,23.555L34.816,-2.101L0,-2.101L0,-55.189L0,-178.233Z" style="fill:white;fill-rule:nonzero;"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

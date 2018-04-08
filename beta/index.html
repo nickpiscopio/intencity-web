@@ -69,18 +69,16 @@
     </head>
 
     <body>
-
         <div id="nav" class="shadow">
-                <div class="row">
-                    <a href="http://intencity.fit"><img src="images/intencity_hero.svg"/></a>
-                    <div id="nav" class="pageScrollerNav standardNav rightFloat">
-                        <ul>
-                            <li><a class="respHidden aLink" href="http://intencity.fit">CURRENT VERSION</a></li>
-                            <li><a id="beta-sign-up" class="respHidden aLink" href="#">BETA SIGN UP</a></li>
-                        </ul>
-                    </div>                        
-                </div>
+            <div>
+                <a href="http://intencity.fit"><img src="images/intencity_hero.svg"/></a>
+                
+                <ul class="right">
+                    <li><a class="respHidden aLink" href="http://intencity.fit">CURRENT VERSION</a></li>
+                    <li><a id="btn-sign-up" class="respHidden aLink" href="#">BETA SIGN UP</a></li>
+                </ul>
             </div>
+        </div>
 
         <div>
             <!--hero section-->
@@ -93,7 +91,7 @@
                                     <div style="height:100vh;"></div>
                                 </div>
                                 <div class="col-sm-12">
-                                    <p class="text-center text-color-white text-spacing-more">80% OF AMERICANS DON'T GET THE RECOMMENDED AMOUNT OF EXERCISE EACH WEEK<span>1</span></p>
+                                    <p class="text-center text-color-white text-spacing-more">80% OF AMERICANS DON'T GET THE RECOMMENDED AMOUNT OF EXERCISE EACH WEEK<sup>1</sup></p>
                                 </div>
                             </div>
                         </div>
@@ -104,13 +102,116 @@
                 </div>
             </div>
 
-            <div id="pie" class="shadow">
+            <div id="recommendation" class="info shadow">
                 <div class="container">
-                    <p class="text-uppercase text-center text-spacing-more text-color-white">WOULDN'T YOU LIKE A PIECE OF THE PIE?</p>
+                    <p class="text-uppercase text-center text-color-white">recommended amount of exercise for American adults<sup>2<sup></p>
+                    <ul class="text-center text-color-white">
+                        <li>
+                            2 days of strength training that exercises all major muscle groups
+                        </li>
+                        <li>
+                            A mixture of moderate aerobic exercises
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <div id="question">
+            <div class="question">
+                <div class="container">
+                    <p class="text-uppercase text-center style-italic text-spacing-more text-small-x">EXERCISING CAN BE A BURDEN, THOUGH...</p>
+                </div>
+            </div>
+
+            <div id="fitness-goals" class="container">
+                <div class="row section-vertical-align flex-row-reverse">
+                    <img id="img-goal" class="col-xs-5" src="images/ic_goal.svg"/>
+
+                    <div class="col-xs-7">
+                        <div>
+                            <p>TO REACH YOUR FITNESS GOALS, YOU NEED:</p>
+
+                            <ul class="text-small-x list-style-blue">
+                                <li>Time</li>
+                                <li>Motivation</li>
+                                <li>Fitness Knowledge</li>
+                                <li>Equipment</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <hr id="divider-info"></hr>
+
+            <div class="question">
+                <div class="container">
+                    <p class="text-uppercase text-center style-italic text-spacing-more text-small-x">GYMS AND FITNESS TRAINERS ARE EXPENSIVE TOO!</p>
+                </div>
+            </div>
+
+            <div id="table-pricing" class="container">
+                <div id="header-column" class="row">
+                    <div class="col-xs-4"></div>
+                    <div class="col-xs-4">
+                        <img class="icon" src="images/ic_weight_horizontal.svg"/>
+                        <p class="table-cell">LOCAL GYM</p>
+                    </div>
+                    <div class="col-xs-4">
+                        <img class="icon" src="images/ic_fitness_trainer.svg"/>
+                        <p class="table-cell">FITNESS TRAINER</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <p class="table-cell header-row">STARTUP FEE</p>
+                    </div>
+                    <div class="col-xs-4">
+                      <p class="table-cell gym">$5</p>
+                    </div>
+                    <div class="col-xs-4"></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                      <p class="table-cell header-row">MONTHLY FEE</p>
+                    </div>
+                    <div class="col-xs-4">
+                      <p class="table-cell gym">$10</p>
+                    </div>
+                    <div class="col-xs-4">
+                      <p class="table-cell trainer">$50</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                      <p class="table-cell bold header-row">YEARLY TOTAL</p>
+                    </div>
+                    <div class="col-xs-4">
+                      <p class="table-cell gym-bold">$125</p>
+                    </div>
+                    <div class="col-xs-4">
+                      <p class="table-cell trainer-bold">$600</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="description col-xs-12">
+                        <p>Prices in this table are based on the Philadelphia, PA region in April of 2018.</p>
+                        <p>Prices may vary based on location, gym, personal trainer, and time of year.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="container">
+                    <p class="text-uppercase text-center text-color-white">YOU MAY FEEL DEFEATED BEFORE GETTING STARTED!</p>
+                    <p class="text-center text-color-white style-italic text-large"><b>BUT...</b></p>
+                </div>
+
+                <!-- <div class="shadow-top"></div> -->
+            </div>
+
+            <div class="question background-off-white">
                 <div class="container">
                     <p class="text-uppercase text-center style-italic text-spacing-more text-small-x">WE HAVE CREATED AN APP THAT ALLOWS YOU TO...</p>
                 </div>
@@ -121,10 +222,10 @@
                     <div class="row section-vertical-align flex-row-reverse">
                         <img class="col-xs-12 col-sm-4 col-md-4 col-lg-6" src="images/mock_up_ai_in_intencity_ai.png"/>
 
-                        <div class="col-xs-12 col-sm-12 col">
+                        <div class="col-xs-12 col-sm-12">
                             <div class="layout">
                                 <div class="section-icon">
-                                    <img src="images/ic_security.svg" />
+                                    <img src="images/ic_weight_vertical.svg" />
                                 </div>
 
                                 <div>
@@ -156,7 +257,7 @@
                         <div class="col-xs-12 col-sm-12">
                             <div class="layout text-color-white">
                                 <div class="section-icon">
-                                    <img src="images/ic_settings.svg" />
+                                    <img src="images/ic_fitness_trainer.svg" />
                                 </div>
 
                                 <div>
@@ -180,14 +281,6 @@
                         </div>
 
                     </div>
-
-                    <!--<div class="row">-->
-
-                        <!--<div class="description light">-->
-                            <!--*De&#8209;identified data is data WITHOUT personal information.-->
-                        <!--</div>-->
-
-                    <!--</div>-->
                 </div>
             </div>
 
@@ -234,13 +327,14 @@
                                 <h3 id="title-subscribe">SIGN UP FOR EXCLUSIVE BETA ACCESS</h3>
                             </div>
                             <div class="subscribe-form">
-                                <form class="form-inline" action="http://healthlinkages.us15.list-manage.com/subscribe/post?u=ea49ffef20a70b56c4e15ef47&amp;id=c8dc0163b5" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                                <form class="form-inline" action="https://fit.us18.list-manage.com/subscribe/post?u=050ae5adb8197be06cad07ab9&amp;id=1a65a0129f" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
                                     <input type="email" value="" name="EMAIL" class="form-control" id="mce-EMAIL"type="text" class="form-control">
                                     <button class="btn btn-medium btn-rounded btn-dark-solid text-uppercase">
                                         SIGN UP
                                     </button>
                                 </form>
                             </div>
+                            <p id="promise">We promise not to spam you.</p>
                         </div>
                     </div>
                 </div>
@@ -265,8 +359,8 @@
                     <div id="references">
                         <div class="text-small-xx normal-weight">REFERENCES</div>
 
-                        <p class="text-small-xx">1. <a href="https://www.cbsnews.com/news/cdc-80-percent-of-american-adults-dont-get-recommended-exercise" target="_blank">https://www.cbsnews.com/news/cdc-80-percent-of-american-adults-dont-get-recommended-exercise/</a></p>
-                        <p class="text-small-xx">2. <a href="https://www.cdc.gov/physicalactivity/basics/adults/index.htm" target="_blank">https://www.cdc.gov/physicalactivity/basics/adults/index.htm</a></p>
+                        <p class="text-small-xx">1. <a href="https://www.cbsnews.com/news/cdc-80-percent-of-american-adults-dont-get-recommended-exercise" target="_blank">cbsnews.com</a></p>
+                        <p class="text-small-xx">2. <a href="https://www.cdc.gov/physicalactivity/basics/adults/index.htm" target="_blank">cdc.gov</a></p>
                     </div>
                 </div>
             </footer>

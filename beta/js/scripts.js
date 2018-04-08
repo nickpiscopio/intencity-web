@@ -5,11 +5,11 @@ $(document).ready(function() {
 
     $('#down').click(function() {
         $('html, body').animate({
-            scrollTop: $("#pie").offset().top
+            scrollTop: $("#recommendation").offset().top - ($("#nav").height() * 2)
         }, 1250);
     });
 
-    $('#beta-sign-up').click(function() {
+    $('#btn-sign-up').click(function() {
         $('html, body').animate({
             scrollTop: $("#survey").offset().top
         }, 1250);
