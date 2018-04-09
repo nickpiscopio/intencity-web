@@ -22,7 +22,7 @@
         <meta name="twitter:image" content="http://www.intencity.fit/images/logo_facebook.png">
 
         <meta name="robots" content="index,follow">
-        <meta name="description" content="Companies are already making billions off your data. What if you got a piece of the pie?" />
+        <meta name="description" content="80% of Americans don't get the recommended amount of exercise each week." />
         <meta name="keywords" content="Nick, Piscopio, Nick Piscopio, Nicholas, Nicholas Piscopio, Chris, Christopher, Christopher Piscopio, Chris Piscopio, Intencity, IntencityApp, Intencity App, 
                                        Intensity, IntensityApp, Intensity App, Fitness, Fitness Log, Fitness Guru, Get In Shape, Exercise App, Exercise, Exercise Application, theBasementTechnologies, 
                                        theBasement, Technology, Basement, Workout App, Workout, Intencity.fit, Intensity.fit, Workout of the Day, Lifting, Lift, Weight Lifting, Gym, Beachbody, Beach body, WOD, Training, Weights, Weight Training, Strong, Body Building, Building, Strong, Android, iOS, Swift, Java, Get Fit, Weight Loss, Personal Trainer, Trainer">
@@ -35,19 +35,17 @@
         <!--favicon icon-->
         <link rel="icon" type="image/png" href="images/favicon.ico">
 
-        <title>Control Your Data</title>
+        <title>Intencity | BETA</title>
 
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
 
-        <!-- Survey: https://dxsurvey.com/Home/SurveyResults/68b0f0c0-6a52-4991-b935-12943e0a6cb4 -->
-        <script src="js/survey.jquery.min.js"></script>
         <script src="js/scripts.js"></script>
 
-        <!--<link rel="stylesheet" type="text/css" href="css/normalize.css" />-->
         <link rel="stylesheet" type="text/css" href="css/bootstrap-reboot.min.css" />
-        <!--<link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css" />-->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
         <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
 
         <!-- Facebook Pixel Code -->
@@ -73,10 +71,9 @@
             <div>
                 <a href="http://intencity.fit"><img src="images/intencity_hero.svg"/></a>
                 
-                <ul class="right">
-                    <li><a class="respHidden aLink" href="http://intencity.fit">CURRENT VERSION</a></li>
-                    <li><a id="btn-sign-up" class="respHidden aLink" href="#">BETA SIGN UP</a></li>
-                </ul>
+                <div id="wrapper-nav-buttons" class="right">
+                    <a class="btn-sign-up aLink" href="#">SIGN UP FOR BETA</a>
+                </div>
             </div>
         </div>
 
@@ -107,7 +104,7 @@
                     <p class="text-uppercase text-center text-color-white">recommended amount of exercise for American adults<sup>2<sup></p>
                     <ul class="text-center text-color-white">
                         <li>
-                            2 days of strength training that exercises all major muscle groups
+                            Two days of strength training that exercises all major muscle groups
                         </li>
                         <li>
                             A mixture of moderate aerobic exercises
@@ -122,27 +119,31 @@
                 </div>
             </div>
 
-            <div id="fitness-goals" class="container">
-                <div class="row section-vertical-align flex-row-reverse">
-                    <img id="img-goal" class="col-xs-5" src="images/ic_goal.svg"/>
+            <div id="fitness-goals">
+                <div class="container section">
 
-                    <div class="col-xs-7">
-                        <div>
+                    <div class="row section-vertical-align">
+                        <div id="wrapper-icon" class="col-xs-4 col-xs-offset-4 col-sm-4 col-sm-offset-0 col-md-2">
+                            <img src="images/ic_goal.svg"/>
+                        </div>
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-md-push-1">
                             <p>TO REACH YOUR FITNESS GOALS, YOU NEED:</p>
 
                             <ul class="text-small-x list-style-blue">
-                                <li>Time</li>
-                                <li>Motivation</li>
-                                <li>Fitness Knowledge</li>
-                                <li>Equipment</li>
-                            </ul>
+                                    <li>Time</li>
+                                    <li>Motivation</li>
+                                    <li>Fitness Knowledge</li>
+                                    <li>Equipment</li>
+                                </ul>
+                            </div>
                         </div>
 
                     </div>
                 </div>
             </div>
 
-            <hr id="divider-info"></hr>
+            <hr id="divider-info" class="divider"></hr>
 
             <div class="question">
                 <div class="container">
@@ -152,27 +153,25 @@
 
             <div id="table-pricing" class="container">
                 <div id="header-column" class="row">
-                    <div class="col-xs-4"></div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-4 col-xs-push-3">
                         <img class="icon" src="images/ic_weight_horizontal.svg"/>
                         <p class="table-cell">LOCAL GYM</p>
                     </div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-4  col-xs-push-3">
                         <img class="icon" src="images/ic_fitness_trainer.svg"/>
                         <p class="table-cell">FITNESS TRAINER</p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <p class="table-cell header-row">STARTUP FEE</p>
                     </div>
                     <div class="col-xs-4">
                       <p class="table-cell gym">$5</p>
                     </div>
-                    <div class="col-xs-4"></div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                       <p class="table-cell header-row">MONTHLY FEE</p>
                     </div>
                     <div class="col-xs-4">
@@ -183,7 +182,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                       <p class="table-cell bold header-row">YEARLY TOTAL</p>
                     </div>
                     <div class="col-xs-4">
@@ -213,23 +212,23 @@
 
             <div class="question background-off-white">
                 <div class="container">
-                    <p class="text-uppercase text-center style-italic text-spacing-more text-small-x">WE HAVE CREATED AN APP THAT ALLOWS YOU TO...</p>
+                    <p class="text-uppercase text-center style-italic text-spacing-more text-small-x">WE'VE CREATED AN APP THAT HAS...</p>
                 </div>
             </div>
 
             <div id="app-0">
                 <div class="container section">
-                    <div class="row section-vertical-align flex-row-reverse">
-                        <img class="col-xs-12 col-sm-4 col-md-4 col-lg-6" src="images/mock_up_ai_in_intencity_ai.png"/>
-
-                        <div class="col-xs-12 col-sm-12">
+                    <div class="row section-vertical-align">
+                        <img class="image col-xs-12 col-sm-4 col-md-4 col-lg-4" src="images/mock_up_ai_in_intencity_ai.png"/>
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-offset-1">
                             <div class="layout">
                                 <div class="section-icon">
                                     <img src="images/ic_weight_vertical.svg" />
                                 </div>
 
                                 <div>
-                                    <p>PERSONALIZE EXERCISES FOR YOUR ENVIRONMENT</p>
+                                    <p>ENVIRONMENTAL EXERCISES</p>
 
                                     <ul class="text-small-x list-style-blue">
                                         <li>
@@ -251,17 +250,16 @@
             <div id="app-1">
                 <div class="container section">
                     <div class="row section-vertical-align">
-
-                        <img class="col-xs-12 col-sm-4 col-md-4 col-lg-6" src="images/mock_up_ai_in_intencity_fitness_log.png"/>
-
-                        <div class="col-xs-12 col-sm-12">
+                        <img class="image col-xs-12 col-sm-4 col-md-4 col-lg-4" src="images/mock_up_ai_in_intencity_fitness_log.png"/>
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-offset-1">
                             <div class="layout text-color-white">
                                 <div class="section-icon">
                                     <img src="images/ic_fitness_trainer.svg" />
                                 </div>
 
                                 <div>
-                                    <p>GET FITNESS TRAINER EXPERTISE</p>
+                                    <p>FITNESS TRAINER EXPERTISE</p>
 
                                     <ul class="text-small-x list-style-green">
                                         <li>
@@ -279,26 +277,23 @@
                             </div>
 
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <div id="app-2">
                 <div class="container section">
-
                     <div class="row section-vertical-align">
-                        <img class="col-xs-12 col-sm-4 col-md-4 col-lg-6" src="images/mock_up_ai_in_intencity_reward_points.png"/>
-
-                        <div class="col-xs-12 col-sm-12">
-
+                        <img class="image col-xs-12 col-sm-4 col-md-4 col-lg-4" src="images/mock_up_ai_in_intencity_reward_points.png"/>
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-offset-1">
                             <div class="layout text-color-white">
                                 <div class="section-icon">
                                     <img src="images/ic_money.svg" />
                                 </div>
 
                                 <div>
-                                    <p>GET REWARDED</p>
+                                    <p>REWARDS FOR EXERCISING</p>
 
                                     <ul class="text-small-x list-style-grey">
                                         <li>
@@ -313,7 +308,6 @@
                             </div>
 
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -338,9 +332,15 @@
                         </div>
                     </div>
                 </div>
+
+                <hr id="divider-sign-up" class="divider"></hr>
+
+                <div id="download">
+                    <a href="http://intencity.fit" target="_blank" class="text-uppercase text-center style-italic text-spacing-more text-small-x">DOWNLOAD THE CURRENT VERSION OF INTENCITY</a>
+                </div>
+                
             </div>
 
-            <!--footer 1 start -->
             <footer id="footer" class="text-center">
                 <div class="container section-large plus">
                     <div class="text-small-x normal-weight">SHARE ON YOUR FAVORITE SOCIAL MEDIA!</div>
@@ -355,19 +355,18 @@
                     <div class="copyright">
                         &copy; Intencity 2018. All Rights Reserved.
                     </div>
-                    <div class="divider"></div>
-                    <div id="references">
-                        <div class="text-small-xx normal-weight">REFERENCES</div>
+                    <div id="divider-footer" class="divider"></div>
+                    <div id="references" class="text-small-xx">
+                        <h5 class="normal-weight text-small-x">REFERENCES</h5>
 
-                        <p class="text-small-xx">1. <a href="https://www.cbsnews.com/news/cdc-80-percent-of-american-adults-dont-get-recommended-exercise" target="_blank">cbsnews.com</a></p>
-                        <p class="text-small-xx">2. <a href="https://www.cdc.gov/physicalactivity/basics/adults/index.htm" target="_blank">cdc.gov</a></p>
+                        <p>1. <a href="https://www.cbsnews.com/news/cdc-80-percent-of-american-adults-dont-get-recommended-exercise" target="_blank">cbsnews.com</a></p>
+                        <p>2. <a href="https://www.cdc.gov/physicalactivity/basics/adults/index.htm" target="_blank">cdc.gov</a></p>
                     </div>
                 </div>
             </footer>
-            <!--footer 1 end-->
         </div>
 
-        <!--google analytics-->
+        <!-- Google Analytics -->
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

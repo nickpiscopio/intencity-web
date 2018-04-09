@@ -5,6 +5,10 @@ body {
     line-height: 1.5;
 }
 
+p {
+    margin-bottom: 0;
+}
+
 #nav {
     position: fixed;
     top: 0;
@@ -12,20 +16,6 @@ body {
     background-color: #fff;
     padding: 20px;
     z-index: 9;
-}
-
-#nav ul {
-    display: inline-flex;
-    margin-bottom: 0 !important; 
-}
-
-#nav li a {
-    font-size: 16px;
-    text-decoration: none;
-    cursor: pointer;
-    vertical-align: middle;
-    font-weight: 600;
-    outline: 0;
 }
 
 #nav a img {
@@ -37,13 +27,29 @@ body {
     color: #647082;
 }
 
-#nav .aLink:hover, #btn-sign-up:hover {
+#nav .aLink:hover, .btn-sign-up:hover {
     color: #309DDB !important;
 }
 
-#btn-sign-up {
-    padding-left: 40px;
-    color: #45B29D !important;
+#wrapper-nav-buttons {
+    margin-top: 1px;
+}
+
+#wrapper-nav-buttons a {
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    vertical-align: middle;
+    font-weight: 600;
+    outline: 0;
+}
+
+#dropdown-menu {
+    width: 100% !important;
+}
+
+#dropdown-menu .btn-sign-up {
+    text-align: right;
 }
 
 .background-off-white {
@@ -68,6 +74,10 @@ body {
 
 .section {
     padding: 40px;
+}
+
+.section p {
+    font-weight: 600;
 }
 
 .section-large {
@@ -152,14 +162,9 @@ body {
     background: #59ADD3;
 }
 
-.info p {
-    font-size: 26px;
-}
-
 .info ul {
     margin: 0 auto;
     list-style: inside;
-    font-size: 22px;
     font-weight: 300;
 }
 
@@ -192,6 +197,10 @@ body {
     padding-top: 10px;
     padding-bottom: 10px;
     margin-bottom: 4px
+}
+
+#fitness-goals ul {
+    margin-bottom: 0;
 }
 
 #fitness-goals, #table-pricing {
@@ -244,19 +253,12 @@ body {
     background: #45B29D;
 }
 
-#survey, .panel-footer {
-    background-color: #fafafa !important;
-}
-
-#app-span-0, #approve-0, #paid-span {
-    line-height: 0;
-}
-
 #promise {
     padding-top: 18px;
+    margin-bottom: 0;
     font-style: italic;
     font-size: 12px;
-    color: #9B9BB3
+    color: #9B9BB3;
 }
 
 button {
@@ -281,6 +283,22 @@ button {
     padding: 15px 30px !important;
     font-size: 14px;
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.19);
+}
+
+#download {
+    margin-top: 50px;
+    text-align: center;
+}
+
+#download a {
+    color: #309DDB;
+    font-weight: 600;
+    padding: 0;
+    text-decoration: none;
+}
+
+#download a:hover {
+    color: #3488B8;
 }
 
 .form-control {
@@ -346,6 +364,16 @@ footer {
     background-color: #fff;
 }
 
+#references a {
+    color: #CCCCCC;
+    margin-top: 50px; 
+}
+
+#references a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
 #down {
     position: absolute;
     bottom: 20px;
@@ -379,17 +407,35 @@ footer {
     padding-bottom: 12px;
 }
 
+.divider {
+    margin-top: 50px;
+    margin-bottom: 0;
+}
+
 #divider-info {
     width: 75%;
     border-top: 1px solid #45B29D;
-    margin-top: 50px;
-    margin-bottom: 0;
+}
+
+#divider-sign-up {
+    width: 50px;
+    border-top: 1px solid #45B29D;
+}
+
+#divider-footer {
+    width: 50px;
+    border-top: 1px solid #CCCCCC;
+    margin-bottom: 50px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 ul {
     list-style: none;
     display: table;
     padding: 0;
+    border-collapse: separate;
+    border-spacing: 0 10px;
 }
 
 ul li:before {
@@ -429,12 +475,24 @@ ul > li {
 }
 
 /*http://getbootstrap.com/css/*/
-@media (max-width: 750px) {
+@media only screen and (max-width: 421px) {
+    #app-2 p {
+        margin-top: 10px !important;
+    }
+}
+
+@media only screen and (max-width: 432px) {
+    #app-0 p, #app-1 p {
+        margin-top: 10px !important;
+    }
+}
+
+@media only screen and (max-width: 749px) {
     .text-small {
         font-size: 14px;
     }
 
-    body {
+    body, .info p, .info ul{
         font-size: 18px;
     }
 
@@ -454,12 +512,28 @@ ul > li {
         display: block;
     }
 
-    #nav ul {
-        margin-top: 11px;
+    #wrapper-nav-buttons {
+        margin-top: 12px;
+    }
+
+    .section .image, #wrapper-icon {
+        margin-bottom: 40px
+    }
+
+    #app-0 p, #app-1 p, #app-2 p {
+        margin-top: 26px;
     }
 }
 
-@media (min-width: 750px) {
+@media only screen and (min-width: 750px) {
+    .info p {
+        font-size: 26px;
+    }
+
+    .info ul {
+        font-size: 22px;
+    }
+
     .text-small {
         font-size: 26px;
     }
@@ -467,11 +541,30 @@ ul > li {
     body {
         font-size: 30px;
     }
+
+    #app-0 p, #app-1 p, #app-2 p {
+        margin-top: -8px;
+    }
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) {
+@media only screen and (min-width: 992px) {
     body, .text-small {
         font-size: 30px;
+    }
+
+    #app-0 p {
+        margin-top: -8px;
+    }
+
+    #app-1 p, #app-2 p {
+        margin-top: 15px;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media only screen and (min-width: 1200px) {
+    #app-0 p, #app-1 p, #app-2 p {
+        margin-top: 15px;
     }
 }
