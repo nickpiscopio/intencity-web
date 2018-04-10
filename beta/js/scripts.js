@@ -22,3 +22,15 @@ $(document).ready(function() {
         }, scrollSpeed);
     });
 });
+
+$(function() {
+	// This swaps out the old background image of the ".hero" class with the new one when it loads.
+    $(".img_high_res").off().on("load", function() {
+         var id = $(this).attr("id");
+         var highres = $(this).attr("src").toString();
+         var target = ".hero";
+
+         // $(target).css("transition", "background-image 250ms ease-in");
+         $(target).css("background-image", "url(" + highres + ")");
+  	});
+});

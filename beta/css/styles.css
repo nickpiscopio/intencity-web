@@ -19,7 +19,7 @@ p {
 }
 
 #nav a img {
-    width: 75px;
+    width: 65px;
     margin-top: -3px;
 }
 
@@ -32,11 +32,12 @@ p {
 }
 
 #wrapper-nav-buttons {
-    margin-top: 1px;
+    margin-top: -1px;
+    margin-right: 10px;
 }
 
 #wrapper-nav-buttons a {
-    font-size: 16px;
+    font-size: 14px;
     text-decoration: none;
     cursor: pointer;
     vertical-align: middle;
@@ -84,13 +85,23 @@ p {
     padding: 60px;
 }
 
+.img_high_res {
+  display: none;
+}
+
 .hero {
     height: 100vh;
-    background: url(../images/hero_runner.jpg) no-repeat center center fixed;
+    background: url(../images/hero_runner_low.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+
+    -webkit-transition: background-image 250ms ease-in;
+    -moz-transition: background-image 250ms ease-in;
+    -ms-transition: background-image 250ms ease-in;
+     -o-transition: background-image 250ms ease-in;
+    transition: background-image 250ms ease-in;
 }
 
 .style-italic {
@@ -187,6 +198,10 @@ p {
 
 .description p {
     margin: 0;
+}
+
+.background-white {
+    background-color: #fff;
 }
 
 #img-goal {
@@ -475,13 +490,13 @@ ul > li {
 }
 
 /*http://getbootstrap.com/css/*/
-@media only screen and (max-width: 421px) {
+@media only screen and (min-width: 0) and (max-width: 421px) {
     #app-2 p {
         margin-top: 10px !important;
     }
 }
 
-@media only screen and (max-width: 432px) {
+@media only screen and and (min-width: 422px) and (max-width: 432px) {
     #app-0 p, #app-1 p {
         margin-top: 10px !important;
     }
@@ -513,7 +528,7 @@ ul > li {
     }
 
     #wrapper-nav-buttons {
-        margin-top: 12px;
+        margin-top: 8px;
     }
 
     .section .image, #wrapper-icon {
