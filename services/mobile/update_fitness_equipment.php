@@ -4,24 +4,21 @@
 	 * 
 	 * Accepts:
 	 * 		inserts(0-n)	The equipment to insert to the database. Separate with a ",".
-	 *
- 	 * Returns:
- 	 *		SUCCESS
- 	 *		FAILURE
 	 * 
-	 * EXAMPLE URL	http://intencityapp.com/dev/services/mobile/update_fitness_equipment.php?email=dev@gmail.com&display_name=Home&saved_location=123 Saved Road&location=1234 Street Road&inserts=Cable Pull,Treadmill,Roman Chair
+	 * EXAMPLE URL	http://intencity.fit/dev/services/mobile/update_fitness_equipment.php?user_id=100&display_name=Home&saved_location=123 Saved Road&location=1234 Street Road&inserts=Cable Pull,Treadmill,Roman Chair
 	 * 
 	 */
 
-	//Includes the database connection information.
+	// Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
+	include_once '../status_codes.php';
+	include_once '../Response.php';
 
-	define("SUCCESS", "SUCCESS");
-	define("FAILURE", "FAILURE");
+	$response = new Response();
 	
 	//NEEDS TO BE CHANGED TO A POST.
-	$email = $_POST['email'];
+	$userId = $_POST['user_id'];
 	$displayName  = str_replace("'", "\'", $_POST['display_name']);
 	$savedlocation = $_POST['saved_location'];
 	$location = $_POST['location'];
@@ -30,7 +27,7 @@
 	$insertQuery = "";
 
 	// Deletes every time regardless of whether we are inserting or updating.
-	$insertQuery .= "DELETE FROM  " . TABLE_USER_EQUIPMENT . " WHERE " . COLUMN_EMAIL . "='" . $email . "' AND (" . COLUMN_LOCATION . "='" . $savedlocation ."' OR " . COLUMN_LOCATION . "='" . $location ."'); ";	
+	$insertQuery .= "DELETE FROM  " . TABLE_USER_EQUIPMENT . " WHERE " . COLUMN_USER_ID . "='" . $userId . "' AND (" . COLUMN_LOCATION . "='" . $savedlocation ."' OR " . COLUMN_LOCATION . "='" . $location ."'); ";	
 
 	if (isset($inserts))
 	{
@@ -40,19 +37,19 @@
 		
 		for($z = 0; $z < $insertTotal; $z++)
 		{
-			$insertQuery .= "INSERT INTO " . TABLE_USER_EQUIPMENT . " (" . COLUMN_DISPLAY_NAME . "," . COLUMN_LOCATION . "," . COLUMN_EMAIL . ", " . COLUMN_EQUIPMENT_NAME . ") VALUES ('" . $displayName . "','" . $location . "','" . $email . "', '" . $inserts[$z] . "'); ";
+			$insertQuery .= "INSERT INTO " . TABLE_USER_EQUIPMENT . " (" . COLUMN_DISPLAY_NAME . "," . COLUMN_LOCATION . "," . COLUMN_USER_ID . ", " . COLUMN_EQUIPMENT_NAME . ") VALUES ('" . $displayName . "','" . $location . "','" . $userId . "', '" . $inserts[$z] . "'); ";
 		}
 	}
 
 	$query = mysqli_multi_query($conn, $insertQuery);
 
-	//Check if the query was successful.
+	// Check if the query was successful.
 	if($query)
 	{		
-		print json_encode(SUCCESS);
+		$response->send(STATUS_CODE_SUCCESS_FITNESS_EQUIPMENT_UPDATED, NULL);
 	}
 	else
 	{
-		print json_encode(FAILURE);
+		$response->send(STATUS_CODE_FAILURE_FITNESS_EQUIPMENT_UPDATE, NULL);
 	}
 ?>

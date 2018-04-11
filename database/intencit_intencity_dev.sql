@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10.18
--- https://www.phpmyadmin.net
+-- version 4.6.6
+-- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 08, 2017 at 05:08 PM
+-- Generation Time: May 20, 2017 at 04:19 PM
 -- Server version: 5.5.54-cll
 -- PHP Version: 5.6.30
 
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `intencit_intencity_3_dev`
@@ -24,22 +24,18 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists`(IN `id` INT, IN `location` VARCHAR(125))
-SELECT Location
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `checkIfFitnessLocationExists` (IN `userId` INT, IN `location` VARCHAR(125))  SELECT Location
 FROM UserEquipment
-WHERE UserEquipment.UserId = id && UserEquipment.Location = location
+WHERE UserEquipment.UserId = userId && UserEquipment.Location = location
 GROUP BY UserEquipment.Location$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise`(IN `id` INT, IN `exerciseName` VARCHAR(50))
-INSERT INTO Exclusion (Exclusion.UserId, Exclusion.ExcludeForever, Exclusion.ExerciseId, Exclusion.ExclusionType) 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `excludeExercise` (IN `id` INT, IN `exerciseName` VARCHAR(50))  INSERT INTO Exclusion (Exclusion.UserId, Exclusion.ExcludeForever, Exclusion.ExerciseId, Exclusion.ExclusionType) 
 VALUES (id, 1, exerciseName, "E")$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser`(IN `id` INT, IN `followUserId` INT)
-INSERT INTO Following (Following.UserId, Following.Following) 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `followUser` (IN `id` INT, IN `followUserId` INT)  INSERT INTO Following (Following.UserId, Following.Following) 
 VALUES (id, followUserId)$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups`(IN `id` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getAllDisplayMuscleGroups` (IN `userId` INT)  begin
 
 declare routineNumber int default 0;
 
@@ -51,7 +47,7 @@ set routineNumber = (SELECT MuscleGroupRoutine.RoutineNumber
                      FROM MuscleGroupRoutine
                      INNER JOIN CompletedMuscleGroup
                      ON CompletedMuscleGroup.MuscleGroupName = MuscleGroupRoutine.MuscleGroupName
-                     WHERE CompletedMuscleGroup.UserId = id
+                     WHERE CompletedMuscleGroup.UserId = userId
                      ORDER BY CompletedMuscleGroup.ID DESC
                      LIMIT 1);
 
@@ -78,7 +74,7 @@ SELECT *
        UNION ALL
        SELECT UserMuscleGroupRoutine.DisplayName as DisplayName, UserMuscleGroupRoutine.RoutineNumber, currentMuscleGroup
        FROM UserMuscleGroupRoutine
-       WHERE UserMuscleGroupRoutine.UserId = Id
+       WHERE UserMuscleGroupRoutine.UserId = userId
        GROUP BY UserMuscleGroupRoutine.DisplayName) as muscleGroup
   ORDER BY 
     CASE 
@@ -88,38 +84,23 @@ SELECT *
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getBadges`(IN `id` INT)
-SELECT Badge.BadgeName, COUNT(*) as TotalBadges
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getBadges` (IN `id` INT)  SELECT Badge.BadgeName, COUNT(*) as TotalBadges
 FROM Badge 
 WHERE Badge.UserId = id
 GROUP BY Badge.BadgeName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getCustomRoutineMuscleGroup`()
-SELECT DisplayName
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getCustomRoutineMuscleGroup` ()  SELECT DisplayName
 FROM CustomRoutineMuscleGroup
 GROUP BY DisplayName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getDirection`(IN `exerciseId` INT)
-SELECT Exercise.SubmittedBy, Exercise.VideoURL, Direction.Direction
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getDirection` (IN `exerciseId` INT)  SELECT Exercise.SubmittedBy, Exercise.VideoURL, Direction.Direction
 FROM Exercise
 INNER JOIN Direction
-    ON Direction.ExerciseId = Exercise.ExerciseId
-WHERE Exercise.ExerciseId = exerciseId
+    ON Direction.ExerciseId = Exercise.ID
+WHERE Exercise.ID = exerciseId
 ORDER BY Direction.ID ASC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getEquipment`(IN `id` INT)
-SELECT Equipment.EquipmentName, 
-	CASE 
-    	WHEN UserEquipment.UserId != 'NULL' THEN 'true'
-	END AS HasEquipment
-FROM Equipment
-LEFT JOIN UserEquipment
-	ON UserEquipment.EquipmentName = Equipment.EquipmentName && UserEquipment.UserId = id
-WHERE Equipment.EquipmentName != 'NULL'
-GROUP BY Equipment.EquipmentName$$
-
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday`(IN `id` INT)
-SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getExercisesForToday` (IN `id` INT)  SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
 FROM Exercise
 INNER JOIN MuscleGroup 
     ON Exercise.ExerciseId = MuscleGroup.ExerciseId
@@ -154,8 +135,7 @@ WHERE
 GROUP BY Exercise.ExerciseName
 ORDER BY RandomizedPriority DESC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getFollowing`(IN `id` INT)
-SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getFollowing` (IN `id` INT)  SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
     (SELECT COUNT(Badge.BadgeName)
          FROM Badge 
          WHERE Badge.UserId = User.ID) AS TotalBadges, 
@@ -166,15 +146,14 @@ LEFT JOIN Following
 WHERE Following.UserId = id OR User.ID = id
 ORDER BY User.EarnedPoints DESC$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjuryPreventionWorkouts`(IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))
-BEGIN
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getInjuryPreventionWorkouts` (IN `type` VARCHAR(1), IN `displayName` VARCHAR(25))  BEGIN
 
   DECLARE hasExercise int default 0;
 
   SET hasExercise = (SELECT COUNT(Exercise.ExerciseName)
                      FROM Exercise
                      INNER JOIN MuscleGroup
-                       ON MuscleGroup.ExerciseId = Exercise.ExerciseId
+                       ON MuscleGroup.ExerciseId = Exercise.ID
                      WHERE Exercise.Type = type && MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
                                                                                    FROM MuscleGroupRoutine
                                                                                    WHERE MuscleGroupRoutine.DisplayName = displayName)
@@ -186,7 +165,7 @@ BEGIN
     SELECT Exercise.ExerciseName
     FROM Exercise
     INNER JOIN MuscleGroup
-      ON MuscleGroup.ExerciseId = Exercise.ExerciseId
+      ON MuscleGroup.ExerciseId = Exercise.ID
     WHERE Exercise.Type = type && MuscleGroup.MuscleGroupName IN (SELECT MuscleGroupRoutine.MuscleGroupName
                                                                   FROM MuscleGroupRoutine
                                                                   WHERE MuscleGroupRoutine.DisplayName = displayName)
@@ -205,8 +184,7 @@ BEGIN
 
 END$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getLastWeekRoutines`(IN `id` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getLastWeekRoutines` (IN `id` INT)  begin
 
   declare SEVEN_DAY_MILLIS int default 604800000;
   declare SEVEN_DAY_AGO int default UNIX_TIMESTAMP() * 1000 - SEVEN_DAY_MILLIS;
@@ -242,148 +220,143 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getPriority`(IN `email` VARCHAR(75))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getPriority` (IN `userId` INT)  begin
 
   declare EXCLUSION_LIST_PRIORITY int default 0;
 
   SELECT * 
-  FROM(SELECT ExercisePriority.ExerciseName as ExerciseName, ExercisePriority.Priority as Priority
+  FROM(SELECT Exercise.ID, Exercise.ExerciseName, ExercisePriority.Priority as Priority
        FROM ExercisePriority
-       WHERE ExercisePriority.Email = email
+          INNER JOIN Exercise
+          ON Exercise.ID = ExercisePriority.ExerciseId
+       WHERE ExercisePriority.UserId = userId
        UNION ALL
-       SELECT Exclusion.ExclusionName, EXCLUSION_LIST_PRIORITY
+       SELECT Exercise.ID, Exercise.ExerciseName, EXCLUSION_LIST_PRIORITY
        FROM Exclusion
-       WHERE Exclusion.Email = email) as priority
+          INNER JOIN Exercise
+          ON Exercise.ID = Exclusion.ExerciseId
+       WHERE Exclusion.UserId = userId) as priority
   ORDER BY Priority DESC, ExerciseName ASC;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises`(IN `email` VARCHAR(75), IN `userLocation` VARCHAR(125), IN `routineNumber` INT)
-begin	
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getRoutineExercises` (IN `userId` INT, IN `userLocation` VARCHAR(125), IN `routineNumber` INT)  begin 
 
-    /* 	Sets the routine for today.	*/
+    /*  Sets the routine for today. */
     /*  This is the max threshold that Intencity has for its routine numbers.
         Anything greater than this is a custom rotine created by the user. */
     declare DEFAULT_INTENCITY_ROUTINE_THRESHOLD int default 6;
 
     IF (routineNumber > DEFAULT_INTENCITY_ROUTINE_THRESHOLD) THEN
         /* Pull from the custom routines */
-        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
-            SELECT email, UNIX_TIMESTAMP() * 1000 , UserMuscleGroupRoutine.MuscleGroupName, routineNumber
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.UserId, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
+            SELECT userId, UNIX_TIMESTAMP() * 1000 , UserMuscleGroupRoutine.MuscleGroupName, routineNumber
             FROM UserMuscleGroupRoutine
-            WHERE UserMuscleGroupRoutine.Email = email && UserMuscleGroupRoutine.RoutineNumber = routineNumber;
+            WHERE UserMuscleGroupRoutine.UserId = userId && UserMuscleGroupRoutine.RoutineNumber = routineNumber;
     ELSE
         /* Pull from Intencity's routines */
-        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.Email, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
-            SELECT email, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName, routineNumber
+        INSERT INTO CompletedMuscleGroup (CompletedMuscleGroup.UserId, CompletedMuscleGroup.Date, CompletedMuscleGroup.MuscleGroupName, CompletedMuscleGroup.RoutineNumber)
+            SELECT userId, UNIX_TIMESTAMP() * 1000 , MuscleGroupRoutine.MuscleGroupName, routineNumber
             FROM MuscleGroupRoutine
             WHERE MuscleGroupRoutine.RoutineNumber = routineNumber;
     END IF;
 
     /* The alogrithm to get the user's exercises for today.*/
-    SELECT Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
+    SELECT Exercise.ID, Exercise.ExerciseName, exercisePriority.Priority as Priority, FLOOR(RAND() * IFNULL(exercisePriority.Priority, 20)) as RandomizedPriority, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
     FROM Exercise
     INNER JOIN MuscleGroup 
-        ON Exercise.ExerciseName = MuscleGroup.ExerciseName
+        ON Exercise.ID = MuscleGroup.ExerciseId
     Inner JOIN Equipment
-        ON Exercise.ExerciseName = Equipment.ExerciseName
-    LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+        ON Exercise.ID = Equipment.ExerciseId
+    LEFT JOIN (SELECT CompletedExercise.ExerciseId, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
                FROM CompletedExercise
-               WHERE CompletedExercise.Email = email
+               WHERE CompletedExercise.UserId = userId
                ORDER BY CompletedExercise.ID DESC) as completedExercise
-        ON completedExercise.ExerciseName = Exercise.ExerciseName 
-    LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
+        ON completedExercise.ExerciseId = Exercise.ID 
+    LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseId
                 FROM ExercisePriority
-                WHERE ExercisePriority.Email = email) as exercisePriority
-        ON exercisePriority.ExerciseName = Exercise.ExerciseName
+                WHERE ExercisePriority.UserId = userId) as exercisePriority
+        ON exercisePriority.ExerciseId = Exercise.ID
     WHERE 
           Exercise.Type = 'E' && 
           Exercise.Recommended = 1 && 
           (MuscleGroup.MuscleGroupName IN (SELECT CompletedMuscleGroup.MuscleGroupName
                                            FROM CompletedMuscleGroup
-                                           WHERE CompletedMuscleGroup.Email = email && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
-                                                                                                                    FROM CompletedMuscleGroup
-                                                                                                                    WHERE CompletedMuscleGroup.Email = email
-                                                                                                                    ORDER BY CompletedMuscleGroup.ID DESC
-                                                                                                                    LIMIT 1)) && 
+                                           WHERE CompletedMuscleGroup.UserId = userId && CompletedMuscleGroup.Date = (SELECT CompletedMuscleGroup.Date
+                                                                                                                      FROM CompletedMuscleGroup
+                                                                                                                      WHERE CompletedMuscleGroup.UserId = userId
+                                                                                                                      ORDER BY CompletedMuscleGroup.ID DESC
+                                                                                                                      LIMIT 1)) && 
           MuscleGroup.MuscleGroupExercisePercentage >= 50) && 
           (Equipment.EquipmentName IN (SELECT UserEquipment.EquipmentName 
                                        FROM UserEquipment 
-                                       WHERE UserEquipment.Email = email && UserEquipment.Location = userLocation) || Equipment.EquipmentName IS NULL) && 
-          Exercise.ExerciseName NOT IN (SELECT Exclusion.ExclusionName
+                                       WHERE UserEquipment.UserId = userId && UserEquipment.Location = userLocation) || Equipment.EquipmentName IS NULL) && 
+          Exercise.ID NOT IN (SELECT Exclusion.ExerciseId
                                         FROM Exclusion 
-                                        WHERE Exclusion.Email = email && Exclusion.ExclusionType = 'E')
-    GROUP BY Exercise.ExerciseName
+                                        WHERE Exclusion.UserId = userId && Exclusion.ExclusionType = 'E')
+    GROUP BY Exercise.ID
     ORDER BY RandomizedPriority DESC;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment`(IN `email` VARCHAR(75), IN `location` VARCHAR(125))
-SELECT Equipment.EquipmentName, 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserEquipment` (IN `userId` INT, IN `location` VARCHAR(125))  SELECT Equipment.EquipmentName, 
 	CASE 
-    	WHEN UserEquipment.Email != 'NULL' THEN 'true'
+    	WHEN UserEquipment.UserId != 'NULL' THEN 'true'
 	END AS HasEquipment
 FROM Equipment
 LEFT JOIN UserEquipment
 	ON UserEquipment.EquipmentName = Equipment.EquipmentName && 
-	   UserEquipment.Email = email && 
+	   UserEquipment.UserId = userId && 
 	   UserEquipment.Location = location
 WHERE Equipment.EquipmentName != 'NULL'
 GROUP BY Equipment.EquipmentName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserFitnessLocations`(IN `email` VARCHAR(75))
-SELECT UserEquipment.DisplayName, UserEquipment.Location
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserFitnessLocations` (IN `userId` INT)  SELECT UserEquipment.DisplayName, UserEquipment.Location
 FROM UserEquipment
-WHERE UserEquipment.Email = email
+WHERE UserEquipment.UserId = userId
 GROUP BY UserEquipment.DisplayName, UserEquipment.Location
 ORDER BY UserEquipment.DisplayName, UserEquipment.Location$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine`(IN `email` VARCHAR(75))
-SELECT UserMuscleGroupRoutine.DisplayName
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserMuscleGroupRoutine` (IN `userId` INT)  SELECT UserMuscleGroupRoutine.DisplayName
 FROM UserMuscleGroupRoutine
-WHERE UserMuscleGroupRoutine.Email = email
+WHERE UserMuscleGroupRoutine.UserId = userId
 GROUP BY UserMuscleGroupRoutine.DisplayName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine`(IN `email` VARCHAR(75))
-SELECT Routine.RoutineName, Routine.ExerciseDay
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutine` (IN `userId` INT)  SELECT Routine.RoutineName, Routine.ExerciseDay
 FROM Routine
-WHERE Routine.Email = email 
+WHERE Routine.UserId = userId 
 GROUP BY Routine.RoutineName
 ORDER BY Routine.RoutineName$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutineExercises`(IN `email` VARCHAR(75), IN `routineNumber` INT(1))
-begin 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `getUserRoutineExercises` (IN `userId` INT, IN `routineNumber` INT(1))  begin 
 
   /* We insert into the CompletedRoutine table, so we can later pull to show what the user has exercised in the last 7 days. */
-  INSERT INTO CompletedRoutine (CompletedRoutine.Email, CompletedRoutine.Date, CompletedRoutine.RoutineName)
-      SELECT email, UNIX_TIMESTAMP() * 1000 , Routine.RoutineName
+  INSERT INTO CompletedRoutine (CompletedRoutine.UserId, CompletedRoutine.Date, CompletedRoutine.RoutineName)
+      SELECT userId, UNIX_TIMESTAMP() * 1000 , Routine.RoutineName
       FROM Routine
-      WHERE Routine.Email = email && Routine.ExerciseDay = routineNumber
+      WHERE Routine.UserId = userId && Routine.ExerciseDay = routineNumber
       GROUP BY Routine.RoutineName;
 
-  SELECT Routine.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes, exercise.ExerciseTableExerciseName
+  SELECT Routine.ExerciseId as ID, exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes
   FROM Routine
-  LEFT JOIN (SELECT Exercise.ExerciseName AS ExerciseTableExerciseName
+  LEFT JOIN (SELECT Exercise.ID as ExerciseTableExerciseId, Exercise.ExerciseName
              FROM Exercise) as exercise
-      ON exercise.ExerciseTableExerciseName = Routine.ExerciseName
-  LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+      ON exercise.ExerciseTableExerciseId = Routine.ExerciseId
+  LEFT JOIN (SELECT CompletedExercise.ExerciseId, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
               FROM CompletedExercise
-              WHERE CompletedExercise.Email = email
+              WHERE CompletedExercise.UserId = userId
               ORDER BY CompletedExercise.ID DESC) as completedExercise
-      ON completedExercise.ExerciseName = Routine.ExerciseName 
-  WHERE Routine.Email = email && Routine.ExerciseDay = routineNumber
-  GROUP BY Routine.ExerciseName
+      ON completedExercise.ExerciseId = Routine.ExerciseId 
+  WHERE Routine.UserId = userId && Routine.ExerciseDay = routineNumber
+  GROUP BY Routine.ExerciseId
   ORDER BY Routine.ID ASC;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantBadgeToUser`(IN `email` VARCHAR(75), IN `date` BIGINT, IN `badgeName` VARCHAR(30))
-INSERT INTO Badge(Email, EarnedDate, BadgeName)
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantBadgeToUser` (IN `email` VARCHAR(75), IN `date` BIGINT, IN `badgeName` VARCHAR(30))  INSERT INTO Badge(Email, EarnedDate, BadgeName)
 VALUES(email, date, badgeName)$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantPointsToUser`(IN `email` VARCHAR(75), IN `points` INT)
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `grantPointsToUser` (IN `email` VARCHAR(75), IN `points` INT)  begin
 
 declare currentPoints int default 0;
 
@@ -397,28 +370,26 @@ WHERE User.Email = email;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeAccount`(IN `email` VARCHAR(75))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeAccount` (IN `userId` INT)  begin
 
-DELETE FROM Comment WHERE Comment.Email = email;
-DELETE FROM CompletedExercise WHERE CompletedExercise.Email = email;
-DELETE FROM CompletedMuscleGroup WHERE CompletedMuscleGroup.Email = email;
-DELETE FROM CurrentRoutine WHERE CurrentRoutine.Email = email;
-DELETE FROM Exclusion WHERE Exclusion.Email = email;
-DELETE FROM Following WHERE Following.Email = email;
-DELETE FROM Post WHERE Post.Email = email;
-DELETE FROM Routine WHERE Routine.Email = email;
-DELETE FROM Settings WHERE Settings.Email = email;
-DELETE FROM UserEquipment WHERE UserEquipment.Email = email;
-DELETE FROM UserMedia WHERE UserMedia.Email = email;
-DELETE FROM Badge WHERE Badge.Email = email;
-DELETE FROM ExercisePriority WHERE ExercisePriority.Email = email;
-DELETE FROM User WHERE User.Email = email;
+DELETE FROM Badge WHERE Badge.UserId = userId;
+DELETE FROM CompletedExercise WHERE CompletedExercise.UserId = userId;
+DELETE FROM CompletedMuscleGroup WHERE CompletedMuscleGroup.UserId = userId;
+DELETE FROM CompletedRoutine WHERE CompletedRoutine.UserId = userId;
+DELETE FROM Exclusion WHERE Exclusion.UserId = userId;
+DELETE FROM ExercisePriority WHERE ExercisePriority.UserId = userId;
+DELETE FROM Following WHERE Following.UserId = userId;
+DELETE FROM Routine WHERE Routine.UserId = userId;
+DELETE FROM UserEquipment WHERE UserEquipment.UserId = userId;
+DELETE FROM UserMuscleGroupRoutine WHERE UserMuscleGroupRoutine.UserId = userId;
+/* User is where the ID of the user gets created, so we delete it last. */
+DELETE FROM User WHERE User.ID = userId;
+
+SELECT 200;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeExercise`(IN `exerciseName` VARCHAR(50))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeExercise` (IN `exerciseName` VARCHAR(50))  begin
 
 DELETE FROM Exercise WHERE Exercise.ExerciseName = exerciseName;
 DELETE FROM Muscle WHERE Muscle.ExerciseName = exerciseName;
@@ -429,12 +400,10 @@ DELETE FROM Direction WHERE Direction.ExerciseName = exerciseName;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeFromFollowing`(IN `id` INT(11))
-DELETE FROM Following
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeFromFollowing` (IN `id` INT(11))  DELETE FROM Following
 WHERE Following.ID = id$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeTrialAccounts`()
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `removeTrialAccounts` ()  begin
 
 DELETE Comment.*
 FROM Comment
@@ -520,8 +489,7 @@ WHERE (User.AccountType = 'T' && User.LastLoginDate <= CURDATE() - INTERVAL 4 WE
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAccount`(IN `email` VARCHAR(75))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAccount` (IN `email` VARCHAR(75))  begin
 
 DELETE FROM Exclusion WHERE Exclusion.Email = email;
 DELETE FROM CompletedExercise WHERE CompletedExercise.Email = email;
@@ -540,8 +508,7 @@ DELETE FROM Badge WHERE Badge.Email = email;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAwards`()
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `resetAwards` ()  begin
 
     DELETE FROM Badge;
     
@@ -549,8 +516,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchExercises`(IN `email` VARCHAR(75), IN `name` VARCHAR(50))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchExercises` (IN `userId` INT, IN `name` VARCHAR(50))  begin
 
   declare CHARACTER_LENGTH_TO_REMOVE int default 1;
   declare queryLength int default 0;
@@ -569,42 +535,40 @@ begin
 
   END IF;  
 
-  SELECT Exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes, exercisePriority.Priority as Priority
+  SELECT Exercise.ID, Exercise.ExerciseName, completedExercise.ExerciseWeight, completedExercise.ExerciseReps, completedExercise.ExerciseDuration, completedExercise.ExerciseDifficulty, completedExercise.Notes, exercisePriority.Priority as Priority
   FROM Exercise
-  LEFT JOIN (SELECT CompletedExercise.ExerciseName, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
+  LEFT JOIN (SELECT CompletedExercise.ExerciseId, CompletedExercise.ExerciseWeight, CompletedExercise.ExerciseReps, CompletedExercise.ExerciseDuration, CompletedExercise.ExerciseDifficulty, CompletedExercise.Notes
               FROM CompletedExercise
-              WHERE CompletedExercise.Email = email
+              WHERE CompletedExercise.UserId = userId
               ORDER BY CompletedExercise.ID DESC) as completedExercise
-  ON completedExercise.ExerciseName = Exercise.ExerciseName 
+  ON completedExercise.ExerciseId = Exercise.ID 
   LEFT JOIN ExerciseNameVariant
     ON Exercise.ExerciseName = ExerciseNameVariant.ExerciseName
-  LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseName
+  LEFT JOIN (SELECT ExercisePriority.Priority, ExercisePriority.ExerciseId
             FROM ExercisePriority
-            WHERE ExercisePriority.Email = email) as exercisePriority
-    ON exercisePriority.ExerciseName = Exercise.ExerciseName
+            WHERE ExercisePriority.UserId = userId) as exercisePriority
+    ON exercisePriority.ExerciseId = Exercise.ID
   /* Need % before and after name variable*/
   WHERE Exercise.ExerciseName LIKE CONCAT('%', query, '%') OR ExerciseNameVariant.NameVariant LIKE CONCAT('%', query, '%') 
   GROUP BY Exercise.ExerciseName;
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchUsers`(IN `email` VARCHAR(75), IN `name` VARCHAR(75))
-SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `searchUsers` (IN `userId` INT, IN `name` VARCHAR(75))  SELECT User.ID, User.FirstName, User.LastName, User.EarnedPoints, 
 		Following.ID AS FollowingId, (SELECT COUNT(Badge.BadgeName)
                                          FROM Badge 
-                                         WHERE Badge.Email = User.Email) AS TotalBadges
+                                         WHERE Badge.UserId = User.ID) AS TotalBadges
 FROM User
 LEFT JOIN Following
-	ON User.Email = Following.Following AND Following.Email = email
+	ON User.ID = Following.Following AND Following.UserId = userId
 /* term must include % before and after variable. */
 WHERE CONCAT(User.FirstName, User.LastName) LIKE CONCAT('%', name, '%') AND
-		User.Email != email AND
+		User.ID != userId AND
 		User.AccountType != 'T' AND
 		User.AccountType != 'M' AND
 		User.AccountType != 'D'$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setCurrentMuscleGroup`(IN `email` VARCHAR(75), IN `routineNumber` INT)
-begin 
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setCurrentMuscleGroup` (IN `email` VARCHAR(75), IN `routineNumber` INT)  begin 
 
     /*  This is the max threshold that Intencity has for its routine numbers.
         Anything greater than this is a custom rotine created by the user. */
@@ -626,8 +590,7 @@ begin
 
 end$$
 
-CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority`(IN `email` VARCHAR(75), IN `exerciseName` VARCHAR(50), IN `incrementing` CHAR(1))
-begin
+CREATE DEFINER=`intencit`@`localhost` PROCEDURE `setPriority` (IN `userId` INT, IN `exerciseId` INT, IN `incrementing` CHAR(1))  begin
 
     declare IS_TRUE char(1) default "1";
     declare IS_FALSE char(1) default "0";
@@ -644,7 +607,7 @@ begin
 
     set tempPriority = (SELECT ExercisePriority.Priority
                         FROM ExercisePriority
-                        WHERE ExercisePriority.Email = email && ExercisePriority.ExerciseName = exerciseName);
+                        WHERE ExercisePriority.UserId = userId && ExercisePriority.ExerciseId = exerciseId);
 
     IF (tempPriority IS NOT NULL) THEN
     
@@ -654,9 +617,9 @@ begin
 
     IF (priority < PRIORITY_LIMIT_UPPER && incrementing = IS_TRUE) THEN
 
-        set excludedExercise = (SELECT Exclusion.ExclusionName
+        set excludedExercise = (SELECT Exclusion.ExerciseId
                                 FROM Exclusion 
-                                WHERE Exclusion.Email = email && Exclusion.ExclusionName = exerciseName);
+                                WHERE Exclusion.UserId = userId && Exclusion.ExerciseId = exerciseId);
 
         IF (excludedExercise IS NULL) THEN
 
@@ -665,7 +628,7 @@ begin
         ELSE
 
             DELETE FROM Exclusion 
-            WHERE Exclusion.Email = email && Exclusion.ExclusionName = excludedExercise;
+            WHERE Exclusion.UserId = userId && Exclusion.ExerciseId = excludedExercise;
 
         END IF;
   
@@ -677,24 +640,24 @@ begin
 
     /* We delete from ExercisePriority because we want to set a new value or we want to add to the exclusion list. */
     DELETE FROM ExercisePriority 
-    WHERE ExercisePriority.Email = email && ExercisePriority.ExerciseName = exerciseName;
+    WHERE ExercisePriority.UserId = userId && ExercisePriority.ExerciseId = exerciseId;
 
     IF (priority <= PRIORITY_LIMIT_LOWER) THEN
 
-        set excludedExercise = (SELECT Exclusion.ExclusionName
+        set excludedExercise = (SELECT Exclusion.ExerciseId
                                 FROM Exclusion 
-                                WHERE Exclusion.Email = email && Exclusion.ExclusionName = exerciseName);
+                                WHERE Exclusion.UserId = userId && Exclusion.ExerciseId = exerciseId);
 
         IF (excludedExercise IS NULL) THEN
 
-            INSERT INTO Exclusion (Email, ExcludeForever, ExclusionName, ExclusionType)
-            VALUES (email, 1, exerciseName, 'E');
+            INSERT INTO Exclusion (UserId, ExcludeForever, ExerciseId, ExclusionType)
+            VALUES (userId, 1, exerciseId, 'E');
 
         END IF;
 
     ELSEIF ((priority > PRIORITY_LIMIT_LOWER && priority < PRIORITY_LIMIT_MID) || (priority > PRIORITY_LIMIT_MID && priority <= PRIORITY_LIMIT_UPPER)) THEN
 
-        INSERT INTO ExercisePriority (Email, ExerciseName, Priority) VALUES (email, exerciseName, priority);
+        INSERT INTO ExercisePriority (UserId, ExerciseId, Priority) VALUES (userId, exerciseId, priority);
 
     END IF;
 
@@ -708,13 +671,12 @@ DELIMITER ;
 -- Table structure for table `Badge`
 --
 
-CREATE TABLE IF NOT EXISTS `Badge` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Badge` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `EarnedDate` bigint(20) NOT NULL,
-  `BadgeName` varchar(30) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1806 ;
+  `BadgeName` varchar(30) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Badge`
@@ -827,19 +789,18 @@ INSERT INTO `Badge` (`ID`, `UserId`, `EarnedDate`, `BadgeName`) VALUES
 -- Table structure for table `CompletedExercise`
 --
 
-CREATE TABLE IF NOT EXISTS `CompletedExercise` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CompletedExercise` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) NOT NULL,
   `SessionId` int(11) DEFAULT NULL COMMENT 'This is the ID that groups all the exercises together so we can retrieve them in the web overview.',
-  `Date` int(11) DEFAULT NULL,
+  `Date` bigint(20) DEFAULT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
   `ExerciseWeight` decimal(6,1) DEFAULT NULL,
   `ExerciseReps` smallint(6) DEFAULT NULL,
   `ExerciseDuration` varchar(8) DEFAULT NULL,
   `ExerciseDifficulty` tinyint(4) DEFAULT NULL,
-  `Notes` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6715 ;
+  `Notes` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `CompletedExercise`
@@ -3697,7 +3658,15 @@ INSERT INTO `CompletedExercise` (`ID`, `UserId`, `SessionId`, `Date`, `ExerciseI
 (6711, 10, NULL, 0, 20, '26.0', 10, NULL, 7, ''),
 (6712, 10, NULL, 0, 20, '26.0', 8, NULL, 7, ''),
 (6713, 567, NULL, 0, 5, '-1.0', 11, NULL, 10, NULL),
-(6714, 567, NULL, 0, 28, NULL, 13, NULL, 10, '');
+(6714, 567, NULL, 0, 28, NULL, 13, NULL, 10, ''),
+(6715, 43471, NULL, 2147483647, 32, '1.0', 2, NULL, 3, 'null'),
+(6716, 43471, NULL, 2147483647, 141, '1.0', 2, NULL, 6, 'null'),
+(6717, 43471, NULL, 2147483647, 32, '1.0', 2, NULL, 3, 'null'),
+(6718, 43471, NULL, 2147483647, 137, '56.0', NULL, '00:00:05', 4, NULL),
+(6719, 43471, NULL, 2147483647, 137, '3.0', NULL, '00:00:50', 7, ''),
+(6720, 43471, NULL, 2147483647, 23, '5.0', 10, NULL, 10, 'null'),
+(6721, 43471, NULL, 2147483647, 33, '3.0', 4, NULL, 7, NULL),
+(6722, 43471, NULL, 1494697709276, 89, '8.0', 6, NULL, 8, 'null');
 
 -- --------------------------------------------------------
 
@@ -3705,14 +3674,13 @@ INSERT INTO `CompletedExercise` (`ID`, `UserId`, `SessionId`, `Date`, `ExerciseI
 -- Table structure for table `CompletedMuscleGroup`
 --
 
-CREATE TABLE IF NOT EXISTS `CompletedMuscleGroup` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CompletedMuscleGroup` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `Date` bigint(20) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
-  `RoutineNumber` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15118 ;
+  `RoutineNumber` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `CompletedMuscleGroup`
@@ -13055,7 +13023,105 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 (15112, 10, 1486312465000, 'Biceps', 4),
 (15113, 10, 1486312465000, 'Forearms', 4),
 (15116, 10, 1486318743000, 'Triceps', 2),
-(15117, 10, 1486318743000, 'Chest', 2);
+(15117, 10, 1486318743000, 'Chest', 2),
+(15118, 43471, 1493566312000, 'Calves', 1),
+(15119, 43471, 1493566312000, 'Shins', 1),
+(15120, 43471, 1493566312000, 'Hamstrings', 1),
+(15121, 43471, 1493566312000, 'Quads', 1),
+(15122, 43471, 1493566312000, 'Glutes', 1),
+(15123, 43471, 1493566312000, 'Lower Back', 1),
+(15124, 43471, 1493566348000, 'Triceps', 2),
+(15125, 43471, 1493566348000, 'Chest', 2),
+(15126, 43471, 1493566780000, 'Triceps', 2),
+(15127, 43471, 1493566780000, 'Chest', 2),
+(15128, 43471, 1493567276000, 'Calves', 1),
+(15129, 43471, 1493567276000, 'Shins', 1),
+(15130, 43471, 1493567276000, 'Hamstrings', 1),
+(15131, 43471, 1493567276000, 'Quads', 1),
+(15132, 43471, 1493567276000, 'Glutes', 1),
+(15133, 43471, 1493567276000, 'Lower Back', 1),
+(15134, 43471, 1493568710000, 'Triceps', 2),
+(15135, 43471, 1493568710000, 'Chest', 2),
+(15136, 43471, 1493568972000, 'Calves', 1),
+(15137, 43471, 1493568972000, 'Shins', 1),
+(15138, 43471, 1493568972000, 'Hamstrings', 1),
+(15139, 43471, 1493568972000, 'Quads', 1),
+(15140, 43471, 1493568972000, 'Glutes', 1),
+(15141, 43471, 1493568972000, 'Lower Back', 1),
+(15142, 43471, 1493569041000, 'Triceps', 2),
+(15143, 43471, 1493569041000, 'Chest', 2),
+(15144, 43471, 1493569167000, 'Triceps', 2),
+(15145, 43471, 1493569167000, 'Chest', 2),
+(15146, 43471, 1493571686000, 'Triceps', 2),
+(15147, 43471, 1493571686000, 'Chest', 2),
+(15148, 43471, 1493571736000, 'Calves', 1),
+(15149, 43471, 1493571736000, 'Shins', 1),
+(15150, 43471, 1493571736000, 'Hamstrings', 1),
+(15151, 43471, 1493571736000, 'Quads', 1),
+(15152, 43471, 1493571736000, 'Glutes', 1),
+(15153, 43471, 1493571736000, 'Lower Back', 1),
+(15154, 43471, 1493573462000, 'Calves', 1),
+(15155, 43471, 1493573462000, 'Shins', 1),
+(15156, 43471, 1493573462000, 'Hamstrings', 1),
+(15157, 43471, 1493573462000, 'Quads', 1),
+(15158, 43471, 1493573462000, 'Glutes', 1),
+(15159, 43471, 1493573462000, 'Lower Back', 1),
+(15160, 43471, 1493574802000, 'Triceps', 2),
+(15161, 43471, 1493574802000, 'Chest', 2),
+(15162, 43471, 1493575109000, 'Upper Outer Back', 4),
+(15163, 43471, 1493575109000, 'Upper Inner Back', 4),
+(15164, 43471, 1493575109000, 'Biceps', 4),
+(15165, 43471, 1493575109000, 'Forearms', 4),
+(15166, 43471, 1494090779000, 'Upper Inner Back', 8),
+(15167, 43471, 1494090779000, 'Upper Outer Back', 8),
+(15168, 43471, 1494090779000, 'Triceps', 8),
+(15169, 43471, 1494090779000, 'Calves', 8),
+(15170, 43471, 1494090779000, 'Shins', 8),
+(15171, 43471, 1494090779000, 'Hamstrings', 8),
+(15172, 43471, 1494090779000, 'Quads', 8),
+(15173, 43471, 1494090779000, 'Glutes', 8),
+(15174, 43471, 1494090779000, 'Lower Back', 8),
+(15175, 43471, 1494090779000, 'Traps', 8),
+(15176, 43471, 1494090779000, 'Neck', 8),
+(15177, 43471, 1494090779000, 'Shoulders', 8),
+(15178, 43471, 1494171664000, 'Triceps', 2),
+(15179, 43471, 1494171664000, 'Chest', 2),
+(15180, 43471, 1494695271000, 'Triceps', 2),
+(15181, 43471, 1494695271000, 'Chest', 2),
+(15182, 43471, 1494696120000, 'Triceps', 2),
+(15183, 43471, 1494696120000, 'Chest', 2),
+(15184, 43471, 1494696420000, 'Upper Outer Back', 4),
+(15185, 43471, 1494696420000, 'Upper Inner Back', 4),
+(15186, 43471, 1494696420000, 'Biceps', 4),
+(15187, 43471, 1494696420000, 'Forearms', 4),
+(15188, 43471, 1494696469000, 'Triceps', 2),
+(15189, 43471, 1494696469000, 'Chest', 2),
+(15190, 43471, 1494696969000, 'Calves', 1),
+(15191, 43471, 1494696969000, 'Shins', 1),
+(15192, 43471, 1494696969000, 'Hamstrings', 1),
+(15193, 43471, 1494696969000, 'Quads', 1),
+(15194, 43471, 1494696969000, 'Glutes', 1),
+(15195, 43471, 1494696969000, 'Lower Back', 1),
+(15196, 43471, 1494697005000, 'Calves', 1),
+(15197, 43471, 1494697005000, 'Shins', 1),
+(15198, 43471, 1494697005000, 'Hamstrings', 1),
+(15199, 43471, 1494697005000, 'Quads', 1),
+(15200, 43471, 1494697005000, 'Glutes', 1),
+(15201, 43471, 1494697005000, 'Lower Back', 1),
+(15202, 43471, 1494697065000, 'Calves', 1),
+(15203, 43471, 1494697065000, 'Shins', 1),
+(15204, 43471, 1494697065000, 'Hamstrings', 1),
+(15205, 43471, 1494697065000, 'Quads', 1),
+(15206, 43471, 1494697065000, 'Glutes', 1),
+(15207, 43471, 1494697065000, 'Lower Back', 1),
+(15208, 43471, 1494697343000, 'Calves', 1),
+(15209, 43471, 1494697343000, 'Shins', 1),
+(15210, 43471, 1494697343000, 'Hamstrings', 1),
+(15211, 43471, 1494697343000, 'Quads', 1),
+(15212, 43471, 1494697343000, 'Glutes', 1),
+(15213, 43471, 1494697343000, 'Lower Back', 1),
+(15214, 43471, 1494697557000, 'Abs', 5),
+(15215, 43471, 1494697557000, 'Obliques', 5);
 
 -- --------------------------------------------------------
 
@@ -13063,13 +13129,12 @@ INSERT INTO `CompletedMuscleGroup` (`ID`, `UserId`, `Date`, `MuscleGroupName`, `
 -- Table structure for table `CompletedRoutine`
 --
 
-CREATE TABLE IF NOT EXISTS `CompletedRoutine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CompletedRoutine` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `Date` bigint(20) NOT NULL,
-  `RoutineName` varchar(50) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=114 ;
+  `RoutineName` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `CompletedRoutine`
@@ -13152,15 +13217,24 @@ INSERT INTO `CompletedRoutine` (`ID`, `UserId`, `Date`, `RoutineName`) VALUES
 (102, 10, 1469655725000, 'mega abs again'),
 (103, 10, 1470436684000, 'test1'),
 (104, 10, 1479577478000, 'test1'),
-(105, 10, 1483279273000, 'Leg'''),
-(106, 10, 1485017264000, 'Leg'''),
+(105, 10, 1483279273000, 'Leg\''),
+(106, 10, 1485017264000, 'Leg\''),
 (107, 10, 1486311655000, 't'),
-(108, 10, 1486311697000, 'Leg'''),
+(108, 10, 1486311697000, 'Leg\''),
 (109, 10, 1486311750000, 'yu'),
 (110, 10, 1486312275000, 'test12345'),
 (111, 10, 1486312360000, 'trs'),
 (112, 10, 1486312491000, 'asd'),
-(113, 10, 1486319392000, 'upper''');
+(113, 10, 1486319392000, 'upper\''),
+(114, 43471, 1493577845000, 'tes1'),
+(115, 43471, 1493577953000, 'tes1'),
+(116, 43471, 1493578611000, 'tes1'),
+(117, 43471, 1493578672000, 'tes1'),
+(118, 43471, 1493578747000, 'tes1'),
+(119, 43471, 1493578773000, 'tes1'),
+(120, 43471, 1493578829000, 'tes1'),
+(121, 43471, 1493578893000, 'tes1'),
+(122, 43471, 1494171543000, 'tes1');
 
 -- --------------------------------------------------------
 
@@ -13168,12 +13242,11 @@ INSERT INTO `CompletedRoutine` (`ID`, `UserId`, `Date`, `RoutineName`) VALUES
 -- Table structure for table `CustomRoutineMuscleGroup`
 --
 
-CREATE TABLE IF NOT EXISTS `CustomRoutineMuscleGroup` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CustomRoutineMuscleGroup` (
+  `ID` int(11) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
-  `DisplayName` varchar(25) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+  `DisplayName` varchar(25) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `CustomRoutineMuscleGroup`
@@ -13205,12 +13278,11 @@ INSERT INTO `CustomRoutineMuscleGroup` (`ID`, `MuscleGroupName`, `DisplayName`) 
 -- Table structure for table `Direction`
 --
 
-CREATE TABLE IF NOT EXISTS `Direction` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Direction` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `Direction` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=723 ;
+  `Direction` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Direction`
@@ -13412,7 +13484,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (195, 80, '2. Skip forward.'),
 (196, 80, '3. Repeat steps 1 and 2 until the exercise is done.'),
 (197, 79, '1. Start in a standing position.'),
-(198, 79, '2. Raise your arms to make a "T" formation.'),
+(198, 79, '2. Raise your arms to make a \"T\" formation.'),
 (199, 79, '3. Move to the side and place the back leg in front of the leading leg by going around the front of it.'),
 (200, 79, '4. Move to the side and place the back leg in front of the leading leg by going around the back of it.'),
 (201, 79, '5. Move to the side and place the back leg in front of the leading leg by going around the back of it.'),
@@ -13599,7 +13671,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (398, 90, '3. Slowly lower the weights back to the starting position.'),
 (399, 90, '4. Repeat steps 2 and 3 until the exercise is complete.'),
 (400, 91, '1. Start with the dumbbells at your sides.'),
-(401, 91, '2. With your arms straight, slowly raise your arms until you make a "T" with your body.'),
+(401, 91, '2. With your arms straight, slowly raise your arms until you make a \"T\" with your body.'),
 (402, 91, '3. Slowly lower the weights back to the starting position.'),
 (403, 91, '4. Repeat steps 2 and 3 until the exercise is complete.'),
 (404, 92, '1. Start with the dumbbells at your sides.'),
@@ -13634,7 +13706,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (479, 97, '5. Slowly lower your chest back to the starting position.'),
 (480, 97, '6. Repeat steps 4 and 5 until the exercise is complete.'),
 (481, 98, '1. Lay on the ground with your back facing upward.'),
-(482, 98, '2. Extend your arms out to put your body in a "T" formation.'),
+(482, 98, '2. Extend your arms out to put your body in a \"T\" formation.'),
 (483, 98, '3. Lift your arms off the ground.'),
 (484, 99, '1. Start in a standing position.'),
 (485, 99, '2. Push your shoulder blades together.'),
@@ -13811,7 +13883,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (660, 131, '4. Repeat steps 2 and 3 until your exercise is complete.'),
 (661, 132, '1. Stand facing the bench with dumbbells in your hands. '),
 (662, 132, '2. Step up onto the bench with one of your feet.'),
-(663, 132, '3. Step backwards off the bench with the foot that didn''t lift your body onto the bench.'),
+(663, 132, '3. Step backwards off the bench with the foot that didn\'t lift your body onto the bench.'),
 (664, 132, '4. Repeat with the other leg.'),
 (665, 132, '5. Repeat steps 2 through 4 until the exercise is complete.'),
 (666, 133, '1. Place dumbbells in front of the head of the bench.'),
@@ -13855,7 +13927,7 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 (709, 139, '1. Find a solid wall.'),
 (710, 139, '2. With your back touching the wall and your feet a few inches apart, slide down the wall until your legs make a 90 degree angle.'),
 (711, 139, '3. Hold this position until the exercise is complete.'),
-(712, 140, '1. Find your zen and possibly a chair so you don''t lose balance.'),
+(712, 140, '1. Find your zen and possibly a chair so you don\'t lose balance.'),
 (713, 140, '2. Put your weight on 1 leg.'),
 (714, 140, '3. Bend both legs and have the leg without weight on it sweep behind the other.'),
 (715, 140, '4. Straighten the leg that is supporting you.'),
@@ -13874,12 +13946,11 @@ INSERT INTO `Direction` (`ID`, `ExerciseId`, `Direction`) VALUES
 -- Table structure for table `Equipment`
 --
 
-CREATE TABLE IF NOT EXISTS `Equipment` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Equipment` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `EquipmentName` varchar(75) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=312 ;
+  `EquipmentName` varchar(75) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Equipment`
@@ -14082,14 +14153,13 @@ INSERT INTO `Equipment` (`ID`, `ExerciseId`, `EquipmentName`) VALUES
 -- Table structure for table `Exclusion`
 --
 
-CREATE TABLE IF NOT EXISTS `Exclusion` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Exclusion` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
   `ExcludeForever` tinyint(1) NOT NULL,
-  `ExclusionType` char(1) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=868 ;
+  `ExclusionType` char(1) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Exclusion`
@@ -14138,7 +14208,7 @@ INSERT INTO `Exclusion` (`ID`, `UserId`, `ExerciseId`, `ExcludeForever`, `Exclus
 (866, 10, 117, 1, 'E'),
 (865, 10, 41, 1, 'E'),
 (864, 10, 47, 1, 'E'),
-(863, 10, 47, 1, 'E');
+(885, 43471, 96, 1, 'E');
 
 -- --------------------------------------------------------
 
@@ -14146,15 +14216,14 @@ INSERT INTO `Exclusion` (`ID`, `UserId`, `ExerciseId`, `ExcludeForever`, `Exclus
 -- Table structure for table `Exercise`
 --
 
-CREATE TABLE IF NOT EXISTS `Exercise` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Exercise` (
+  `ID` int(11) NOT NULL,
   `ExerciseName` varchar(50) NOT NULL,
   `Type` char(1) NOT NULL,
   `SubmittedBy` varchar(75) NOT NULL,
   `Recommended` tinyint(1) NOT NULL,
-  `VideoURL` varchar(150) DEFAULT 'videos/coming_soon',
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=142 ;
+  `VideoURL` varchar(150) DEFAULT 'videos/coming_soon'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Exercise`
@@ -14309,13 +14378,11 @@ INSERT INTO `Exercise` (`ID`, `ExerciseName`, `Type`, `SubmittedBy`, `Recommende
 -- Table structure for table `ExerciseNameVariant`
 --
 
-CREATE TABLE IF NOT EXISTS `ExerciseNameVariant` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ExerciseNameVariant` (
+  `ID` int(11) NOT NULL,
   `ExerciseName` varchar(50) NOT NULL,
-  `NameVariant` varchar(50) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `ExerciseName` (`ExerciseName`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+  `NameVariant` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ExerciseNameVariant`
@@ -14345,13 +14412,12 @@ INSERT INTO `ExerciseNameVariant` (`ID`, `ExerciseName`, `NameVariant`) VALUES
 -- Table structure for table `ExercisePriority`
 --
 
-CREATE TABLE IF NOT EXISTS `ExercisePriority` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ExercisePriority` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `Priority` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=740 ;
+  `Priority` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `ExercisePriority`
@@ -14368,7 +14434,13 @@ INSERT INTO `ExercisePriority` (`ID`, `UserId`, `ExerciseId`, `Priority`) VALUES
 (395, 515, 15, 10),
 (484, 525, 26, 40),
 (232, 135, 104, 30),
-(735, 10, 136, 10);
+(735, 10, 136, 10),
+(809, 43471, 7, 30),
+(808, 43471, 29, 10),
+(807, 43471, 135, 10),
+(806, 43471, 138, 30),
+(805, 43471, 32, 30),
+(804, 43471, 141, 40);
 
 -- --------------------------------------------------------
 
@@ -14376,12 +14448,11 @@ INSERT INTO `ExercisePriority` (`ID`, `UserId`, `ExerciseId`, `Priority`) VALUES
 -- Table structure for table `Following`
 --
 
-CREATE TABLE IF NOT EXISTS `Following` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Following` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
-  `Following` varchar(75) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=225 ;
+  `Following` varchar(75) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Following`
@@ -14419,7 +14490,10 @@ INSERT INTO `Following` (`ID`, `UserId`, `Following`) VALUES
 (153, 508, '343'),
 (216, 10, '4'),
 (217, 529, '7'),
-(198, 10, '5');
+(198, 10, '5'),
+(226, 43471, '5'),
+(227, 43471, '4'),
+(228, 43471, '7');
 
 -- --------------------------------------------------------
 
@@ -14427,12 +14501,11 @@ INSERT INTO `Following` (`ID`, `UserId`, `Following`) VALUES
 -- Table structure for table `Muscle`
 --
 
-CREATE TABLE IF NOT EXISTS `Muscle` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Muscle` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
-  `MuscleName` varchar(47) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=682 ;
+  `MuscleName` varchar(47) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Muscle`
@@ -14998,13 +15071,12 @@ INSERT INTO `Muscle` (`ID`, `ExerciseId`, `MuscleName`) VALUES
 -- Table structure for table `MuscleGroup`
 --
 
-CREATE TABLE IF NOT EXISTS `MuscleGroup` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `MuscleGroup` (
+  `ID` int(11) NOT NULL,
   `ExerciseId` int(11) DEFAULT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
-  `MuscleGroupExercisePercentage` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=432 ;
+  `MuscleGroupExercisePercentage` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `MuscleGroup`
@@ -15397,13 +15469,12 @@ INSERT INTO `MuscleGroup` (`ID`, `ExerciseId`, `MuscleGroupName`, `MuscleGroupEx
 -- Table structure for table `MuscleGroupRoutine`
 --
 
-CREATE TABLE IF NOT EXISTS `MuscleGroupRoutine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `MuscleGroupRoutine` (
+  `ID` int(11) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
-  `DisplayName` varchar(25) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+  `DisplayName` varchar(25) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `MuscleGroupRoutine`
@@ -15435,14 +15506,13 @@ INSERT INTO `MuscleGroupRoutine` (`ID`, `MuscleGroupName`, `RoutineNumber`, `Dis
 -- Table structure for table `Routine`
 --
 
-CREATE TABLE IF NOT EXISTS `Routine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Routine` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,
   `RoutineName` varchar(30) NOT NULL,
   `ExerciseDay` tinyint(4) NOT NULL,
-  `ExerciseId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3497 ;
+  `ExerciseId` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Routine`
@@ -15475,10 +15545,10 @@ INSERT INTO `Routine` (`ID`, `UserId`, `RoutineName`, `ExerciseDay`, `ExerciseId
 (3418, 525, '2', 1, 67),
 (3419, 525, 'h', 2, 94),
 (3378, NULL, 'hu', 0, 67),
-(3481, 135, 'Leg''', 1, NULL),
-(3482, 10, 'Leg''', 0, NULL),
-(3483, 10, 'Leg''', 0, NULL),
-(3480, 135, 'Leg''', 1, NULL),
+(3481, 135, 'Leg\'', 1, NULL),
+(3482, 10, 'Leg\'', 0, NULL),
+(3483, 10, 'Leg\'', 0, NULL),
+(3480, 135, 'Leg\'', 1, NULL),
 (3478, 135, 'Leg', 0, NULL),
 (3479, 135, 'Leg', 0, NULL),
 (3256, 515, 'ghy', 10, NULL),
@@ -15615,7 +15685,11 @@ INSERT INTO `Routine` (`ID`, `UserId`, `RoutineName`, `ExerciseDay`, `ExerciseId
 (3463, 525, 's', 13, 94),
 (3464, 525, 's', 13, 98),
 (3465, 525, 's', 13, 103),
-(3466, 525, 's', 13, 27);
+(3466, 525, 's', 13, 27),
+(3511, 43471, 'teft', 1, 29),
+(3510, 43471, 'teft', 1, 7),
+(3509, 43471, 'tes', 0, 29),
+(3508, 43471, 'tes', 0, 7);
 
 -- --------------------------------------------------------
 
@@ -15623,307 +15697,293 @@ INSERT INTO `Routine` (`ID`, `UserId`, `RoutineName`, `ExerciseDay`, `ExerciseId
 -- Table structure for table `User`
 --
 
-CREATE TABLE IF NOT EXISTS `User` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `User` (
+  `ID` int(11) NOT NULL,
   `Email` varchar(75) NOT NULL,
-  `CreatedDate` int(11) DEFAULT NULL,
-  `LastLoginDate` int(11) DEFAULT NULL,
+  `CreatedDate` bigint(13) DEFAULT NULL,
+  `LastLoginDate` bigint(13) DEFAULT NULL,
   `EarnedFitnessPointsDate` int(11) DEFAULT NULL,
   `FirstName` varchar(30) NOT NULL,
   `LastName` varchar(30) NOT NULL,
   `Password` varchar(75) NOT NULL,
   `AccountType` char(1) NOT NULL,
-  `EarnedPoints` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=568 ;
+  `EarnedPoints` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `User`
 --
 
 INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `EarnedFitnessPointsDate`, `FirstName`, `LastName`, `Password`, `AccountType`, `EarnedPoints`) VALUES
-(1, 'cpiscopio@gmail.com', 0, 0, 0, 'Christopher', 'Piscopio', '$2a$12$YO1H.Jv31vdQ3ZiwSja4WuGc3j2Odlf.GI3Ktk1YEOmiILbr.5elK', 'A', 390),
-(2, 'mpolon@ix.netcom.com', 0, 0, 0, 'Marty', 'Poloncarz', '$2a$12$ppzNtUMGjhTmz42NkJwyduV38OrkKs3GnQtr.N.FFsbWcbOsf6FfK', 'B', 0),
-(3, 'luis.cielak@gmail.com', 0, 0, 0, 'Luis', 'Cielak', '$2a$12$Ef7bVePatxfIn9WA01WJ3ek2qNO90yqI5LW8js0tcLZ/iohycGkZi', 'B', 0),
-(4, 'ccorbi2004@yahoo.com', 0, 0, 0, 'Chris', 'Corbi', '$2a$12$J9SAukQT8uk28gcLAb/smO./aroOO.giwOsBULGsSLoxjTtQFEc8i', 'B', 100),
-(5, 'halendang@gmail.com', 0, 0, 0, 'Halen', 'Dang', '$2a$12$sgK5DdyA7bwnHqJtaD0CYO7lOGLfqFgZNUsFEGk0Feiwk18K6LyMi', 'B', 255),
-(6, 'theresa.monaco@gmail.com', 0, 0, 0, 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', 'B', 0),
-(7, 'alotofmath@gmail.com', 0, 0, 0, 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', 'B', 0),
-(8, 'wickwolf@yahoo.com', 0, 0, 0, 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', 'B', 0),
-(10, 'nick.piscopio@gmail.com', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$StHxyBN6gA6iVv4PyTPu2.0q/naeBQeCRuY50gxeGLJNEr8cU1Ehq', 'A', 820),
-(14, 'mstanley2002@gmail.com', 0, 0, 0, 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', 'B', 0),
-(18, 'dornvl@gmail.com', 0, 0, 0, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'B', 0),
-(17, 'drewbie736@hotmail.com', 0, 0, 0, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', 'B', 0),
-(19, 'kdang82@gmail.com', 0, 0, 0, 'Kathy', 'Dang', '$2a$12$XYHNX69CL6HQEtej3J.5Q.6tf5EZZsIQGaY8b9LXDNxNYCyhR0KFq', 'B', 0),
-(31, 'halsted.larsson@gmail.com', 0, 0, 0, 'Halsted', 'Larsson', '$2a$12$4Ip5dF4Tzx1hnRrUZh9rY.RyshGz564MysGwTRWofIxt5lcJZSupm', 'B', 0),
-(20, 'admin@gmail.com', 0, 0, 0, 'Admin', 'Account', '$2a$12$oibv4vEjFIegwjJRjMSU9Owqy52yjmo7ZZI9Qzk5acVDvwI9LoOMa', 'A', 0),
-(21, 'rxd235@gmail.com', 0, 0, 0, 'Randy', 'Dang', '$2a$12$Mc5vPEDR3J9/VHfWHN4DWOEiTb59d3ZLgyeZyKN5R4ltQjq.JKLi.', 'B', 0),
-(33, 'adam.holsten@gmail.com', 0, 0, 0, 'Adam', 'Holsten', '$2a$12$6LRQX96k9XWoaRYS2fUMWuRYkghUrSU5HiSvHcRN/iPkPFWgsAlyS', 'B', 0),
-(32, 'hazmathazard83@gmail.com', 0, 0, 0, 'Robert', 'Hardcastle', '$2a$12$2An53TPuyhYnX0G28dTZpec/WtmvBz3Rvzcps4dcmSdThiBMNWPy6', 'B', 0),
-(37, 'nspeelman@gmail.com', 0, 0, 0, 'Nick', 'Speelman', '$2a$12$txLHqA8mrzKf8Qng23CkjOKYjeAdJCL8p6uc.PvSkBhAyTJjnDUvy', 'N', 0),
-(54, 'cxr933@psu.edu', 0, 0, 0, 'Christos', 'Rousseas', '$2a$12$qvYnsCDwY8HPfhLfWwhRnusMl6xLPLwQg.qxkMrB.UMzABkqUoFn2', 'N', 0),
-(53, 'cochiwatsi@aol.com', 0, 0, 0, 'Sylmarie', 'Nunez-Luna', '$2a$12$OwhgbvfselHx739/hw/SRuoEGixY6S3QBYjnEChl5XFS5UwE8fjTm', 'N', 0),
-(56, 'flyflyerson3@gmail.com', 0, 0, 0, 'John', 'Smith', '$2a$12$zXsNRLSojYfTc1Cc1IyEIueKD0OBOTjHsfKtqDZXymoYDTBJr1a12', 'N', 0),
-(64, 'lialleycat@hotmail.com', 0, 0, 0, 'Melanie', 'Theisen', '$2a$12$W.I89vsds4F4xwLbABrfaeBEbN6UzM.2w0kAh6yEYv.QQS6l7EG7.', 'N', 0),
-(65, 'natetheartist@gmail.com', 0, 0, 0, 'Nate', 'Castronovo', '$2a$12$1FFzQU0lgFQSHB0OsHsbNun4Wo4Ep9z3Nt5IapX2E1GncwbxHMAYG', 'N', 0),
-(66, 'arhsg78@yahoo.com', 0, 0, 0, 'Marianne', 'McFadden', '$2a$12$SgQ2yv.V/CpNzes3qEXORuqGXeEd8foSdInrsYNZ77wpA0Vq4uIVq', 'N', 0),
-(72, 'laurandalfonso@gmail.com', 0, 0, 0, 'Laura', 'Dalfonso', '$2a$12$PoAFk90/HxK2FB28WWQnmOJxgZKFh4clLzUQnXmr8x43mHT0dtt2y', 'N', 0),
-(71, 'dive3452@gmail.com', 0, 0, 0, 'John', 'Smith', '$2a$12$fL291hHDMiRFdvuhMFeJButggQ3YtaSYGLr6hyJVvqsmAHGyvjM0K', 'N', 0),
-(73, 'lboring43@gmail.com', 0, 0, 0, 'Lena', 'Boring', '$2a$12$9wkRo1i6K2e/S/kZ3tIp8.bYnyArA5cGmZFgi21H9sXdT7Lg7NAta', 'N', 0),
-(74, 'ivetteinoa@hotmail.com', 0, 0, 0, 'Aida', 'Perez', '$2a$12$PyoJSBsEK86q2dnFBjhfoeo1xqcs1MxPlcTLZbTD8dvHjtgCIvBD6', 'N', 0),
-(75, 'jgtisser@gmail.com', 0, 0, 0, 'J', 'T', '$2a$12$CpQ7kg94p8i4OWLJMnOsmu5bzaz83sfAreSKMJLPBoOGNCBnGMmg.', 'N', 0),
-(76, 'xtremedomz@gmail.com', 0, 0, 0, 'Ian Dominic', 'Foja', '$2a$12$9tZIjZcPYX93PZEfDifscOegxG7QdgCtC6x4qKxhMunh3I/szIdV2', 'N', 0),
-(77, 'anhtle1001@gmail.com', 0, 0, 0, 'Anh', 'Le', '$2a$12$p892i.liqGzAFnkixIQjHO6GBfjWkuRHZPxE8Bgtd0UaBDhGirsNy', 'N', 0),
-(78, 'lusy.lulp90@outlook.it', 0, 0, 0, 'Lucia', 'Palumbo', '$2a$12$ipKFX/lPJoO4clcaHKa1KufLUjd6ynMX9X/Ja/8YznshX7SUVw4wm', 'N', 0),
-(79, 'moe.ismail7@gmail.com', 0, 0, 0, 'Mohammed', 'Ismail', '$2a$12$MXwtcp7fpDk17Y.9tQAmc.JY5Cr.CwbHhkQkv1/QvizGrPKpn1xoC', 'N', 0),
-(80, 'cam_cantopher86@yahoo.com', 0, 0, 0, 'Cam', 'Cc', '$2a$12$FLVXKc./kYjdVXv0m.452e5ZhqPEDAOByDAbmBsRjxaElk73F8Mqa', 'N', 0),
-(81, 'sehs_cool64@yahoo.com', 0, 0, 0, 'Sehs', 'Cool', '$2a$12$CmkjmWBP8Zv9cxvUuytIz.CoU.1NJ4jvlAttE5Ew4MT5BNJnYA9km', 'N', 0),
-(82, 'amanieataiwi@hotmail.com', 0, 0, 0, 'Amanie', 'Ataiwi', '$2a$12$naDU0Gi6X/1uB7moK/Wz3u7odKSG84L9pCIEb2kfvB94uUv1rDPzW', 'N', 0),
-(83, 'mylescutts@gmail.com', 0, 0, 0, 'Myles', 'Cutts', '$2a$12$3Z9Gb71TZhSsRb1SCA2H4uU3G2p0kJ0nmH.7ndEIpCBrIYx8FIpKa', 'N', 0),
-(84, 'su_padierna@yahoo.com', 0, 0, 0, 'Su', 'Padierma', '$2a$12$MhVx/HE8tnM7GPj5KzIW6.4NiZE60hU.cW9qqLFpJ9D.JRSpO55Si', 'N', 0),
-(85, 'georgiagellytots@hotmail.co.uk', 0, 0, 0, 'Georgia', 'Holmes', '$2a$12$8okuthD9Gk2oAE7blL1dcumP.Zrzsy//KP5cXw/PyRB9AZzVpjbEi', 'N', 0),
-(86, 'huphner@gmail.com', 0, 0, 0, 'Evghenyi', 'Shishkin', '$2a$12$CK/1eMWlPtaD33y6OLXgyuDwk9ra0iw9kiQzv3qa7ew/E877APP7q', 'N', 0),
-(87, 'dauescali@hotmail.com', 0, 0, 0, 'Daniel', 'Urbina', '$2a$12$aTCkVygauJrR.F1wWYy0d.5kAPHLDLbSlroehPL4OFsqlinMXMJbe', 'N', 0),
-(88, 'teddy_zandvliet@hotmail.com', 0, 0, 0, 'Ted', 'Zand', '$2a$12$RZIEcUh/8HLYoDp5/tMFQOMMhJvyRcslyOMHUtC0/ftQbco6kYBkm', 'N', 0),
-(89, 'mikeyboy178@hotmail.co.uk', 0, 0, 0, 'Mike', 'Bosworth', '$2a$12$26n50f1flyc0GFgQySJw1e1lcb5PggYv03KKu6maEbA5cGJnyaOaq', 'N', 0),
-(90, 'mjstoutenger@gmail.com', 0, 0, 0, 'Michael', 'Stoutenger ', '$2a$12$Ols.hk45lGWK.X.p0W3ZCOgOv9a1N0veV4Vvop/Oh88ZXV5EHxNfC', 'N', 0),
-(91, 'sinabv@gmail.com', 0, 0, 0, 'Sina', 'Sinester', '$2a$12$4goyz90/wbkju0/I844G..KUpWDJQyWMswMeSU8./Fl.oZI/LdMnS', 'N', 0),
-(120, 'jmdoherty1981@gmail.com', 0, 0, 0, 'Johnny', 'Doherty', '$2a$12$/IcKLUw4wFn6CAAUL3OUIOFLNNg.wZaAY1YO2tVAgEx1DnuNMzD3u', 'N', 0),
-(110, 'frazerturner1997@hotmail.com', 0, 0, 0, 'Frazer', 'Turner', '$2a$12$0N0oQOhFN84SUptO8RaYJuWF1L8cwgX/Es1WOkcGP1iazMnVEwcAi', 'N', 0),
-(108, 'andresgarcia@globo.com', 0, 0, 0, 'Andres', 'Gonzalez', '$2a$12$2DSWJ2y67bS5GnsWixdhOua96vFQGigLRXKjbn19GrEPihdr5P9t6', 'N', 0),
-(111, 'scooby_fy@yahoo.com', 0, 0, 0, 'David', 'Alem', '$2a$12$IHpeLgNWxyQIAhW823Ipw.nQDMHD1zgtsbbQE8UNvBeR3pgA7NgHm', 'N', 0),
-(112, 'carolinaalves98@icloud.com', 0, 0, 0, 'Carol', 'Alves', '$2a$12$HhAl0MUpvYPayRHEpbyIaexZ6GfR/La7yqHafo5jPeYyQ74KC.3cS', 'N', 0),
-(113, 'dantheman.shsb@googlemail.com', 0, 0, 0, 'Dan', 'Weaver', '$2a$12$ZuZKn5ZiU.EQ6KsVWsSPUuO97LEciWdFGCKurrWO6QHN6zGTY.vl6', 'N', 0),
-(114, 'n.z.i@live.com', 0, 0, 0, 'Zabala', 'Iglesias', '$2a$12$/64Oj11e0eyAoZBffulCe.4DUmuXcAPqlGIHddRx.nbqRsT0sEP6C', 'N', 0),
-(115, 'skychongys2013@gmail.com', 0, 0, 0, 'Sky', 'Chong', '$2a$12$U7NCkMPvGZGCEN4XYQ0I4eI3WR4rk5VoWBh3q6N7diThxCzaz7o2u', 'N', 0),
-(116, 'andrew.valko@gmail.com', 0, 0, 0, 'Andrew', 'Valko', '$2a$12$T6Kc84zLz8j181QTKsL62eqx0ChDKFRG2AoZs2oRNh4xolVQjjLl6', 'N', 0),
-(117, 'makary_karkar@hotmail.com', 0, 0, 0, 'Makary', 'Ibrahim', '$2a$12$PuAhcQ9j5Pu0R80Kaa83V.2m/axj3G0MYx5A4h8VilI1UjGzoLQH2', 'N', 0),
-(118, 'joanne_sau1102@yahoo.com', 0, 0, 0, 'Joanne', 'Sau', '$2a$12$xWJMMVPztf4803.POsJDi.VK5wdd7UvXhO7KwmVqo3Zz6/Lu6ZJuy', 'N', 0),
-(121, 'dyldaellenbach@hotmail.com', 0, 0, 0, 'Dylan', 'D', '$2a$12$h4nJP2epkfEkOvRzt1vSeu6PujsAs20JxJ5raHLVhH.Ov1qI886OW', 'N', 0),
-(122, 'mike_pugh-07@hotmail.co.uk', 0, 0, 0, 'Mike', 'Pugh', '$2a$12$dz2XeCBNPCSTvfrHlOYptuj9DJF3H87yDdtrG9Pe5x.ghE1m6BGSi', 'N', 0),
-(123, 'chinmay.j.patel@gmail.com', 0, 0, 0, 'Chinoi', 'Patel', '$2a$12$dEvhj9iJSygeERQk5xuIYucLi079hRJBFDW.zfg6heKjzQXNgsZjK', 'N', 0),
-(124, 'rmrrodriguez@hotmail.com', 0, 0, 0, 'Rene', 'Rosales', '$2a$12$btR0FnWbhNDCfvQnZZRvwODkCZZV7m.nPNjIOV4ptuodCE8iMdwyK', 'N', 0),
-(125, 'mattldglmut@gmail.com', 0, 0, 0, 'Matthew', 'Keyes', '$2a$12$77oB/UUBCW2BGDjHp4DrnuxOzSbhdXkKL7qLBNgH0YX54BvntwvuK', 'N', 0),
-(138, 'kitcat0793@gmail.com', 0, 0, 0, 'Cathryn', 'Rizzuto', '$2a$12$HDIs0DTvuzNK6thgvgIgleH11gvbhioCFS1vS3Ge55OyfEZHjOIIO', 'N', 0),
-(127, 'madamo444@gmail.com', 0, 0, 0, 'Mike', 'Adamo', '$2a$12$ScUPNiRHM4CLblvP8Sj/tuixsu/C.zcKJtV1BMwPgollQmv5UBTxm', 'N', 0),
-(128, 'christina.lim14@gmail.com', 0, 0, 0, 'Christina', 'Lim', '$2a$12$wNqNM.pRc7oRwbBLWRaVRejEJGAyaBSTEzK6.w1ZboeVNnTNe9tB.', 'N', 0),
-(129, 'aymerick_landre@hotmail.com', 0, 0, 0, 'Aymerick', 'Landre', '$2a$12$Ut4w1Edj9NAYffjuMNm.JekSMrqoafUY.OaGlh4BpZcok9YHzn54m', 'N', 0),
-(130, 'donnaadamo@optimum.net', 0, 0, 0, 'Donna', 'Adamo', '$2a$12$0fZDcN0b1fjoZJb3WyKiAep2kxotRW7A2Eij30Q0ucDJv9kTBjtiK', 'N', 0),
-(131, 'liam.ot@hotmail.com', 0, 0, 0, 'Liam', 'O Tiarnaigh', '$2a$12$12VDnUJY.1QmsEXNvpK4WuwkaF413TDlXPKbTrtG2G7zZJLK4L1pG', 'N', 0),
-(132, 'mpryor2008@gmail.com', 0, 0, 0, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', 'N', 0),
-(133, 'test@test.gov', 0, 0, 0, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', 'N', 0),
-(134, 'julienajbjerg@gmail.com', 0, 0, 0, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'N', 0),
-(135, 'dev@gmail.com', 0, 0, 0, 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'D', 1055),
-(136, 'shatwon123.sa@gmail.com', 0, 0, 0, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', 'N', 0),
-(137, 'appletest@gmail.com', 0, 0, 0, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', 'R', 0),
-(142, 'beta@gmail.com', 0, 0, 0, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', 'D', 0),
-(140, '123456@gmail.com', 0, 0, 0, 'Onkhung', 'Onkhung', '$2a$12$4/G.61TF0nuuveBN56djaeBThAXTi0GOkE0clkSVNAnsafTEyBDhW', 'N', 0),
-(143, 'marlonestrada@kinal.org.gt', 0, 0, 0, 'Marlon', 'IvÃ¡n', '$2a$12$tSYoJ5xkqR0KJ7aHEqVS6.HQIWAHQN./dvYJnP.hTjCQ3MDikWAca', 'N', 0),
-(559, 'user1486744107025.964111@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$i7TyNhCUHxp3cSnAj3Sht.RBZdudn.0U/ms1RfID8rA7WEAg.q6BK', 'M', 100),
-(325, 'user1452625209155@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$2WM5UF9OkB3fkaKxFiZ4XeCwbZN7UTxoEmFx5SnYqJ6S5pUFDY/02', 'T', 0),
-(326, 'user1452625722779@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$UqL1NKBDGe5eD8I3jEujQuuvf7QDfkA7ev9w1rYIyv1rYHNCVce7G', 'T', 0),
-(327, 'user1452625764385@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$83bkTciyTx80DDw4Xn6I3OwJqUau31qUWBbB0sTrMIsxMzzhn0eIC', 'T', 0),
-(328, 'user1452625873288@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$22StCBRjbpgRKoMnsFngr.9Pqra8RMD6W4J/LMddvgiD3.b7kARba', 'T', 0),
-(329, 'de 1v@gmail.com', 0, 0, 0, 'Nick', 'Poscopi', '$2a$12$243Z8O1SN9K9LoeGkojMnexfkd9deE22Ptd1L6E2tfBHQ5kxX9OHu', 'N', 0),
-(558, 'user1485716309206@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$VYPowZgwCyzVMfqBCl16cuACXIb8FfEoETU35XeHTBTjqTx8JIwH.', 'M', 115),
-(557, 'user1485709629381@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$HVda4H/vxt.OLVZUMC5wkusH49dx2rm7/.W0ZOaCvsHeqQ/Uycwkm', 'M', 100),
-(556, 'user1485628023173@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$n6rSyGikO/fmUDiynJYBMuMlAd3JEEEhWphRM9vRinxltzyLAxonG', 'M', 190),
-(555, 'user1485627940899@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$kjIIdbYDMcpuHS/IA7soxeY/cYocSD89SZB3qsvi4irGFeDTDxvF6', 'M', 100),
-(334, 'john.smith@gmail.com', 0, 0, 0, 'John', 'Smith', '$2a$12$D1vr/2A1hkpRtqea0jPk1ObRl6u4rdV9IsfiT4vUXbYKBmPgjWCNm', 'N', 0),
-(335, 'john.smith 123@gmail.com', 0, 0, 0, 'John', 'Smith', '$2a$12$csUJxxMapA31tVqkLQayAelTWhm1.OfUV7fAL4pdlMh5sxbWg.0vO', 'N', 0),
-(336, 'john.smith+123@gmail.com', 0, 0, 0, 'John', 'Smith', '$2a$12$DNxyK/twqF3D6Wc.8eDrq.7Vl4FecOuRERv9FTA0us81uo9UmfTnW', 'N', 0),
-(358, 'user1453846048715@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$COHSm.yLtkc8xs.e9QXROeJX6S7pND7KSMh9WL9HDFEF72xjofDN.', 'T', 105),
-(554, 'user1485623696432@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MC624Fw9vmpx0EZxxuUbAOjwJzdWMoPH54/ZDL8Hk2ehnVEP.y9BC', 'M', 105),
-(341, 'nick.piscopio 12@gmail.com', 0, 0, 0, 'Nixk', 'Piscopio', '$2a$12$HX.vZQKFL57bA0w0ORV92eH3bU22jy8Qx/sGGxfOQow6bXH64h23y', 'N', 0),
-(342, 'user1452630628926@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$8NsAtWGJUOvwSjMKriPsDuLfwwaXa7Fu.5Ev3yEX/ygGW6b7V1whG', 'T', 0),
-(343, 'nick.piscopio+1234@gmail.com', 0, 0, 0, 'Nick', 'Piwcopio', '$2a$12$PXBU83woKHsx7qAOtklt4ee8zjAIaYASw28X8avwKPp6KHLHy5jXG', 'N', 0),
-(344, 'user1452630956179@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$yRkRZu4Q1kCsB3rPqMpaquWX/zPZCp6MvS25d8LooWiW041hB1giC', 'T', 0),
-(345, 'user1452697456965@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$jiR.7Yw7QJ2qnRB9ou20MuTfU6aVUrdCED9ZRzMDgt8jfC3CZ/A0W', 'T', 0),
-(346, 'user1452698169783@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$rAANNpZ6mZhIHlnrk568eud.fMGMt14qjGJVNnAc8Cl/xdwALFY6e', 'T', 0),
-(347, 'user1452699235337@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$.zzgaWBWonysxO/1aH.0Leroi.QsfTm3YZYjI3lJrr9kov3naGVd2', 'T', 0),
-(348, 'nick.piscopio+1@gmail.com', 0, 0, 0, 'Hggb', 'Hyhh', '$2a$12$.Z7dpIUd166uAPzq1NgiI.yxnTAyMSiku4v1.xmgriRbpqh73Cbt6', 'N', 0),
-(349, 'user1452701797725@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$mEZ945Em9t7p9nxQ3XYqmOCk.BVUIjtMIHKNwhz8sOL5xfsAQhdRK', 'T', 0),
-(350, 'user1453123166460@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$UppjpOSrMHKhT3M5xhoq5uLVlmXcVJL6O9Cdv3FBRkfbC2XLuqyuO', 'T', 0),
-(351, 'john.smiths12@gmail.com', 0, 0, 0, 'John', 'Smith', '$2a$12$OoitwecT9YN2EKcKz21JGuPExi16amVXnNjbDlUeDRDpJTSK0T5Ti', 'N', 0),
-(352, 'user1453126570865@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eeD7RwMP6s1x/ElrjbN1FOG280aPK4nKPCkXJXlXeGuMnzEN.pyY6', 'T', 0),
-(353, 'user1453132260222@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eK4avP0QdgBk1BxuP.5vC.gdEl0nuMq4CDrpPjXdJWJToCeqfNLra', 'T', 0),
-(354, 'user1453134766431@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$vXTh71dfX4xdWTs5W4xPP.FBK68NjDq7FNvOvnBGpfYotNq9WmCp.', 'T', 0),
-(355, 'user1453136452316@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$HQDNg3kACsxcl/qxp0q3XO0jhAVlMGV3m7dC41aM6RVZbQaGzfeAO', 'T', 0),
-(356, 'user1453136470614@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0qCWStBoOgayVOxZtwsvAOJEe.8VQHFuilzXNWwDB6SgbZLziTWdK', 'T', 0),
-(357, 'user1453136514537@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$NEeCYKkBt5qV9VQ8Vbfi7esu8hD1aqtjhe/0kkaN1i56CeICatIqq', 'T', 0),
-(553, 'user1485312465874@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$NGfnAY3r9QUvzfM/lpFF3O98YzElhztf4UnsaMq0PUAz1.NXiac/i', 'M', 125),
-(550, 'user1480025132872@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$wL8MLE9mWO1bu7lwf0R9f.9lfGN.3D0JTI.5sQd0YbiIQPAOxSgiG', 'M', 105),
-(549, 'user1479664452458@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MYNnvetlSLEAO3RYb2SODu03TXDMZplv7bQm9gZiieFIKWOG.jrVS', 'M', 100),
-(362, 'test12345@gmail.com', 0, 0, 0, 'Test', 'Accoitn', '$2a$12$QqVwWYsnHT8n1saKncwULu7mQ0JuCK0vDSbOWe/SZj0ZEveTjRhJ2', 'N', 100),
-(363, 'user1454439583350@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xjHlUG1OJZ.RJlSOgFdjleGVaM6xnxlfTqlPDrk8d7n2zQ17snlxm', 'T', 105),
-(367, 'user1454510683054@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$vt.x8y4lUuCMx3KmHKJqBOAvda.JaB/C5GRRECIl2wil18ubQHdpi', 'T', 100),
-(370, 'user1454511434695@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xG6D7oifsxDbaoAkXviji.8YQeapUjO3qB8OO48ynkSaiWrRCzSU2', 'T', 100),
-(371, 'user1454516505349@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$qbiw3jpPgEQKUStMTdDL/O7qz4bwRlcuQQ4cgwdYzuZzjxxbOGb26', 'T', 100),
-(372, 'user1454517149482@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MloaqN5NFF3TKPPUv4YsBevTksn4YSJIBERnuVXzuDWYh4IpGC0mO', 'T', 100),
-(373, 'user1454517272572@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$OOlQ2AQeocuxRZ9muCNgwOOpgiKGz0VtLTfm8OujvLPVDKDo4PmAW', 'M', 105),
-(374, 'user1455125435673@intencityapp.com', 0, 0, 0, 'Anonymous', 'User', '$2a$12$M4MlbXJKvVDxy5Am2HlyFePueQbTMl7BF.V8wzGq066lDIVq0JVjW', 'M', 100),
-(375, 'nick.piscopio 12345@gmail.com', 0, 0, 0, 'Asd', 'Asd', '$2a$12$01HY1G71PGHzGHHpwxqeQOke3XRFss7YaxKnRoxtnX/b5M8tSqlMy', 'N', 100),
-(376, 'nick.piscopio+1234567@its.jnj.com', 0, 0, 0, 'Nxijd', 'Ejdjj', '$2a$12$GCIQIT0a0JyI6kEPeL8AM.2zEifnoz937Bi4X6H6c1lqJ5SAX2/Ii', 'N', 100),
-(377, 'nick+123@gmail.com', 0, 0, 0, 'Sdf', 'Dfgdfg', '$2a$12$orFo2lBbdEtss.CD.PvvKOwsm0UP56AkEXJWrDeSuVJAMIUeGafIC', 'N', 100),
-(378, 'user1455233761501.387207@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ayXjz8mppRNRD.EE3ZWbFeXBxifoKV3rr9zLnnNckUCinhbd9vFJW', 'M', 100),
-(379, 'user1455234018746.385986@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$taBofdYSbw3zsJeKWF7SYecGgiwhZcHa5tsB4ogkVvjSbr6zsYJym', 'M', 100),
-(380, 'user1455658517854.673828@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6tGxnDPDjqJ2irA.mahbNejh24HI2h7doLAr.3kj6v3f.fW9rgP4m', 'M', 100),
-(381, 'user1455658921114.947998@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$K2BaiBVYjl5hr44ohHegQOnLzA6OFFtdRiTIaJlbry6QPrPcbe8f6', 'M', 100),
-(382, 'user1455658989334.825928@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$11DRiE3Wd4sdDUaHBhsWBeySXVaZuyzTx9Ly3HHHQULDWlEJZ4WWu', 'M', 100),
-(383, 'test+12345@gmail.com', 0, 0, 0, 'Test', 'Account', '$2a$12$38Vqdopo9lkUPLzY7an2GOXzRGwpBYcXfIzh0PrbGQfbFQi6NM6CW', 'N', 100),
-(384, 'user1456160486690.937012@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$CTbkpEaWrDJdTvqYIoK3xeeZaEQgfqbuguRFk7XgKUe0b/zqtZXVm', 'M', 100),
-(385, 'user1456160649121.745117@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$OPwe82upsaD.Yqhtp/xgZeEIu3/b5PPEZu2xuWMuok0.tY/86uc9G', 'M', 100),
-(386, 'user1456161023143.500977@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0Wy3kfiMFkNil2vbJAjDLueE40ZHTpzWN4cQkltFbNDfkfrxb4u7e', 'M', 100),
-(387, 'user1456172853238.846924@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eK7PJFkquq14Da0.w5HxGOQl3o4U6fB.mL8vnTK0sHE3B.KMEWXta', 'M', 100),
-(388, 'user1456237330844@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$/5ONbHZftQslfmJ.bxTLZO0SMB4fca0gzSIdYdET79Sag6boZ6Y8.', 'M', 105),
-(389, 'user1456239784727.992920@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$of3ObvvQ7bOjwEdsy6m1FuL8K6rVSusvrNawCG4CcqCFaQh92gdZK', 'M', 100),
-(390, 'user1456239877739.431885@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$TFWwnEWDmAdzbGHiJrMI5.ITbDivkTlgNVs8fH6y.dNm2nlOow8Le', 'M', 100),
-(391, 'user1456241944872.144043@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$o4l51Ef.DlB4jl8uW1cbHegOtWI0TbRNSbbp.kESC7/Fkvpg4VU.q', 'M', 100),
-(392, 'user1456242564005.797852@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$E2XgUsWiNfYXcnNy.h4y4ejUW/M9qIS7/NjAjRsuxDXK4oXHaq67e', 'M', 100),
-(393, 'user1456242770101.800049@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xNvnd6keZWeTQXrGTdSFfefTEGqrL0uG4BJ9mqIaRZfWszHbssJqK', 'M', 100),
-(394, 'user1456242958617.538086@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$GjvSxCuJ4seren../R3y1OAVUjjNrkd70iOr7HAkVBrsk7YS6Y1oO', 'M', 100),
-(395, 'user1456246505473.476807@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fjWtP62CNPsFVqKXRbv7HuGbe8F2nREbMnW5qg2GArAEhSrwF3VqO', 'M', 100),
-(396, 'user1456246582035.790039@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$RoA1UZ6svAOl0aDsn9MNj.cR6oLTeeyOS7JcuYCWGrWeeMhZgadDW', 'M', 100),
-(397, 'user1456246604733.449951@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$RdKXuwPV.Ff/h905T8YrYejFTdyQUSHnFDmY4dijoVAurRF5xiLqm', 'M', 100),
-(398, 'user1456252816958.385010@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$HN4m0nksvSCyjMprj1E5MejvGGx10V2AJro7O3p9is7DmbTcdH07C', 'M', 100),
-(399, 'user1456260413875.776123@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$2jjeBiORpSenQmZiR0iExOQ/vMvAQ18AHSvaYmxgcztHKF2bbbz1i', 'M', 100),
-(400, 'user1456260682300.999023@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$f/7zwcF6IIOxsNFXdy3Uvel1kvxWSGF9LQq6ehFppAiw89BKIBetm', 'M', 100),
-(402, 'user1456670125623.371094@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ku/kXZk51y5F.dPprM51POhlSuDKDFGcWHebkHIkGMNXjzo4frfFm', 'M', 100),
-(403, 'user1456864853307.128906@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$svwvEx1efKa0noaUZ3UM7ulQkwR00giI1D0DQGFj1SEQplJDOdcvK', 'M', 100),
-(404, 'user1456957024594.500000@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$DKboOR86vVrUvhHRHWAcM.wpr.PCnXXXqN2ejOODDI3qFTL0NBmYi', 'M', 100),
-(405, 'user1456957751763.041992@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$TKMXRvng6o4pP3DbS/CuSuHzEE5T59aSWoPebsHfQzTzgsuSa/M92', 'M', 100),
-(406, 'user1456957814529.197998@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$5sNCaROT2O7J/pibl2tbsu2kCszNgCRjWmkIfku4NfTrNkxcygzAy', 'M', 100),
-(407, 'user1456958150201.095947@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$n/imkdq9nyVCxEHQPM06Ie.0ZbMnTzLFESepUcQ0qT13FltUXeG3G', 'M', 100),
-(408, 'user1456958336598.637207@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fk4LNmr9n6p3rhKFKsXrZuRI4u7nZC8f9LWvXzbtHfVGLZix95uk6', 'M', 100),
-(409, 'user1456958375114.507812@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$WcB1LYoIzvxDwRmsJZyajO0v9Nn40wTece1x0rkv9/L4KkVaPXAQa', 'M', 100),
-(410, 'user1456958591930.343994@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$LYTWCjg/BnsksULQL3b67.Chj7zQj7UnWjc38N4JU549qlLKr00je', 'M', 100),
-(411, 'user1456958880184.952881@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6BoJxWNH68lEQhTUMLKf6OZ5JR/YTzEcwTaXvqHDvTN3IeNCQuhlW', 'M', 100),
-(412, 'user1456959171416.876953@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0cA8ORzmv54FdYKEIVOYyOTZrQa3UMdNBejaZ9caCL7ErnigjEWh2', 'M', 100),
-(413, 'user1456959289647.604004@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$GoOgP5TnxQRPAYfZ2SKHUewBhykRyCqENbPTODfeb5PnwpvZcchYu', 'M', 100),
-(414, 'user1456959311918.797852@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$SqOpHae.1Zvxbphi5v7pOeGoIBzL0SDNPDhgHwhGq8nvqvIqSB1x2', 'M', 100),
-(415, 'user1456959336196.253906@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$nT2CuTZy1DyuqAM9AYVnL.6Jv4jMECVGpWg47rUNtbKJXn1vcWZzG', 'M', 100),
-(416, 'user1456959604896.044922@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$1WRpeQaHRbrGeGl5b5rmbuyYnVFrSLwmzACPTVPOI1X334krSDvG6', 'M', 100),
-(417, 'user1456959629373.930908@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MW3QQy3g96wzYZfoT5XEtOA22yGVw9SSRCMrjoZA5h9jPEWP/DYgW', 'M', 100),
-(418, 'user1457046880437@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$DV9ZJ9qVkVCOYquSOwtJ7O2/fuO0S6ESuYW3ex0ypkIXJd64g4lKW', 'M', 105),
-(419, 'nick.piscopio123456@gmail.com', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$k4Ypb5.l8vdCuqmdIYIeXOdSdZftId.mD.hVfd8rMQuMw6eKiB8xm', 'N', 100),
-(420, 'user1457109839594.208984@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$wQv1qnotVYgBrp/eJG.dnOQWykyQzp6CQVwYmmrRDl0ITEFvEdFLW', 'M', 100),
-(421, 'user1457110011252.958984@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xTaUo1fth0ulTr.qgAcwWukEuhHqh4l0bygHakXc1auPWUPmVGBs.', 'M', 100),
-(422, 'user1457110036866.053223@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$XXHo7fkQDnx7a3uX/JLAnOJTidsmu5sfSkihTQASG61vjM9GgM0g6', 'M', 100),
-(423, 'user1457110105248.403076@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$rhehPCK86Mj3Zh.NjoAbu.4JMaqoq0YGa5Y8q9YFLET/MXWJNMxzu', 'M', 100),
-(424, 'user1457110434681.679932@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$SJQJvMn6BQRFOevp/hfqR..VM5/cDVR2Z6JzWuN.1.cnLSZodCS6O', 'M', 100),
-(425, 'user1457110448742.452148@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$iUwY1HNo57f0gKp1f.c4ZuJilphHnEKj5Ll0f2uaCL4fRmi/p2PXC', 'M', 100),
-(426, 'user1457110506791.519043@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ehByPqqnBIkUGIKZ4smjmeOk09Q5CVDcZKRA7vGm2tnRtdB.M3V22', 'M', 100),
-(427, 'user1457110538639.697021@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fojGqvyHM8yd1Ls3c/3t0OZ63gsg/CrnCKc20BddlQU7neQBhyp3K', 'M', 100),
-(428, 'user1457110566017.615967@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$wmBbEG/siKvGUEspzstCjeBzpcuN5KKfSj1N1GOTfzDYqrplHrgya', 'M', 100),
-(429, 'user1457127917780.146240@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$A/AA2kD.YRnuKjB7rHeROeRrykCJY.zyVDqwhUhkIfN86vaTF2uMm', 'M', 100),
-(430, 'user1457137174773.751953@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$T4xg3Dnb9RtydVpCqhjziegIhvlTcHRxAgTvv8C.kZxrYif894zSi', 'M', 100),
-(431, 'user1457190518842.168945@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$frM3SeE2H9pkmJw5e2cmHelQYJv8gvK2rAan147Okx9T21JAsB.mO', 'M', 100),
-(432, 'user1457190806377.972168@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ovwx93RhECPmpElq9cWdx.fZrmABtFG5bl0rtmdNCzdBRqXk4JuYa', 'M', 100),
-(433, 'user1457195738510.926025@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$pFjLqik87NGv6R.xBsIf7e3HuZXzwFkfkUvMt7XKhu3LLBTTLol8m', 'M', 100),
-(434, 'user1457294081080.319824@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$L5BTBdAON7gi1y56jaa5ZeC2AUehCU9KBkEpI4ZTIThCDOZ9L4t9q', 'M', 100),
-(435, 'user1457295149165.245117@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$zULi1s9MmkD5caDFhFa2WOZGR9Lp6TUkuBc1blpvITBvVQlDEf3Z2', 'M', 100),
-(436, 'user1457985458126.460938@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xmfGqpEh7yLlm3VR8f0Vh..c/pP4tTsDsCeRWRc1VyTKqbeb0ThEC', 'M', 100),
-(437, 'user1457357980994.961914@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$U7W09OykMUjf4ICTvq2z0ehJxqnDiQPt4G/6rWQeyp0SsuwTF3Ibu', 'M', 100),
-(438, 'user1457361097171@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$JmOsE1QkpzmPLr0qY4h.luC41F5FAEck0PChy4DllgfM8X7b8o26W', 'M', 125),
-(439, 'user1457363278147.358887@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$WV1zNTANPLdOjiSRNnJH0uIG.zDJdeKXO1V1DbngIqIbRsPyueDQy', 'M', 100),
-(440, 'user1457367236555.618896@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MagXldrwzpef2gDGGfj77OFSIrV3Aygd7zhulnRsTS5y.2KS/J2e2', 'M', 100),
-(441, 'user1457367668286.130859@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$uJn7rldyxhUs9KFNmCUylub/.2YPcHNHVel1xWmHxiW33cLqsUn2a', 'M', 100),
-(442, 'user1457368436918.085938@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$HXVmLwaGyheJyDn41h4xqOigLBTNZQbPX9J42wyQYxcvBf44vHhHO', 'M', 100),
-(443, 'user1457368462473.411133@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$x.3yb0/s.EmoBAnKXWPx9.Zk7WyGqPCVBQsKiHVqCwSWjpuv7VSda', 'M', 100),
-(444, 'user1457368688791.366211@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$mMltEgyC0IaAB5TN8eKkw.MPvsD9goXH0IQutN0DYnWTLmN0aXfcS', 'M', 100),
-(445, 'user1457369948062.314941@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$oWm7Pm2KaJwpGpMcZGOwwOA/iedNG8hft/I0kKpj1xqUGx9zA9k5y', 'M', 105),
-(446, 'user1457376401592.256104@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6cTuPGlcpbZ3umj1lLfqU.RLCNV4kg/IC3p8he8WN6xu1Q6RPKzhy', 'M', 100),
-(447, 'user1457376901880.970947@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eoHiU8hHTfNOWOnrDQoCYePrq/QBtfF3ovvl5wPvWUDEqrjc.piAW', 'M', 100),
-(448, 'test123456@gmail.com', 0, 0, 0, 'Nick', 'Test1', '$2a$12$cDRgcvFXTby5DZhjSRt13u3wrvKxJ4oompz/cV1vKw6awjKYJ2Y2S', 'N', 100),
-(449, 'test12345678@gmail.com', 0, 0, 0, 'Test', 'Account', '$2a$12$.zdom7Vx/dm2nhUpLN1CiuDtSbDqfrX7BvGjul2WxfkOggLYn.NRi', 'N', 100),
-(450, 'test123456789@gmail.com', 0, 0, 0, 'Teat', 'Accoint', '$2a$12$.dnyexIPT/iowf1RkCkqg.k7uXtKTta3ecjMXY5AH.yI258nzNK8a', 'N', 105),
-(451, 'user1457478857514@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$2vwqc14DtlNkiRmQAbayve9lJH8a75vVqrPXm6exsfj/SBsSypyAa', 'M', 100),
-(452, 'nick.piscopio+jr@gmail.com', 0, 0, 0, 'Nick', 'Piscopiojr', '$2a$12$nGSPTXaq.0BtSKeuz26vVuvcZYrBRLXfC7nh4bRG5BIz5DPpQNKfq', 'N', 100),
-(453, '89nick@gmail.com', 0, 0, 0, 'Bnjnj', 'Njunjj', '$2a$12$gkslnRpNQJT4bnhBlOKr5e.suWaQybqGNey4Ih4KVNgM//NRpk0Vy', 'N', 100),
-(454, 'user1457530567330.357910@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$RYGgLsQb4qm9J8Zo0etIJOz7RX225dpAj/AEa27.Wu/uAyTGkjmsq', 'M', 100),
-(455, 'user1457530718860.968994@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$/vIgLfmCagAr7lNjxuFAMe6xGnKFiupdKV2Y5tK0ziWAieyU2HeEK', 'M', 100),
-(456, 'user1457531106460.229004@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$g0XxeUS4hUZd2v1/VTcEfu/BCUjwnpFEtvNT1uxAoUfjHhd2OFcge', 'M', 100),
-(457, 'user1457531323653.111084@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$FAHeiXX9shM3nSFPBaFpm.CzMUUk/YjzxAonsWjgCmemr6BAwhlUO', 'M', 110),
-(458, 'user1457531896719.839111@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$cZwHwzkgObBlQUOGM.UkluKIeoT9aG9wVAvZC10ubz1n9Ph/mqWAq', 'M', 115),
-(459, 'user1457532216839.635986@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$pK.q2xfUI8CiGbG6wignhu/lChQ0eD6g.XuJEgz4QbSR46Qr1cSLa', 'M', 220),
-(460, 'user1457542376883.606934@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ODGOuUdbVi/lqmEJ.A.nKugqum/csVEa472GH4JXh3a/bre9KEkai', 'M', 190),
-(461, 'user1457547990175.513916@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$VRfvamgMwlYLxgtusy2AuujKXtPBERKDirV7nBdCqYDXNDg72z4yS', 'M', 140),
-(462, 'test123456+1@gmail.com', 0, 0, 0, 'Test', 'Account', '$2a$12$F17Ce0PaTaovwphS.pGOhO/d80czg3cznLIQPCRtyMUfuEpgZfxgW', 'N', 100),
-(463, 'user1457628471072.094971@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$f1lEDGRh2aSwQ/jliie2X.J/iOokdAauH9oAPaMnVASprFzC8PNMa', 'M', 100),
-(464, 'user1457628486938.740967@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6/1i.Zwm/ndO5gfyvL3E6egN1wxOnvmMRbXaLW8VPn5L.48kl4Pp6', 'M', 130),
-(465, 'user1457628827266.583008@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$gbv7BZcuS3Sm3TYl897yU.x9.Ui2nlrknvTyYfnN6eleiVQMAKtry', 'M', 105),
-(466, 'user1457629308877.739014@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fUaIeghLsfmsSoHN6b7Po.2vQsKP2QfPzjcB9HYBoTX1U4MeiWI0y', 'M', 190),
-(467, 'user1457631766878.762939@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$LNFmzAqTsV7/cnKk6gNb3euXAu6b8tf1Pdov.Xr0gCFKYiUK0/5iS', 'M', 110),
-(468, 'user1457632153096.002197@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$qFkBfPwDZe6KdgG1q3iGJemLYu55ajiLRvGYYm8JH3JKIQH742ZEa', 'M', 305),
-(469, 'user1457659467318@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$CHRX7Zyzi.oN26E2aCugsuPZTtv.du3HNRkqUfbXtgrPEK1Y5p4FS', 'M', 105),
-(470, 'npiscopio@gmail.com', 0, 0, 0, 'Nick', 'Pisxopio', '$2a$12$bBcRMg.E8ohgyEKUFHPXleUWIRuP8XYZ9zq3Btajj96dmI4y45LUq', 'N', 100),
-(476, 'user1457661824192@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$Qf/dgYYj7WaIRKoQTEd2Zuf.jHegCWZjIIPRho4/1noua5ES7Kczm', 'M', 100),
-(472, 'user1457659836474@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$bGYcWepgYW9/OsUSLdFu3.sgt3f1Y.jhmjYHR/qTnj9ILycv5OE.y', 'M', 100),
-(473, 'user1457659847422@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$c61lw2nM4.AFpMvSrayJp.zP48PUJTd5xNXaqScM64dN0e8Wc6nn.', 'M', 100),
-(477, 'user1457662670090@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$pwFyNO8k5MDjCwwub6kqwutekQZSnJEGMpn/MfoDpX4WIyQJVjxtG', 'M', 105),
-(478, 'nick.jacob@gmail.com', 0, 0, 0, 'Nick', 'Jacob', '$2a$12$n/ga3OLfs1W3zkh0VoUTJ.JnHtllI3CkU/X55p83PmrOYhecz095G', 'N', 100),
-(480, 'mickp@gmail.com', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$HHR3PRq4Ap9tcqi3ibIdg.muXqIy7Hhm6UbTrZfYjCEAoHboDqXEq', 'N', 100),
-(481, 'user1457717023042.251953@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$Huyln.96Dy6sYscD6FqKWOu.i4wstfg498UyK9n4F0U3oxxZE5jki', 'M', 165),
-(482, 'user1457809494401@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ldJ5KKIGmtTK149plb2tF.z3UFlOfLAmyq7CI9lY6kBejoOqioNMm', 'M', 110),
-(483, 'user1457889088715.697021@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$wjBLKNkfC1BAfqReyOLkneKxlW3Pt6K38Kdm.Nre0b6gtEbikw0/a', 'M', 305),
-(484, 'user1457890998764.174072@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$v/vEmw3s./pWRmTwh4bSae9mRZgWpE/mrbsXvVXrkGHhJs3oRIste', 'M', 410),
-(485, 'user1457969523920.409912@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$/pXe6vWiV5sptgLJ5lhLT.3fojS94n0Tq4SURGUPY898rKd9vO2aK', 'M', 175),
-(486, 'user1457987361132.425049@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$yAgE6q55../Q2.Zw.3r47uf7N7o9I1pKFfYAOVwHeMdIlWeJ2rOUC', 'M', 105),
-(487, 'user1457987498632.660889@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$W.xK6BAaPDgHXslkvqUzSug32gesfX8TeVoUc9.yE7e9ARtVf7Wky', 'M', 275),
-(488, 'user1458046484069.281006@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0v/6K2GW/Agqo.OJ0jQupu7jJhUjLs8MWOKP6qmvEFMKiGzqbmz3y', 'M', 235),
-(489, 'user1457881019532@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$I0rYAYuFyPjzfdPydr3r3.CyX1F7pcqpRoEQAJ4tJF5C2HruhzEhe', 'M', 115),
-(490, 'user1458220763856.604980@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xm4i1Ugn8SPP2mwLdij0be/A9NSQZnqWzLFFHIHIQtsaKoP/JUorG', 'M', 100),
-(491, 'nick-_+1@gmail.com', 0, 0, 0, 'Nick Jr.', 'Piscopio', '$2a$12$Kq5ZyYJG8wFZM5aHjeY8iuFKI9Z.aXzHQr5aiKu382LFiigpzzS8u', 'N', 100),
-(493, 'nick.piscopio+1a@gmail.com', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$45ZEUIAEGg.PNHXCCOBFW.27UT24XVt.iLR2FDeOWE6c3pbZjub6S', 'N', 100),
-(494, 'nick.piscopio+123a@gmail.com', 0, 0, 0, 'Hnfhnh', 'Gthggrg', '$2a$12$xVpw/ALxdXDdlZUX5I0ZUu3S3GDQDU13iy/ljAgCzfL3Ea9WxdD6y', 'N', 100),
-(498, 'nicks123testintencity+12@gmail.com', 0, 0, 0, 'John''', 'Smith''-.', '$2a$12$FwLknVrTtF2j7WtV0uCYL.Ot5UMscyr.ciIfVhXHejm1zAPkCh/jy', 'N', 120),
-(497, 'nicks123testintencity+1@gmail.com', 0, 0, 0, 'John''', 'Smith', '$2a$12$qBS3lo6cXD4otSwic.gci.VZERBbxH4hdFmyOgQV6fKGkmZMXtY/u', 'N', 100),
-(502, 'user1458483700665.065918@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$rpYQXQDN4t7pgxYTumfiXeXVCdwwG.2irLgppp9OZ8yVfOtTAK4B6', 'M', 430),
-(501, 'user1458245546255.422119@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$uTAByaGv43svlI2hQdEJUOjiYHIF6Oy5wLBiV3haeLBpP4l7nN4Ru', 'M', 120),
-(503, 'user1458484111129.255127@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$glFHUisq65cIGYRwFZmptu13h6UgWo8f3cmH4sXqlWZmZuuBrfD5O', 'M', 120),
-(504, 'user1458485810292.701904@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$FzZiasVe05KlMfeyY2OPIuYjpETZ18.2ebJu43IvyiDyfouygEfw2', 'M', 110),
-(505, 'user1458565865632.422852@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$beJHDdJOc4tfgCESNOmH2e3D2P7GspxER6gUVQyODNBgIpe1euz42', 'M', 200),
-(506, 'user1458587610877.595947@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$7Y/XkMC/9IizItv0jpfS1.b4mOrVCDSvdOsPKyvQFSGHOYgqcnG/K', 'M', 135),
-(507, 'user1458667494669.244141@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$jOIZV8ErsaeGZx.TEJU.wuqwOaq6TWqHEScxs5W4QyyVMWZLwTDZK', 'M', 135),
-(508, 'user1458739834869.526855@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$bGOuK2yJ9dv86/5n1uyM9OO1uf.fjCNDTE9BtPKceVPDOUjketYha', 'M', 125),
-(509, 'user1458741381623.405029@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ZTmCsdyfyzrfl.CahDgRPuJvgbIiSRixEVVzQm/g5aEavsPV//3KW', 'M', 115),
-(511, 'user1459170303908.062012@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$rD/JtT54USLq12bPYr05nOU.B0UqtJ7.QcDIB26CnUP4aJ5NWj9rq', 'M', 145),
-(512, 'user1459172680229.947998@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$7lie1GX/tlAnzy1F5z4wmeHzmuuaIZTk2bT4hjw8eC6Sydg.H1oda', 'M', 105),
-(513, 'user1459529721171.031006@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$Fuj0uTSNHW04Fw.9Yrepredd2yL.svF5aeofvvKaQ/q0pOLw4jkSS', 'M', 120),
-(514, 'user1460465770978@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$Z3Yp1i0JdEmKevU90tWeh.DzAJRyOzKkpH9A3GACFpHqbODH4Ejc2', 'M', 225),
-(515, 'user1461081866060.433838@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$jOGcpn1ni6YVJWKIcY4p3ObiH5K7vbbzeJmO/v42Ceh6guO7/eI46', 'M', 480),
-(516, 'user1461503221174.161865@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$KCQEluw/u9M966a1YgW.6uRaZVAJK15xpmO9tJXvsPfB5f4DGBPXy', 'M', 185),
-(517, 'user1462369611273.289062@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$TH0HF46nYmMI4k5l44C6MO5lWRez40Vf9dCkW5P9d/epl/1sFMAN2', 'M', 100),
-(518, 'nick.piscopio+terms@gmail.com', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$XMHKnRgS/fmqXegNSvTIhONx1U3TS7uPTjHEOe.cpCrfJqpMsJIb6', 'N', 100),
-(519, 'user1462385090035@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$Icw7sTpRwCnJm2FVVWcTIOnQ9XkFdgBoMDZFPFNlO6zZhadRnDzxG', 'M', 100),
-(520, 'user1462464467559@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$NpCJ2huap6HlYT/c7Hf1peb42Nvt4E1W7nPKw7L4VnPhgWAG/7TDC', 'M', 110),
-(523, 'user1463149252421@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$mD0yrDx9Zj0/qGxmjx1xeOZRhuR9erqNjF2KMdhPJeB7T7trEToHW', 'M', 150),
-(524, 'bbbvc5@gmail.com', 0, 0, 0, 'Bbc', 'Hjpo', '$2a$12$oXVsay89Ihq/TjjcawYaKeAzd9TT9E8nHojYwindCVbdaRvLnoDte', 'N', 100),
-(525, 'test12345y@gmail.com', 0, 0, 0, 'Fbrf', 'Vrvv', '$2a$12$4e819mgO9u1JY53LCilgn.7r1.EhVxe/.vVg4TsZJwA/KNTxBUW7K', 'N', 295),
-(526, 'user1471108605818@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fVK2HyOXRIqPqK7c7ID5Xe7Z8vRNibPjWyzzw9faQ5bTmcMJosfTW', 'M', 105),
-(527, 'user1471196229639@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$c2hb1V4wtg/JeatgpfBuje0lnOP5KfFbmaBAaQtW9N3KnAkfwzFqG', 'M', 105),
-(528, 'user1471196556734@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$9XrjJ9.ty6mqis263jhdOe2fYoYRlKg0QU07oPp6.vC1IrA/v7tEa', 'M', 100),
-(529, 'testaccoint@gmail.com', 0, 0, 0, 'Nick', 'Piscop', '$2a$12$QBg384y1rQtwGBdYjpTiEeqvscy7DJnmR/slQNB9i5azQNMmc.Q4y', 'N', 105),
-(530, 'testgmail@gmail.com', 0, 0, 0, 'Hdndn', 'Rjtb', '$2a$12$VIz37QbTMW4LRe/eOMwLTu1sIZcnrhFODab803MERqZlrHHNWztMy', 'N', 100),
-(531, 'nickteat1@gmail.com', 0, 0, 0, 'Nick', 'Posx', '$2a$12$22wvWarqUuuwGFSl6iYsUer20P7AA94035gZKKjmt6tJX1aELe6Tq', 'N', 100),
-(532, 'user1471797675498@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$gIkJnEMAc2E9Va3nIeu8COl2/lVC25A4nrVmyjZ8JyLAqSbyI.PCa', 'M', 100),
-(533, 'user1471797740651@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$.mqpUep67hxeYjUa9wbnNOyaZu07olf8LIwXKuTZNaf9hnQ3PEpcu', 'M', 100),
-(534, 'getemail@gmail.com', 0, 0, 0, 'Nick', 'Pxicn', '$2a$12$NaYjQCHaApc8pXlW9fFpy.6OrLHenuSC9NACoAu6yfzohu7aaKbPy', 'N', 100),
-(535, 'user1471797810592@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$etEaBFS.BlA8wiAoRnISau4Yn9VldTc8r9TBoPoCvwbF5R2868/HS', 'M', 100),
-(536, 'gm@gmail.vom', 0, 0, 0, 'Nfkfn', 'Dntbtb', '$2a$12$JKZHyYP4BcLNJGOi2kA42.mMfrs7SqEnozqmqMrdqTH5uOPEgRWVK', 'N', 110),
-(537, 'user1476636568904@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$FULeHktWczcgvLDJM1xriuKenSylwo5yMuN1gd7UCwlnsJuYqY9Ba', 'M', 100),
-(538, 'user1476636710549@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$W/SzvyAHQoH/TylyyQOGx.ec6eTCYT4gymBFSDZ5ZEGXxNjKkEy/a', 'M', 100),
-(539, 'user1476636740757@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$cMQXLJIt6Vsd6XGrhA7jX.mgTOUunln5914erx1wIMjcgPCtwug3.', 'M', 100),
-(541, 'user1476637231113@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$hqkTC5iSDJJ0rbj.k/dPeepoiVdGUDfG1QMbq9WjRJn0elb8o7frO', 'M', 100),
-(543, 'email@gmail.com', 0, 0, 0, 'Xnfn', 'Rngn', '$2a$12$PJvEPD82RxNxugGEIBud6.DbxRlvFJScwYsMiTwIWasgMvC.TIHQ2', 'N', 100),
-(545, 'user1476027440175.185059@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$/HE0UfRPtlBg5E7YO0BEq.R6yWNDXdSh4kuy7S7yl06YEHUkYw.XC', 'M', 110),
-(544, 'user1475945434821.599854@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$B8jprc3E/3mFbedkEwZoKOd5N4qdsfdzgkh/KKqj8ynLtaYxZaagq', 'M', 100),
-(560, 'user1486231459616@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$.lXo1OwM34u6C40el2EzHO87t6mjUw6NK77IUtf/fEcfW/DY8Zxpy', 'M', 105),
-(561, 'user1486233670154@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$.o8nl2bkQPgxYvsiEKqAWustkLsZ41kQnzmcGBZqs0qVCq65xId9u', 'M', 105),
-(562, 'user1486234729842@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$gHC4vEq9O.YlkwOnYJsyse2/Wx98HhZ4rdbeFtIEAWW53TnBQtvEq', 'M', 115),
-(565, 'user1486321783167.427979@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$WEH7NXM2D6D1sEk67e4AnOTyziPmMgnwqXYKMrWTkXbzufgMPfmAu', 'M', 105),
-(566, 'user1486322687017.918945@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$pEtoy80DJwlmKZ48WVljf.P.L.JJ0Mm7EPZnCLmeaLWLFQWNFJBUy', 'M', 100),
-(567, 'user1486322727871.495850@intencity.fit', 0, 0, 0, 'Anonymous', 'User', '$2a$12$k1p72ffZl2xQSP6AFZd1heSU1mDbMOfRtdIX5kXjHEqC0Z7jUhG.y', 'M', 120);
+(1, '86ee29329df3ac577bca184dd33b8641d0696663f90f88f693258a8fdc3390bb', 0, 0, 0, 'Christopher', 'Piscopio', '$2a$12$YO1H.Jv31vdQ3ZiwSja4WuGc3j2Odlf.GI3Ktk1YEOmiILbr.5elK', 'A', 390),
+(2, 'f33c07c4b8ada6ea82e12f3079ede204476ce2c1941192a72912a0253acecbdd', 0, 0, 0, 'Marty', 'Poloncarz', '$2a$12$ppzNtUMGjhTmz42NkJwyduV38OrkKs3GnQtr.N.FFsbWcbOsf6FfK', 'B', 0),
+(3, 'b4484b2eec133ce9612cb14a9168a941789bf33356f5d6bb9b4b64308965b737', 0, 0, 0, 'Luis', 'Cielak', '$2a$12$Ef7bVePatxfIn9WA01WJ3ek2qNO90yqI5LW8js0tcLZ/iohycGkZi', 'B', 0),
+(4, 'a0a00fb15a64fd59c89a88db4a3329c72477ed5b5b153288cecb5327d71fd802', 0, 0, 0, 'Chris', 'Corbi', '$2a$12$J9SAukQT8uk28gcLAb/smO./aroOO.giwOsBULGsSLoxjTtQFEc8i', 'B', 100),
+(5, 'ef1e9f55b9d3c3b43f349a3183e2f44414607a405b0d210ddbb66d22a994d617', 0, 0, 0, 'Halen', 'Dang', '$2a$12$sgK5DdyA7bwnHqJtaD0CYO7lOGLfqFgZNUsFEGk0Feiwk18K6LyMi', 'B', 255),
+(6, 'd6655cf9f896eb13f7ad70c9c1f4dc5d14f05b98ad9abf9112ec0124195be3db', 0, 0, 0, 'Theresa', 'Monaco', '$2a$12$bY2ioCO3FF4cF39g8cIwVOKTrobCOW574ZPfhVzEemE.G.hfmSdee', 'B', 0),
+(7, '0a4a32b7843acc13bdef1f9151fd61626e43037bf6f4ffc8609141628290faf4', 0, 0, 0, 'Michael', 'Cabus', '$2a$12$rNc4ERUJGsvlLAXD1gOIPOhmOgX4xfmju62f3a7EE7vKW1gfkLOPS', 'B', 0),
+(8, 'fa27207b27cf1d82045afecaa0ab11ab203b38b374fb712dffcb8b48f0fd336d', 0, 0, 0, 'Chad', 'Reynolds', '$2a$12$sGUo61Vvn8IOH3XiCOrolue2VMTtr8cgToukuxDSPdhTv3pWcrlvK', 'B', 0),
+(10, '731c0d2b1775f3946496dfb6b238ec7cff19cbf4ef8c832054b5e65baef34a26', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$eEbDRYJBsYMdjem7lak0o.hTwE5Ka8sSLwRxdIxI2Iej7pYcNpLxi', 'A', 820),
+(14, '9d288f6b477a5154d5491705cafca3f0d787c435a5b41b40dc810ae088b2c74d', 0, 0, 0, 'Martin', 'Stanley', '$2a$12$mYubGB3ihdMzs7agFAc9b.IGsYCqvFeDyD4AI/7kNIvtzRFsf7/re', 'B', 0),
+(18, 'd117466508a2de042c17efe832380d072d4a47200528799a95736d3906de330e', 0, 0, 0, 'Victoria', 'Dorn', '$2a$12$nUSSSMlGcXt/9hTdv0NC6uAa0QK9aQFP9iYwR/PMRKSkun3A9v5NK', 'B', 0),
+(17, 'a43b1fee22fce1aa6a6267ac5c6a1c3cfc167a888d71a4796417eb4910d1c213', 0, 0, 0, 'Andrew', 'Decker', '$2a$12$kh0u8Pds68xYgNlyLt3fIOT/7myHWea4P.zO5Sg2ssJofDN.BaDQ2', 'B', 0),
+(19, 'db702489c7f24a4411d11392be186bd4c66b9ff3f324b521aa011c2a387e2ef5', 0, 0, 0, 'Kathy', 'Dang', '$2a$12$XYHNX69CL6HQEtej3J.5Q.6tf5EZZsIQGaY8b9LXDNxNYCyhR0KFq', 'B', 0),
+(31, 'c4d9722d9b411f8e2149dd156ffc877e1d5256513d7d0254b0ef5a075e263257', 0, 0, 0, 'Halsted', 'Larsson', '$2a$12$4Ip5dF4Tzx1hnRrUZh9rY.RyshGz564MysGwTRWofIxt5lcJZSupm', 'B', 0),
+(20, '7932b2e116b076a54f452848eaabd5857f61bd957fe8a218faf216f24c9885bb', 0, 0, 0, 'Admin', 'Account', '$2a$12$oibv4vEjFIegwjJRjMSU9Owqy52yjmo7ZZI9Qzk5acVDvwI9LoOMa', 'A', 0),
+(21, '0aa530d4301b421bceca76d3e76baf8dfca3fc615815196f289ed7ab4ed38774', 0, 0, 0, 'Randy', 'Dang', '$2a$12$Mc5vPEDR3J9/VHfWHN4DWOEiTb59d3ZLgyeZyKN5R4ltQjq.JKLi.', 'B', 0),
+(33, 'a4731488e464ab0d34c2f798aa43abb138f85a753f8c2d645cf03201f7134166', 0, 0, 0, 'Adam', 'Holsten', '$2a$12$6LRQX96k9XWoaRYS2fUMWuRYkghUrSU5HiSvHcRN/iPkPFWgsAlyS', 'B', 0),
+(32, 'c116cb0f5a7a279abb9248c478e20875c2cfe41c16742eab2077f87fc93c0ee7', 0, 0, 0, 'Robert', 'Hardcastle', '$2a$12$2An53TPuyhYnX0G28dTZpec/WtmvBz3Rvzcps4dcmSdThiBMNWPy6', 'B', 0),
+(37, '19f28f5b980f2a37c24c5148a2c2e231fa7e6e52b514bd97768fe26c91cabb05', 0, 0, 0, 'Nick', 'Speelman', '$2a$12$txLHqA8mrzKf8Qng23CkjOKYjeAdJCL8p6uc.PvSkBhAyTJjnDUvy', 'N', 0),
+(54, 'f4813e6c686df86e1bee9b1a22163542c101d55d39d6105923c4d246a078bb39', 0, 0, 0, 'Christos', 'Rousseas', '$2a$12$qvYnsCDwY8HPfhLfWwhRnusMl6xLPLwQg.qxkMrB.UMzABkqUoFn2', 'N', 0),
+(53, 'e704b07396e9927105ae7bfb238d12347fffbc6eda0f491d22ac471338eb2976', 0, 0, 0, 'Sylmarie', 'Nunez-Luna', '$2a$12$OwhgbvfselHx739/hw/SRuoEGixY6S3QBYjnEChl5XFS5UwE8fjTm', 'N', 0),
+(56, 'd5edef46615e28ca341b2630a068551378cc19545dcbfd4cf88e3efdf9ad52b7', 0, 0, 0, 'John', 'Smith', '$2a$12$zXsNRLSojYfTc1Cc1IyEIueKD0OBOTjHsfKtqDZXymoYDTBJr1a12', 'N', 0),
+(64, '2631c4858cf4269b74e8eb5f4b86f836d01ee1f04b8861f0264744a50daa2626', 0, 0, 0, 'Melanie', 'Theisen', '$2a$12$W.I89vsds4F4xwLbABrfaeBEbN6UzM.2w0kAh6yEYv.QQS6l7EG7.', 'N', 0),
+(65, '8820ac28399bd1eca750084da90085fb7c94ce534af4f1d5c5b3d5fe0aa424e7', 0, 0, 0, 'Nate', 'Castronovo', '$2a$12$1FFzQU0lgFQSHB0OsHsbNun4Wo4Ep9z3Nt5IapX2E1GncwbxHMAYG', 'N', 0),
+(66, 'b60151bea9826fb7ac931b525d14e5800e36a1d3ede619f33712752c88de7113', 0, 0, 0, 'Marianne', 'McFadden', '$2a$12$SgQ2yv.V/CpNzes3qEXORuqGXeEd8foSdInrsYNZ77wpA0Vq4uIVq', 'N', 0),
+(72, 'f3b5b53ac286189dbc580f627a64816a60b1e9ee6fca5cf7ffd3d569f6029c10', 0, 0, 0, 'Laura', 'Dalfonso', '$2a$12$PoAFk90/HxK2FB28WWQnmOJxgZKFh4clLzUQnXmr8x43mHT0dtt2y', 'N', 0),
+(71, '41187e43597de9f0ed74745e0ef6a318d7f439c078a6332bd2911d87b1f166cc', 0, 0, 0, 'John', 'Smith', '$2a$12$fL291hHDMiRFdvuhMFeJButggQ3YtaSYGLr6hyJVvqsmAHGyvjM0K', 'N', 0),
+(73, 'f63eb9912482633ee4bdeb71b12e49060331b83d4ba3beb4428f1c9e3d35e1f5', 0, 0, 0, 'Lena', 'Boring', '$2a$12$9wkRo1i6K2e/S/kZ3tIp8.bYnyArA5cGmZFgi21H9sXdT7Lg7NAta', 'N', 0),
+(74, '6e71b325c523529bea57e42cf2150b54daf6b69a58930cddca504b1e2720f2a5', 0, 0, 0, 'Aida', 'Perez', '$2a$12$PyoJSBsEK86q2dnFBjhfoeo1xqcs1MxPlcTLZbTD8dvHjtgCIvBD6', 'N', 0),
+(75, 'f6342c4cc90ede9e3fafe1b4984a9defe18b0f7b2df7689c02be81db5d4b2e55', 0, 0, 0, 'J', 'T', '$2a$12$CpQ7kg94p8i4OWLJMnOsmu5bzaz83sfAreSKMJLPBoOGNCBnGMmg.', 'N', 0),
+(76, '8d4832d2e0531797977579294a2658437ab9faa3ff32029866b33698145087dd', 0, 0, 0, 'Ian Dominic', 'Foja', '$2a$12$9tZIjZcPYX93PZEfDifscOegxG7QdgCtC6x4qKxhMunh3I/szIdV2', 'N', 0),
+(77, 'd20691d660a64ebc38d0b87ae44bb59a5fbe37067db19cc3d0b8e0d291e01bce', 0, 0, 0, 'Anh', 'Le', '$2a$12$p892i.liqGzAFnkixIQjHO6GBfjWkuRHZPxE8Bgtd0UaBDhGirsNy', 'N', 0),
+(78, '968e3613f873c790d1de55b374a37cfb1b696121a39bd77e8132c3603fcda9ae', 0, 0, 0, 'Lucia', 'Palumbo', '$2a$12$ipKFX/lPJoO4clcaHKa1KufLUjd6ynMX9X/Ja/8YznshX7SUVw4wm', 'N', 0),
+(79, 'a2fcef7e64133ad17cd4c2c517b5c4db40bdb08257f311cb41f5003f51b3f9fe', 0, 0, 0, 'Mohammed', 'Ismail', '$2a$12$MXwtcp7fpDk17Y.9tQAmc.JY5Cr.CwbHhkQkv1/QvizGrPKpn1xoC', 'N', 0),
+(80, '86f2fcbb3adfdc6f3dbc87a2e639530ce0ca79f5d831c75ece460e085ad406a7', 0, 0, 0, 'Cam', 'Cc', '$2a$12$FLVXKc./kYjdVXv0m.452e5ZhqPEDAOByDAbmBsRjxaElk73F8Mqa', 'N', 0),
+(81, 'ea369b24ea1fa7f945e5d9552590d25563b0751d5783f996c1d1092cde8dbbab', 0, 0, 0, 'Sehs', 'Cool', '$2a$12$CmkjmWBP8Zv9cxvUuytIz.CoU.1NJ4jvlAttE5Ew4MT5BNJnYA9km', 'N', 0),
+(82, '590cb516d2305d6a017059a996aa70ed90d7a3959d5ae8ed7eb4f776b4b0b73c', 0, 0, 0, 'Amanie', 'Ataiwi', '$2a$12$naDU0Gi6X/1uB7moK/Wz3u7odKSG84L9pCIEb2kfvB94uUv1rDPzW', 'N', 0),
+(83, 'c7e01776b3ec49fcabc7f39094d55f904d0f323131dc3f318561563c0a14debe', 0, 0, 0, 'Myles', 'Cutts', '$2a$12$3Z9Gb71TZhSsRb1SCA2H4uU3G2p0kJ0nmH.7ndEIpCBrIYx8FIpKa', 'N', 0),
+(84, '8385def4912bdd9594c4a68f108c20ac7b68e45a25f113496d024e800c9ac226', 0, 0, 0, 'Su', 'Padierma', '$2a$12$MhVx/HE8tnM7GPj5KzIW6.4NiZE60hU.cW9qqLFpJ9D.JRSpO55Si', 'N', 0),
+(85, '8d0579c860284bf548ead12f557983c912f31ed32aca48ad07ddb3c8240a55f8', 0, 0, 0, 'Georgia', 'Holmes', '$2a$12$8okuthD9Gk2oAE7blL1dcumP.Zrzsy//KP5cXw/PyRB9AZzVpjbEi', 'N', 0),
+(86, 'f96fcc8281cb718705d108aa4958df7b07c98d8ce5ff14a4582d2fc5b7e70917', 0, 0, 0, 'Evghenyi', 'Shishkin', '$2a$12$CK/1eMWlPtaD33y6OLXgyuDwk9ra0iw9kiQzv3qa7ew/E877APP7q', 'N', 0),
+(87, '942699048c23e06a442addf9ae4bf575af1b57181ba35492aa189a0832165e49', 0, 0, 0, 'Daniel', 'Urbina', '$2a$12$aTCkVygauJrR.F1wWYy0d.5kAPHLDLbSlroehPL4OFsqlinMXMJbe', 'N', 0),
+(88, 'c62c148e59a8a76e1dba637864d8e26b6b276c4eeda42cd70d1f52c0d889c8cb', 0, 0, 0, 'Ted', 'Zand', '$2a$12$RZIEcUh/8HLYoDp5/tMFQOMMhJvyRcslyOMHUtC0/ftQbco6kYBkm', 'N', 0),
+(89, '284666dbb9193fe0a0842b7e1fb49e093147a7a92444359d2bb7def7a6a366e8', 0, 0, 0, 'Mike', 'Bosworth', '$2a$12$26n50f1flyc0GFgQySJw1e1lcb5PggYv03KKu6maEbA5cGJnyaOaq', 'N', 0),
+(90, 'cc10d836412b0f322dbc65a131d219afed55a8c396291547086b63e0523f0520', 0, 0, 0, 'Michael', 'Stoutenger ', '$2a$12$Ols.hk45lGWK.X.p0W3ZCOgOv9a1N0veV4Vvop/Oh88ZXV5EHxNfC', 'N', 0),
+(91, 'f40f3405bb223751ffdebe42c75cda786e7f3fca3eb1a862132520b8e48268cf', 0, 0, 0, 'Sina', 'Sinester', '$2a$12$4goyz90/wbkju0/I844G..KUpWDJQyWMswMeSU8./Fl.oZI/LdMnS', 'N', 0),
+(120, 'bb1a32ce13c9b5ea4903cc8f2e5ee94355f3c4ec6fa86e8c81a90c9d2d880792', 0, 0, 0, 'Johnny', 'Doherty', '$2a$12$/IcKLUw4wFn6CAAUL3OUIOFLNNg.wZaAY1YO2tVAgEx1DnuNMzD3u', 'N', 0),
+(110, 'a887f047e263d16536ef5ff76d9d58d351963fa20c82c705d1843d6bc645f836', 0, 0, 0, 'Frazer', 'Turner', '$2a$12$0N0oQOhFN84SUptO8RaYJuWF1L8cwgX/Es1WOkcGP1iazMnVEwcAi', 'N', 0),
+(108, 'feef40d34118ad09bcc90c50f470bc2389a93ab9701dabe4093349b893d1ec96', 0, 0, 0, 'Andres', 'Gonzalez', '$2a$12$2DSWJ2y67bS5GnsWixdhOua96vFQGigLRXKjbn19GrEPihdr5P9t6', 'N', 0),
+(111, '55e806fd2411b4ce44d49c093eea3bcb7547f5095794f99494ccfddf3bd4cb21', 0, 0, 0, 'David', 'Alem', '$2a$12$IHpeLgNWxyQIAhW823Ipw.nQDMHD1zgtsbbQE8UNvBeR3pgA7NgHm', 'N', 0),
+(112, '3270010fb5fc30b719412b5e30b705846af7d3b2e4ba10f33af0418ecc91ecdf', 0, 0, 0, 'Carol', 'Alves', '$2a$12$HhAl0MUpvYPayRHEpbyIaexZ6GfR/La7yqHafo5jPeYyQ74KC.3cS', 'N', 0),
+(113, '6ff345fce8ee69d1b1f6bfc239d8f79eb54650fa466042277cc019adeecf692e', 0, 0, 0, 'Dan', 'Weaver', '$2a$12$ZuZKn5ZiU.EQ6KsVWsSPUuO97LEciWdFGCKurrWO6QHN6zGTY.vl6', 'N', 0),
+(114, '5e0ec73f8c39b26ebe16f13868415fb60640a215ebea7eb8d860dc4e54ac4a39', 0, 0, 0, 'Zabala', 'Iglesias', '$2a$12$/64Oj11e0eyAoZBffulCe.4DUmuXcAPqlGIHddRx.nbqRsT0sEP6C', 'N', 0),
+(115, '708d21ce7f22fabb6749f39b056f80a310e13c9a7d51a3a8e1c04aea514d6177', 0, 0, 0, 'Sky', 'Chong', '$2a$12$U7NCkMPvGZGCEN4XYQ0I4eI3WR4rk5VoWBh3q6N7diThxCzaz7o2u', 'N', 0),
+(116, 'f623df0135a86e1fea3ced1ed0c91bc75d8642560a321ec3896a28579f8038fb', 0, 0, 0, 'Andrew', 'Valko', '$2a$12$T6Kc84zLz8j181QTKsL62eqx0ChDKFRG2AoZs2oRNh4xolVQjjLl6', 'N', 0),
+(117, '8f5d1585d4fa00c404c8d2d2378416c3e2e4a5e06d8191dc0801770b21ca7f56', 0, 0, 0, 'Makary', 'Ibrahim', '$2a$12$PuAhcQ9j5Pu0R80Kaa83V.2m/axj3G0MYx5A4h8VilI1UjGzoLQH2', 'N', 0),
+(118, '58bcd8f5b06607758d19c070a3e86c46f31bc53f32216700a7bd7adbd59396c2', 0, 0, 0, 'Joanne', 'Sau', '$2a$12$xWJMMVPztf4803.POsJDi.VK5wdd7UvXhO7KwmVqo3Zz6/Lu6ZJuy', 'N', 0),
+(121, '95a266f11a5331a8937c52281ce1d02965e78dbd2adadcf4e07a8fec604df075', 0, 0, 0, 'Dylan', 'D', '$2a$12$h4nJP2epkfEkOvRzt1vSeu6PujsAs20JxJ5raHLVhH.Ov1qI886OW', 'N', 0),
+(122, 'cdfe43c56951b4615c05f6337c73516b68accfe18c0ba193ccb4c2e6be56cf87', 0, 0, 0, 'Mike', 'Pugh', '$2a$12$dz2XeCBNPCSTvfrHlOYptuj9DJF3H87yDdtrG9Pe5x.ghE1m6BGSi', 'N', 0),
+(123, '39443c8eacad1523f4ee8dbd0ab6be45487fd0f0c99a544021b601bbee4bcd69', 0, 0, 0, 'Chinoi', 'Patel', '$2a$12$dEvhj9iJSygeERQk5xuIYucLi079hRJBFDW.zfg6heKjzQXNgsZjK', 'N', 0),
+(124, '3374c03b2bf40fed77666145af24fa5f5fa97d00047c88cc23396fcdfa125c97', 0, 0, 0, 'Rene', 'Rosales', '$2a$12$btR0FnWbhNDCfvQnZZRvwODkCZZV7m.nPNjIOV4ptuodCE8iMdwyK', 'N', 0),
+(125, 'ef3fc01d4ab4d6da1c9753c298dafbc145385031008787d85179e9c31aecce5d', 0, 0, 0, 'Matthew', 'Keyes', '$2a$12$77oB/UUBCW2BGDjHp4DrnuxOzSbhdXkKL7qLBNgH0YX54BvntwvuK', 'N', 0),
+(138, '9a07be420d5e59e016105c4df58f900d6a43e4d5f22dc32269cafe5f43e667d4', 0, 0, 0, 'Cathryn', 'Rizzuto', '$2a$12$HDIs0DTvuzNK6thgvgIgleH11gvbhioCFS1vS3Ge55OyfEZHjOIIO', 'N', 0),
+(127, '9f421cbaf8bfa04ceda69a7b3f25f96da3ad7c8c2a25cb17360b5e68ae3c1d2a', 0, 0, 0, 'Mike', 'Adamo', '$2a$12$ScUPNiRHM4CLblvP8Sj/tuixsu/C.zcKJtV1BMwPgollQmv5UBTxm', 'N', 0),
+(128, 'b61a854fb4563f7a5b4e5f112fc943b711138645310d31073d6fca36fadc300b', 0, 0, 0, 'Christina', 'Lim', '$2a$12$wNqNM.pRc7oRwbBLWRaVRejEJGAyaBSTEzK6.w1ZboeVNnTNe9tB.', 'N', 0),
+(129, '95a7be5ebcc39a591d3bb7a843f2c6fc96f329a6de457b17f6ecb135f88bd318', 0, 0, 0, 'Aymerick', 'Landre', '$2a$12$Ut4w1Edj9NAYffjuMNm.JekSMrqoafUY.OaGlh4BpZcok9YHzn54m', 'N', 0),
+(130, '7e84b76335530fbd64eafcea94dfb2668bb330b2d8490c50b32412b0a06a9ad7', 0, 0, 0, 'Donna', 'Adamo', '$2a$12$0fZDcN0b1fjoZJb3WyKiAep2kxotRW7A2Eij30Q0ucDJv9kTBjtiK', 'N', 0),
+(131, '0f5ca0b923fc4323331c079abcfc96cb316ade385e4cc3265baea65cc7a93152', 0, 0, 0, 'Liam', 'O Tiarnaigh', '$2a$12$12VDnUJY.1QmsEXNvpK4WuwkaF413TDlXPKbTrtG2G7zZJLK4L1pG', 'N', 0),
+(132, 'ddc947d1b681177bcd7c736e2c9c9e4c96d28e604b58469ac005c2d5598c1422', 0, 0, 0, 'Mike', 'Pryor', '$2a$12$P15/Q9HOWfg6ZyJoK6l6hO4/cKA7PMuo9cpMVaxaEWDBZcyzMtMyW', 'N', 0),
+(133, 'a16e7df516b8fd74917d50e83b2717e5c3d37280e064f7f3901fbd0c5f6387d5', 0, 0, 0, 'Test', 'Test', '$2a$12$VR.R4nb2gm.yRJ7UlXtiPO0AvZ91WUXnhQPCcnn3kA.hy7ytvb1SO', 'N', 0),
+(134, '8dd06880b37f50163b0e75ee9216875e825fe0fca5c572208163ec93ac784e92', 0, 0, 0, 'Julie', 'Najbjerg', '$2a$12$wslnPLMN6lL2/IBNwcMhzeq0u.zqkWZ7EW/MaCc/4gw0K6Li/4yj.', 'N', 0),
+(135, 'd0f676a9b2ab075c49f43ba576418ebe3a1dd65f3e8638eb04827340ee369dcf', 0, 0, 0, 'Dev', 'Account', '$2a$12$dQ8yNVAdpuUtvuvY5Wf5se1mhkmtaapuTaw8XBMGZ4qHLE.1pLK7W', 'D', 1055),
+(136, '300b870c70734b7839ff8ea5a736c012ff4abf0926d7ee5e6681558e272b3e29', 0, 0, 0, 'Shatwon', 'Anderson', '$2a$12$mEmXmm9HTj1NKOjHls4A4u.LZ78yw8AOKIpVX9kzfP6b1tndsJG/q', 'N', 0),
+(137, 'b4cf1ad7e259513ce73343c0ef6e0aee90bcb3bfddf3103fc6074a5573888054', 0, 0, 0, 'Apple', 'Test', '$2a$12$ZN7etDOK7ulApVrPjHQ.fOEF3ZkldUoe2168TE3UnGZGGPcqXJOPu', 'R', 0),
+(142, 'c5d02350c2d8505f5bd63087a1a185f92df1b1118dcc470f80120efd838a95ed', 0, 0, 0, 'Beta', 'Beta', '$2a$12$VorsCXjkFFlt/0SZF4zWneuIysewRF8u3lBH.xgvUAvGCxwxnC69q', 'D', 0),
+(140, '1d623a9171b125447e5d457b6c9d48c2b8ca4c358cb85fb262f3f24a1d05f5e8', 0, 0, 0, 'Onkhung', 'Onkhung', '$2a$12$4/G.61TF0nuuveBN56djaeBThAXTi0GOkE0clkSVNAnsafTEyBDhW', 'N', 0),
+(143, '10a6bc5f69d0ae6e8801eb9a5a3cdb4dde4d21b54241ce548b91b5fc63ea5b43', 0, 0, 0, 'Marlon', 'IvÃ¡n', '$2a$12$tSYoJ5xkqR0KJ7aHEqVS6.HQIWAHQN./dvYJnP.hTjCQ3MDikWAca', 'N', 0),
+(325, '6b7ff46ec11dee0753d3b500d54420edf75b0d1e98d034b0fa8f977262a88d03', 0, 0, 0, 'Anonymous', 'User', '$2a$12$2WM5UF9OkB3fkaKxFiZ4XeCwbZN7UTxoEmFx5SnYqJ6S5pUFDY/02', 'T', 0),
+(326, '414bfbcfa9c894c5efd8543e51d6840d0abecc05a5640cc67e1df2e5dd73fff5', 0, 0, 0, 'Anonymous', 'User', '$2a$12$UqL1NKBDGe5eD8I3jEujQuuvf7QDfkA7ev9w1rYIyv1rYHNCVce7G', 'T', 0),
+(327, 'bd087bdbd4c2ce25e5a152277f1174fee8883bde421470bf79d1350d4570cede', 0, 0, 0, 'Anonymous', 'User', '$2a$12$83bkTciyTx80DDw4Xn6I3OwJqUau31qUWBbB0sTrMIsxMzzhn0eIC', 'T', 0),
+(328, '6c6662d4ff18cc039a4fbc74a3347ae5cf7461fa7551049b4f74a918056e0898', 0, 0, 0, 'Anonymous', 'User', '$2a$12$22StCBRjbpgRKoMnsFngr.9Pqra8RMD6W4J/LMddvgiD3.b7kARba', 'T', 0),
+(329, '60e717526c2a4ce939521644a7110482fd91030a36ecb19ad7131f33f977b0d5', 0, 0, 0, 'Nick', 'Poscopi', '$2a$12$243Z8O1SN9K9LoeGkojMnexfkd9deE22Ptd1L6E2tfBHQ5kxX9OHu', 'N', 0),
+(334, 'd0c648bc36f12061bec770df216cea2ab95851b9350fd54b658de53b0407767a', 0, 0, 0, 'John', 'Smith', '$2a$12$D1vr/2A1hkpRtqea0jPk1ObRl6u4rdV9IsfiT4vUXbYKBmPgjWCNm', 'N', 0),
+(335, 'ea01f80a3bdf08f5c50a777c022b5eb1a032dbd73b9c765f2e1ea48ba24baa3e', 0, 0, 0, 'John', 'Smith', '$2a$12$csUJxxMapA31tVqkLQayAelTWhm1.OfUV7fAL4pdlMh5sxbWg.0vO', 'N', 0),
+(336, '1759b3d28158500d7358869138b218b123f1db29be9790f14bb5a5eb3f517bb1', 0, 0, 0, 'John', 'Smith', '$2a$12$DNxyK/twqF3D6Wc.8eDrq.7Vl4FecOuRERv9FTA0us81uo9UmfTnW', 'N', 0),
+(358, '15c8581f44daa92e7db2c8cd800a91d4b33507104c956b7737421f4031d9fa6f', 0, 0, 0, 'Anonymous', 'User', '$2a$12$COHSm.yLtkc8xs.e9QXROeJX6S7pND7KSMh9WL9HDFEF72xjofDN.', 'T', 105),
+(341, '443768dbedc8bb550c160c70ad3520a062512c5203b29e51c5ee02ccb4ee8cb8', 0, 0, 0, 'Nixk', 'Piscopio', '$2a$12$HX.vZQKFL57bA0w0ORV92eH3bU22jy8Qx/sGGxfOQow6bXH64h23y', 'N', 0),
+(342, '8fe92d0a8b20eb6d0dc4faaa607cb64b1d7db8db2dd83f4c23c7f8272c4ce7bf', 0, 0, 0, 'Anonymous', 'User', '$2a$12$8NsAtWGJUOvwSjMKriPsDuLfwwaXa7Fu.5Ev3yEX/ygGW6b7V1whG', 'T', 0),
+(343, '3849f1ca7a310ec22fc212dbc25b47df4c81fc8970e074ed9e341e996546a966', 0, 0, 0, 'Nick', 'Piwcopio', '$2a$12$PXBU83woKHsx7qAOtklt4ee8zjAIaYASw28X8avwKPp6KHLHy5jXG', 'N', 0),
+(344, '931778acd1ebf38bb34d82006817a59a55a80dbf30d284f86b1d6e945d460f79', 0, 0, 0, 'Anonymous', 'User', '$2a$12$yRkRZu4Q1kCsB3rPqMpaquWX/zPZCp6MvS25d8LooWiW041hB1giC', 'T', 0),
+(345, 'd313f42e4049a5e24152c1591c71048eb30e3f2e18abf603b0743ec4661c0f62', 0, 0, 0, 'Anonymous', 'User', '$2a$12$jiR.7Yw7QJ2qnRB9ou20MuTfU6aVUrdCED9ZRzMDgt8jfC3CZ/A0W', 'T', 0),
+(346, 'b830fa7156e58cc253e6916b9f47759cc82ebe99dcb1c4a9a755fe7ee4598892', 0, 0, 0, 'Anonymous', 'User', '$2a$12$rAANNpZ6mZhIHlnrk568eud.fMGMt14qjGJVNnAc8Cl/xdwALFY6e', 'T', 0),
+(347, '8ba3132a0ed8503200585d80097664e5d2843cea8a365decee7665dc897dd352', 0, 0, 0, 'Anonymous', 'User', '$2a$12$.zzgaWBWonysxO/1aH.0Leroi.QsfTm3YZYjI3lJrr9kov3naGVd2', 'T', 0),
+(348, '35a7814be53d366e658546162ea09ecf06c1c1cdeca6f1da1b0228fed8d49bce', 0, 0, 0, 'Hggb', 'Hyhh', '$2a$12$.Z7dpIUd166uAPzq1NgiI.yxnTAyMSiku4v1.xmgriRbpqh73Cbt6', 'N', 0),
+(349, '9324c879c44428f6ce01b0e8c2d82c52370f396b87434adf6a15b7e95f001291', 0, 0, 0, 'Anonymous', 'User', '$2a$12$mEZ945Em9t7p9nxQ3XYqmOCk.BVUIjtMIHKNwhz8sOL5xfsAQhdRK', 'T', 0),
+(350, 'bbf4d7daa9bae4f23288d41e43314a1accd01ef1c57942445eb7aa0270a8ddf9', 0, 0, 0, 'Anonymous', 'User', '$2a$12$UppjpOSrMHKhT3M5xhoq5uLVlmXcVJL6O9Cdv3FBRkfbC2XLuqyuO', 'T', 0),
+(351, 'ce3759adfced410712d79f39d737b3bbe36b647b79614aac8bcb85273a15e21e', 0, 0, 0, 'John', 'Smith', '$2a$12$OoitwecT9YN2EKcKz21JGuPExi16amVXnNjbDlUeDRDpJTSK0T5Ti', 'N', 0),
+(352, 'ee430791a006e96147041a6e7f6713fd248f2956056ca3b838133c5663bd560a', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eeD7RwMP6s1x/ElrjbN1FOG280aPK4nKPCkXJXlXeGuMnzEN.pyY6', 'T', 0),
+(353, '785c42df2fd99cd05c38883869f64b381558922ee69bfa9f71e772816313d372', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eK4avP0QdgBk1BxuP.5vC.gdEl0nuMq4CDrpPjXdJWJToCeqfNLra', 'T', 0),
+(354, '70ad8d0d89681ed418e491e4591e9dd025d97b96c4c3fe1767adf3860be479c2', 0, 0, 0, 'Anonymous', 'User', '$2a$12$vXTh71dfX4xdWTs5W4xPP.FBK68NjDq7FNvOvnBGpfYotNq9WmCp.', 'T', 0),
+(355, 'cec46be69ba248cf20261b0a231bd95a8c5b568a18e8cc280ac065a9e60d9505', 0, 0, 0, 'Anonymous', 'User', '$2a$12$HQDNg3kACsxcl/qxp0q3XO0jhAVlMGV3m7dC41aM6RVZbQaGzfeAO', 'T', 0),
+(356, '4ad3548291af5744ba97c899a4c1b4b467edb0ec1e33af29ea525cea7bbcd8fc', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0qCWStBoOgayVOxZtwsvAOJEe.8VQHFuilzXNWwDB6SgbZLziTWdK', 'T', 0),
+(357, '3ae2ae4925a6b93dec9e1d830cb2582d94e313e30de8958852a4b2896c20ccf0', 0, 0, 0, 'Anonymous', 'User', '$2a$12$NEeCYKkBt5qV9VQ8Vbfi7esu8hD1aqtjhe/0kkaN1i56CeICatIqq', 'T', 0),
+(362, '3a31c62e9e039e0b3d831461465d5e6f170f34a2d9aeeb1e747c439684f9d35b', 0, 0, 0, 'Test', 'Accoitn', '$2a$12$QqVwWYsnHT8n1saKncwULu7mQ0JuCK0vDSbOWe/SZj0ZEveTjRhJ2', 'N', 100),
+(363, 'c2174bf4077d6657497b5a17cfd0bd2c4664ec1ca66706dc8f20a48827077570', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xjHlUG1OJZ.RJlSOgFdjleGVaM6xnxlfTqlPDrk8d7n2zQ17snlxm', 'T', 105),
+(367, '82997c86efc34527781ac30c7a39c154845bde44fe2274076e25ff5eba782781', 0, 0, 0, 'Anonymous', 'User', '$2a$12$vt.x8y4lUuCMx3KmHKJqBOAvda.JaB/C5GRRECIl2wil18ubQHdpi', 'T', 100),
+(370, '96791454a0aa82277efce6f23a3a5de7cb46a77eec4001fcbf293f310f400fba', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xG6D7oifsxDbaoAkXviji.8YQeapUjO3qB8OO48ynkSaiWrRCzSU2', 'T', 100),
+(371, '6535281ef9de3500d86d8bc3399d34c0e7ae409fd5ed1eace037f8cf28da3e82', 0, 0, 0, 'Anonymous', 'User', '$2a$12$qbiw3jpPgEQKUStMTdDL/O7qz4bwRlcuQQ4cgwdYzuZzjxxbOGb26', 'T', 100),
+(372, '82b34a7414f938bd1c9da09655c9d2f487205b912f60c69f05ee7152c09ccef9', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MloaqN5NFF3TKPPUv4YsBevTksn4YSJIBERnuVXzuDWYh4IpGC0mO', 'T', 100),
+(373, '2374c8ee44871d654bae589a8d35a8dd8a5b258122bb92d2f6753d8918007061', 0, 0, 0, 'Anonymous', 'User', '$2a$12$OOlQ2AQeocuxRZ9muCNgwOOpgiKGz0VtLTfm8OujvLPVDKDo4PmAW', 'M', 105),
+(374, '7dc77a74cd238e93df512f13d3c8fed9a334bd41a826b10098dbc74ba7c36383', 0, 0, 0, 'Anonymous', 'User', '$2a$12$M4MlbXJKvVDxy5Am2HlyFePueQbTMl7BF.V8wzGq066lDIVq0JVjW', 'M', 100),
+(375, '5d04ed27f909f86f9216b5ed0be08e43735d2fe64e21df66cf338a78ee494518', 0, 0, 0, 'Asd', 'Asd', '$2a$12$01HY1G71PGHzGHHpwxqeQOke3XRFss7YaxKnRoxtnX/b5M8tSqlMy', 'N', 100),
+(376, '0fe1ff6be9cd41f51e02db07872b2157ed44c29b1047ce2e97b99258493fcee5', 0, 0, 0, 'Nxijd', 'Ejdjj', '$2a$12$GCIQIT0a0JyI6kEPeL8AM.2zEifnoz937Bi4X6H6c1lqJ5SAX2/Ii', 'N', 100),
+(377, 'e2b6aa8fe07dfcb796eae07e71a773ddb957c010c63321162cdfc2addfc73626', 0, 0, 0, 'Sdf', 'Dfgdfg', '$2a$12$orFo2lBbdEtss.CD.PvvKOwsm0UP56AkEXJWrDeSuVJAMIUeGafIC', 'N', 100),
+(378, 'aedfad644935f48c55071491b3d9667c5b810ff10a98932d263e84e9e9e433bf', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ayXjz8mppRNRD.EE3ZWbFeXBxifoKV3rr9zLnnNckUCinhbd9vFJW', 'M', 100),
+(379, '87497fdd3a9be9582d68c63c98326e2225d4cc57b3a4ba4969940664d36af0d1', 0, 0, 0, 'Anonymous', 'User', '$2a$12$taBofdYSbw3zsJeKWF7SYecGgiwhZcHa5tsB4ogkVvjSbr6zsYJym', 'M', 100),
+(380, 'dca9fb9e78697b7c8b69bec465f88e65d13d80315d2171e6ce58892d0030dff1', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6tGxnDPDjqJ2irA.mahbNejh24HI2h7doLAr.3kj6v3f.fW9rgP4m', 'M', 100),
+(381, '121eefe1d6b2b8a3ec4f5cb454bdd767c0fadcab7695454f86fd039e891b841e', 0, 0, 0, 'Anonymous', 'User', '$2a$12$K2BaiBVYjl5hr44ohHegQOnLzA6OFFtdRiTIaJlbry6QPrPcbe8f6', 'M', 100),
+(382, '61dabf1c1625069d714897169d2dc5d66403ad45c26eca09be78850f6d5e0abf', 0, 0, 0, 'Anonymous', 'User', '$2a$12$11DRiE3Wd4sdDUaHBhsWBeySXVaZuyzTx9Ly3HHHQULDWlEJZ4WWu', 'M', 100),
+(383, '69e3a29f9b502d869d921e9bc280631bd819d53bc811da9d05cf1bbbf30f1e2f', 0, 0, 0, 'Test', 'Account', '$2a$12$38Vqdopo9lkUPLzY7an2GOXzRGwpBYcXfIzh0PrbGQfbFQi6NM6CW', 'N', 100),
+(384, '1bcb5df8b74d05fae84b07e9e699cb9c077a7355f8fe3fc6eda8180ca1ec5c48', 0, 0, 0, 'Anonymous', 'User', '$2a$12$CTbkpEaWrDJdTvqYIoK3xeeZaEQgfqbuguRFk7XgKUe0b/zqtZXVm', 'M', 100),
+(385, 'cd8a0d4dd51004b17e7c95405cc83301cd1c35b9a1eb42c628d215aae0e0d905', 0, 0, 0, 'Anonymous', 'User', '$2a$12$OPwe82upsaD.Yqhtp/xgZeEIu3/b5PPEZu2xuWMuok0.tY/86uc9G', 'M', 100),
+(386, '9e533c90b98b0ae23949d9ab14a44bfc696943715ed6604a62ba6b7e747e8f0a', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0Wy3kfiMFkNil2vbJAjDLueE40ZHTpzWN4cQkltFbNDfkfrxb4u7e', 'M', 100),
+(387, '6fe786b0820b16d0b04c208cd03ad1a3d328e15bb133c747c2b38d5518390b0e', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eK7PJFkquq14Da0.w5HxGOQl3o4U6fB.mL8vnTK0sHE3B.KMEWXta', 'M', 100),
+(388, 'ac20d213a3b0068a22e205e0366c50f7bec77a3cd8acf66833dcb89503d1ef84', 0, 0, 0, 'Anonymous', 'User', '$2a$12$/5ONbHZftQslfmJ.bxTLZO0SMB4fca0gzSIdYdET79Sag6boZ6Y8.', 'M', 105),
+(389, '54c1ae58a9e8e9422b9aca01e47d15c927ec2066a95980da4832e9dc6a44382d', 0, 0, 0, 'Anonymous', 'User', '$2a$12$of3ObvvQ7bOjwEdsy6m1FuL8K6rVSusvrNawCG4CcqCFaQh92gdZK', 'M', 100),
+(390, 'b1e34d060f08155170f86d9981654319d8a31b3c76cd8600bbcb6e4ca4a25d3e', 0, 0, 0, 'Anonymous', 'User', '$2a$12$TFWwnEWDmAdzbGHiJrMI5.ITbDivkTlgNVs8fH6y.dNm2nlOow8Le', 'M', 100),
+(391, 'da34a410f5e86e8a20106a53228d91878ac9a1cf1153566b85502380743af5ab', 0, 0, 0, 'Anonymous', 'User', '$2a$12$o4l51Ef.DlB4jl8uW1cbHegOtWI0TbRNSbbp.kESC7/Fkvpg4VU.q', 'M', 100),
+(392, '298ec53a497bcdd1f10b9d0108bcd0e1bff913f7f020c15eabe19bd960ee9ebd', 0, 0, 0, 'Anonymous', 'User', '$2a$12$E2XgUsWiNfYXcnNy.h4y4ejUW/M9qIS7/NjAjRsuxDXK4oXHaq67e', 'M', 100),
+(393, '162d0fa88e0c6358b60c5399e3bc63bc8106dd67bda79cad83bd78fe16a345d2', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xNvnd6keZWeTQXrGTdSFfefTEGqrL0uG4BJ9mqIaRZfWszHbssJqK', 'M', 100),
+(394, '1a577c8668677929b7b449291174e0cfdcd36abbbd5a3e462a4283420ff5d15d', 0, 0, 0, 'Anonymous', 'User', '$2a$12$GjvSxCuJ4seren../R3y1OAVUjjNrkd70iOr7HAkVBrsk7YS6Y1oO', 'M', 100),
+(395, '320a0bab624b762e9c7517ac98f7edccef43d2a1d905704f5ecad5d021ec4562', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fjWtP62CNPsFVqKXRbv7HuGbe8F2nREbMnW5qg2GArAEhSrwF3VqO', 'M', 100),
+(396, '98c74a82ccba196683b5b90b553d87c5558bae6f0111fe649c8ae1418069ff47', 0, 0, 0, 'Anonymous', 'User', '$2a$12$RoA1UZ6svAOl0aDsn9MNj.cR6oLTeeyOS7JcuYCWGrWeeMhZgadDW', 'M', 100),
+(397, '919f686a743492644255445bbfc86027227e878ea0fde07da4a180c17e5556c7', 0, 0, 0, 'Anonymous', 'User', '$2a$12$RdKXuwPV.Ff/h905T8YrYejFTdyQUSHnFDmY4dijoVAurRF5xiLqm', 'M', 100),
+(398, '796b072f9d2cb5f50a27d4cae1126915428138e322573627eb71d127a8d55a47', 0, 0, 0, 'Anonymous', 'User', '$2a$12$HN4m0nksvSCyjMprj1E5MejvGGx10V2AJro7O3p9is7DmbTcdH07C', 'M', 100),
+(399, '6fc91f9569ed83fd29c1c6dca7e7764799c166b609c64e507a3d3b2adecdb1dc', 0, 0, 0, 'Anonymous', 'User', '$2a$12$2jjeBiORpSenQmZiR0iExOQ/vMvAQ18AHSvaYmxgcztHKF2bbbz1i', 'M', 100),
+(400, '6b5c3fafe117af94cc256e23cfb845a3912e6f2a5e896b36f0f3e15f677085b6', 0, 0, 0, 'Anonymous', 'User', '$2a$12$f/7zwcF6IIOxsNFXdy3Uvel1kvxWSGF9LQq6ehFppAiw89BKIBetm', 'M', 100),
+(402, '8a987b7a66e82168f9446453bbc9fe89532fdf201418ec672606ca147c72ad53', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ku/kXZk51y5F.dPprM51POhlSuDKDFGcWHebkHIkGMNXjzo4frfFm', 'M', 100),
+(403, 'a56440db20c1c88200d0916bd2e135b6dec3d51191ab78a56bc892980fd310c7', 0, 0, 0, 'Anonymous', 'User', '$2a$12$svwvEx1efKa0noaUZ3UM7ulQkwR00giI1D0DQGFj1SEQplJDOdcvK', 'M', 100),
+(404, '418533da2df712dab2328afe5e7e0d02816b3e6c8dd25aa9ae8bf28331b6ec4d', 0, 0, 0, 'Anonymous', 'User', '$2a$12$DKboOR86vVrUvhHRHWAcM.wpr.PCnXXXqN2ejOODDI3qFTL0NBmYi', 'M', 100),
+(405, '7255fb65843796631182d5ba1be87d06b77bddf0f1e08889760c7a13a9c8c59a', 0, 0, 0, 'Anonymous', 'User', '$2a$12$TKMXRvng6o4pP3DbS/CuSuHzEE5T59aSWoPebsHfQzTzgsuSa/M92', 'M', 100),
+(406, '3819c1d6d756f6b80a8c73debee85d4722826fb2e8684c803f3786810a750ddb', 0, 0, 0, 'Anonymous', 'User', '$2a$12$5sNCaROT2O7J/pibl2tbsu2kCszNgCRjWmkIfku4NfTrNkxcygzAy', 'M', 100),
+(407, 'ddc8b91ca95b5578bf4f20eae5f889180396d490a352d1a9f15e1e0ebceb115c', 0, 0, 0, 'Anonymous', 'User', '$2a$12$n/imkdq9nyVCxEHQPM06Ie.0ZbMnTzLFESepUcQ0qT13FltUXeG3G', 'M', 100),
+(408, '6b717679bc70f02add37e6b8fd75eab9ac8fa4df44368f80099143af83b4b2bf', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fk4LNmr9n6p3rhKFKsXrZuRI4u7nZC8f9LWvXzbtHfVGLZix95uk6', 'M', 100),
+(409, '45a1c334e912d44df298bf51c046c52b871a6a029f20911c763fbf538a20e63d', 0, 0, 0, 'Anonymous', 'User', '$2a$12$WcB1LYoIzvxDwRmsJZyajO0v9Nn40wTece1x0rkv9/L4KkVaPXAQa', 'M', 100),
+(410, 'f5b2949b79e7586d89f20e463bdac9cc62b361b9a96f80384f6990fa4386f569', 0, 0, 0, 'Anonymous', 'User', '$2a$12$LYTWCjg/BnsksULQL3b67.Chj7zQj7UnWjc38N4JU549qlLKr00je', 'M', 100),
+(411, '4c82671d8b9b5d0eaf133ffb39e06ee3493d2ab6a63d04d25ec0eb28c601a79c', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6BoJxWNH68lEQhTUMLKf6OZ5JR/YTzEcwTaXvqHDvTN3IeNCQuhlW', 'M', 100),
+(412, 'c3766369e1d9a733db38d6feed2a8d06bb170a206123d19c4db018fc87a71a91', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0cA8ORzmv54FdYKEIVOYyOTZrQa3UMdNBejaZ9caCL7ErnigjEWh2', 'M', 100),
+(413, '646fb70b2384481ca763b0813155bc8d41eb7249714858b4de7fb9fd25dd409d', 0, 0, 0, 'Anonymous', 'User', '$2a$12$GoOgP5TnxQRPAYfZ2SKHUewBhykRyCqENbPTODfeb5PnwpvZcchYu', 'M', 100),
+(414, '179856329998def1d2d4278afef55c48950b0e44ee8d57ba8aa8585492966552', 0, 0, 0, 'Anonymous', 'User', '$2a$12$SqOpHae.1Zvxbphi5v7pOeGoIBzL0SDNPDhgHwhGq8nvqvIqSB1x2', 'M', 100),
+(415, '895ac2f9802b323dbad5ab487f6253dd59179f48523c1f910e10b1b0ee5d7ed0', 0, 0, 0, 'Anonymous', 'User', '$2a$12$nT2CuTZy1DyuqAM9AYVnL.6Jv4jMECVGpWg47rUNtbKJXn1vcWZzG', 'M', 100),
+(416, '631baba5bd8f5295738dc84d8065a99769f75b53d1e4438179cb8d3d1bb961d0', 0, 0, 0, 'Anonymous', 'User', '$2a$12$1WRpeQaHRbrGeGl5b5rmbuyYnVFrSLwmzACPTVPOI1X334krSDvG6', 'M', 100),
+(417, 'ccb1f1e0e6cf8cbf9f191c7b3b2bd21289aadd12cb0eebd416de0ebfc67bd32d', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MW3QQy3g96wzYZfoT5XEtOA22yGVw9SSRCMrjoZA5h9jPEWP/DYgW', 'M', 100),
+(418, 'd87007ce3231cb81c3371947706780ac333c214fa3ed7ed139b49038dd4a90d0', 0, 0, 0, 'Anonymous', 'User', '$2a$12$DV9ZJ9qVkVCOYquSOwtJ7O2/fuO0S6ESuYW3ex0ypkIXJd64g4lKW', 'M', 105),
+(419, '352ffda7b2eb1fc962b404ef52698dac0c300ea5baf2c8d599e3600faafb56f1', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$k4Ypb5.l8vdCuqmdIYIeXOdSdZftId.mD.hVfd8rMQuMw6eKiB8xm', 'N', 100),
+(420, '7e2f8cca8ab5cc3a348464c4a83428132e2959c47b258337b7541c54738b7e28', 0, 0, 0, 'Anonymous', 'User', '$2a$12$wQv1qnotVYgBrp/eJG.dnOQWykyQzp6CQVwYmmrRDl0ITEFvEdFLW', 'M', 100),
+(421, '5d6f2c8662a23ac65c93e188a08cd45c972ecd9531a18593b9dd080006dfe3d8', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xTaUo1fth0ulTr.qgAcwWukEuhHqh4l0bygHakXc1auPWUPmVGBs.', 'M', 100),
+(422, '6c07b9042a88a36b0bb6ec58cfc0a1d03a9a0899d13b7b10588ee92bb2ef98b2', 0, 0, 0, 'Anonymous', 'User', '$2a$12$XXHo7fkQDnx7a3uX/JLAnOJTidsmu5sfSkihTQASG61vjM9GgM0g6', 'M', 100),
+(423, '902299addc1dd96fb88391d39a3b012cefb69bc00f2ba52299043c20e7d8c093', 0, 0, 0, 'Anonymous', 'User', '$2a$12$rhehPCK86Mj3Zh.NjoAbu.4JMaqoq0YGa5Y8q9YFLET/MXWJNMxzu', 'M', 100),
+(424, '22724903e293de8348bd64b11d0e55f328135377a84505fc51e50f9451c6ab6d', 0, 0, 0, 'Anonymous', 'User', '$2a$12$SJQJvMn6BQRFOevp/hfqR..VM5/cDVR2Z6JzWuN.1.cnLSZodCS6O', 'M', 100),
+(425, '2e843688c2aaec1ca65cedda5c0141d5acbc9e301bf541292f9e09c8fdedd273', 0, 0, 0, 'Anonymous', 'User', '$2a$12$iUwY1HNo57f0gKp1f.c4ZuJilphHnEKj5Ll0f2uaCL4fRmi/p2PXC', 'M', 100),
+(426, '2fdf6b2cc061d3829532bb46e6272c05abc4bc136a257b3ea98a8d3fccee27a9', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ehByPqqnBIkUGIKZ4smjmeOk09Q5CVDcZKRA7vGm2tnRtdB.M3V22', 'M', 100),
+(427, 'c523dce06f20ee36476e923025ea79aa881699ad317b316f6618fc093a696f32', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fojGqvyHM8yd1Ls3c/3t0OZ63gsg/CrnCKc20BddlQU7neQBhyp3K', 'M', 100),
+(428, '41ce1d4db4a270a440eededbfe92c04b7a5f84eb3e5e20e7723be7f09447a72e', 0, 0, 0, 'Anonymous', 'User', '$2a$12$wmBbEG/siKvGUEspzstCjeBzpcuN5KKfSj1N1GOTfzDYqrplHrgya', 'M', 100),
+(429, 'c51330abe255a5f6f8f97c0ef69ed9a840eeb4b62b3bf58a2571ba297925b778', 0, 0, 0, 'Anonymous', 'User', '$2a$12$A/AA2kD.YRnuKjB7rHeROeRrykCJY.zyVDqwhUhkIfN86vaTF2uMm', 'M', 100),
+(430, 'db548978c12d21ea9e385faa1397797e25991d3f31766ea915010b5914d9a6a8', 0, 0, 0, 'Anonymous', 'User', '$2a$12$T4xg3Dnb9RtydVpCqhjziegIhvlTcHRxAgTvv8C.kZxrYif894zSi', 'M', 100),
+(431, '76e729eda3d65674b713512c84549a735aa2077017094e42efb18fd57aae130c', 0, 0, 0, 'Anonymous', 'User', '$2a$12$frM3SeE2H9pkmJw5e2cmHelQYJv8gvK2rAan147Okx9T21JAsB.mO', 'M', 100),
+(432, '6a514449a63089faa84f1439fd04de99bb8acd88503d2b53993a91d5552adc33', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ovwx93RhECPmpElq9cWdx.fZrmABtFG5bl0rtmdNCzdBRqXk4JuYa', 'M', 100),
+(433, '82d3a7cdb87e85d231c280a4265098384d7cc59682af01f5700e6a22ed1d2af1', 0, 0, 0, 'Anonymous', 'User', '$2a$12$pFjLqik87NGv6R.xBsIf7e3HuZXzwFkfkUvMt7XKhu3LLBTTLol8m', 'M', 100),
+(434, '6b1ebf06b6928ab3a57a62416e3b1bc16b6520c4d95509df896509286c96db47', 0, 0, 0, 'Anonymous', 'User', '$2a$12$L5BTBdAON7gi1y56jaa5ZeC2AUehCU9KBkEpI4ZTIThCDOZ9L4t9q', 'M', 100),
+(435, '5fc024454be6c562b5be9f21bb2607c56fb60c5a450bcaf856bd41f1e8430551', 0, 0, 0, 'Anonymous', 'User', '$2a$12$zULi1s9MmkD5caDFhFa2WOZGR9Lp6TUkuBc1blpvITBvVQlDEf3Z2', 'M', 100),
+(436, 'e225e3ca49df6cc0f059fe5e0b4909928f05e0d9f634acdc81e95639a806a23f', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xmfGqpEh7yLlm3VR8f0Vh..c/pP4tTsDsCeRWRc1VyTKqbeb0ThEC', 'M', 100),
+(437, '4b1f83691eacaa40b19748687bc812372eb1cee90a7973d1e407eb6aba3c86fd', 0, 0, 0, 'Anonymous', 'User', '$2a$12$U7W09OykMUjf4ICTvq2z0ehJxqnDiQPt4G/6rWQeyp0SsuwTF3Ibu', 'M', 100),
+(438, 'e842f0d5f58ce636219385dfc180e6692e17f9ef3548086acf8f725d3d1ad816', 0, 0, 0, 'Anonymous', 'User', '$2a$12$JmOsE1QkpzmPLr0qY4h.luC41F5FAEck0PChy4DllgfM8X7b8o26W', 'M', 125),
+(439, '5047aacf104bc53fbe65a747268ca1e9407ff88bf1c9416ea66c64785258e8f8', 0, 0, 0, 'Anonymous', 'User', '$2a$12$WV1zNTANPLdOjiSRNnJH0uIG.zDJdeKXO1V1DbngIqIbRsPyueDQy', 'M', 100),
+(440, '7a4fae86e84e0b976aa3c9c8abd8f975dd1bdce8197758470d2543a9305f50d5', 0, 0, 0, 'Anonymous', 'User', '$2a$12$MagXldrwzpef2gDGGfj77OFSIrV3Aygd7zhulnRsTS5y.2KS/J2e2', 'M', 100),
+(441, 'aa61a75d4e907b74d1708fb540b748c2aef5ee420f7d801765ce99c196bf9ecc', 0, 0, 0, 'Anonymous', 'User', '$2a$12$uJn7rldyxhUs9KFNmCUylub/.2YPcHNHVel1xWmHxiW33cLqsUn2a', 'M', 100),
+(442, 'bc740fed71a9c87abe30f5b2e7811a240e5a951c7a440e271f0d02de48c62eb4', 0, 0, 0, 'Anonymous', 'User', '$2a$12$HXVmLwaGyheJyDn41h4xqOigLBTNZQbPX9J42wyQYxcvBf44vHhHO', 'M', 100),
+(443, 'd53c14a8c5861c78e717533ab555ba7873bcfc40d449a1abc739fd1c09f5faf2', 0, 0, 0, 'Anonymous', 'User', '$2a$12$x.3yb0/s.EmoBAnKXWPx9.Zk7WyGqPCVBQsKiHVqCwSWjpuv7VSda', 'M', 100),
+(444, 'eb661e900b1c94fee0ff0e5d6dd51ba25a32a73ee2fd1e76e8b21085e24ba2f4', 0, 0, 0, 'Anonymous', 'User', '$2a$12$mMltEgyC0IaAB5TN8eKkw.MPvsD9goXH0IQutN0DYnWTLmN0aXfcS', 'M', 100),
+(445, '695fef86ea31b8620401fd6ccc5ffec83b5e7a7ba21c3e327eeb6df039bd8a72', 0, 0, 0, 'Anonymous', 'User', '$2a$12$oWm7Pm2KaJwpGpMcZGOwwOA/iedNG8hft/I0kKpj1xqUGx9zA9k5y', 'M', 105),
+(446, 'cc721d02f2bea6c12a3f2b315ebb11a1214917c3c15db4f7811fa5cd77779dd4', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6cTuPGlcpbZ3umj1lLfqU.RLCNV4kg/IC3p8he8WN6xu1Q6RPKzhy', 'M', 100),
+(447, 'f1b096428e95e85de01565eeed24159f3973a86e81cae2fd700053ab86fcec4f', 0, 0, 0, 'Anonymous', 'User', '$2a$12$eoHiU8hHTfNOWOnrDQoCYePrq/QBtfF3ovvl5wPvWUDEqrjc.piAW', 'M', 100),
+(448, '151ae412ba5992506502d089928351e91f8c62ea81699be85ca5ba485af2c05b', 0, 0, 0, 'Nick', 'Test1', '$2a$12$cDRgcvFXTby5DZhjSRt13u3wrvKxJ4oompz/cV1vKw6awjKYJ2Y2S', 'N', 100),
+(449, 'b249a876238d15ab5e9efb3f54bcf486c504b5b79239485034f79593abcceb9a', 0, 0, 0, 'Test', 'Account', '$2a$12$.zdom7Vx/dm2nhUpLN1CiuDtSbDqfrX7BvGjul2WxfkOggLYn.NRi', 'N', 100),
+(450, '1e0db45b60a46065a469d5f7a4b6f2ead62029ae3697fb0846ace50e8babff7c', 0, 0, 0, 'Teat', 'Accoint', '$2a$12$.dnyexIPT/iowf1RkCkqg.k7uXtKTta3ecjMXY5AH.yI258nzNK8a', 'N', 105),
+(451, '356b69e7ff5574547d4832645c35545d19fd325c0f8323f33f2e5d316ef65dfd', 0, 0, 0, 'Anonymous', 'User', '$2a$12$2vwqc14DtlNkiRmQAbayve9lJH8a75vVqrPXm6exsfj/SBsSypyAa', 'M', 100),
+(452, '11c1c4d1c4059c77e820fca045cb605dda0594da746a05ee404cec28ada5c9ed', 0, 0, 0, 'Nick', 'Piscopiojr', '$2a$12$nGSPTXaq.0BtSKeuz26vVuvcZYrBRLXfC7nh4bRG5BIz5DPpQNKfq', 'N', 100),
+(453, 'b5db7855878e7ffefb5746c0bd15e1b7d23ace1e6209f9a19d92b7dc605f36ab', 0, 0, 0, 'Bnjnj', 'Njunjj', '$2a$12$gkslnRpNQJT4bnhBlOKr5e.suWaQybqGNey4Ih4KVNgM//NRpk0Vy', 'N', 100),
+(454, 'd4e2d2c699aea2eeb34af5cfb689514d866f24b9985146b6fb47050a6b662965', 0, 0, 0, 'Anonymous', 'User', '$2a$12$RYGgLsQb4qm9J8Zo0etIJOz7RX225dpAj/AEa27.Wu/uAyTGkjmsq', 'M', 100),
+(455, '9b3c7c6f4ee102f89a0417a9395be3557b593725b9317bda167a02574d6b2f00', 0, 0, 0, 'Anonymous', 'User', '$2a$12$/vIgLfmCagAr7lNjxuFAMe6xGnKFiupdKV2Y5tK0ziWAieyU2HeEK', 'M', 100),
+(456, '7ddcf8d7a13f8041045e00a3b08e0201336711d4234deff0a6183b75712d93a7', 0, 0, 0, 'Anonymous', 'User', '$2a$12$g0XxeUS4hUZd2v1/VTcEfu/BCUjwnpFEtvNT1uxAoUfjHhd2OFcge', 'M', 100),
+(457, '495027b45dd1c443144a4919001b89ae2d2ad2b672a1f4ff16fc989dc637b4cd', 0, 0, 0, 'Anonymous', 'User', '$2a$12$FAHeiXX9shM3nSFPBaFpm.CzMUUk/YjzxAonsWjgCmemr6BAwhlUO', 'M', 110),
+(458, '4a076d0e58cad0d6514184230284189668b61bf3ca7b0d9dedba24818d198188', 0, 0, 0, 'Anonymous', 'User', '$2a$12$cZwHwzkgObBlQUOGM.UkluKIeoT9aG9wVAvZC10ubz1n9Ph/mqWAq', 'M', 115),
+(459, 'dac34aa8ab90ad0b621c77db5d95cb5798fdc0206731384b7b63b54b7db551e1', 0, 0, 0, 'Anonymous', 'User', '$2a$12$pK.q2xfUI8CiGbG6wignhu/lChQ0eD6g.XuJEgz4QbSR46Qr1cSLa', 'M', 220),
+(460, 'f9e1cc180d09c40660ba87a898d81c9ba5ea1f90b43ff761b60e2ff315cfe4b9', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ODGOuUdbVi/lqmEJ.A.nKugqum/csVEa472GH4JXh3a/bre9KEkai', 'M', 190),
+(461, 'e67cbb705bd8b85b80d6ac4eb01fbd2bffec04d1a36095e24cc970761966337e', 0, 0, 0, 'Anonymous', 'User', '$2a$12$VRfvamgMwlYLxgtusy2AuujKXtPBERKDirV7nBdCqYDXNDg72z4yS', 'M', 140),
+(462, '8b5512726a3bbbfc81fe5084c9dd52ecd472d0197a4d94ebd36ff560def467c2', 0, 0, 0, 'Test', 'Account', '$2a$12$F17Ce0PaTaovwphS.pGOhO/d80czg3cznLIQPCRtyMUfuEpgZfxgW', 'N', 100),
+(463, 'ef2a729a5418f2cde6e3e082a6b609202ccd0bb01a6155b6bc10c31306934d55', 0, 0, 0, 'Anonymous', 'User', '$2a$12$f1lEDGRh2aSwQ/jliie2X.J/iOokdAauH9oAPaMnVASprFzC8PNMa', 'M', 100),
+(464, 'f6cc5536134f35b892b0db53019c6f1fa7c4bc00dfb1f0867f054dd919251c8c', 0, 0, 0, 'Anonymous', 'User', '$2a$12$6/1i.Zwm/ndO5gfyvL3E6egN1wxOnvmMRbXaLW8VPn5L.48kl4Pp6', 'M', 130),
+(465, '0fb90245c31fd7e079702ab5daa8ebf98d505827dd4bb0419d99751bd52f4580', 0, 0, 0, 'Anonymous', 'User', '$2a$12$gbv7BZcuS3Sm3TYl897yU.x9.Ui2nlrknvTyYfnN6eleiVQMAKtry', 'M', 105),
+(466, 'b917208a9e938ad96ad345499d28d8a389c4c7130e442fb49274b93eb505ac5c', 0, 0, 0, 'Anonymous', 'User', '$2a$12$fUaIeghLsfmsSoHN6b7Po.2vQsKP2QfPzjcB9HYBoTX1U4MeiWI0y', 'M', 190),
+(467, '2603e23b5262a4c0ad915ef6870d3828248be234abffc1d11bbb4c80183a2afa', 0, 0, 0, 'Anonymous', 'User', '$2a$12$LNFmzAqTsV7/cnKk6gNb3euXAu6b8tf1Pdov.Xr0gCFKYiUK0/5iS', 'M', 110),
+(468, '16969bcfddc3aff8899ac000e9dc482193187455d08340cffc400be7403daeef', 0, 0, 0, 'Anonymous', 'User', '$2a$12$qFkBfPwDZe6KdgG1q3iGJemLYu55ajiLRvGYYm8JH3JKIQH742ZEa', 'M', 305),
+(469, 'ae116977a0f23319e8f6fb68bd9ab6ab50a7b70e680b893b08308ac8e848a372', 0, 0, 0, 'Anonymous', 'User', '$2a$12$CHRX7Zyzi.oN26E2aCugsuPZTtv.du3HNRkqUfbXtgrPEK1Y5p4FS', 'M', 105),
+(470, '430d76388fec9b1c7c37979518e02aff1b02340943ebd119b4a18c3bf1cfdfdd', 0, 0, 0, 'Nick', 'Pisxopio', '$2a$12$bBcRMg.E8ohgyEKUFHPXleUWIRuP8XYZ9zq3Btajj96dmI4y45LUq', 'N', 100),
+(476, '923654e243fbfe59f0f0e7d958df05a076bc87ffb5c52e82629750115a321150', 0, 0, 0, 'Anonymous', 'User', '$2a$12$Qf/dgYYj7WaIRKoQTEd2Zuf.jHegCWZjIIPRho4/1noua5ES7Kczm', 'M', 100),
+(472, '940e405eb4b7967cb2ac8b238c057f8b82c3eb4740b9811228068fa7c755fba5', 0, 0, 0, 'Anonymous', 'User', '$2a$12$bGYcWepgYW9/OsUSLdFu3.sgt3f1Y.jhmjYHR/qTnj9ILycv5OE.y', 'M', 100),
+(473, 'd367f8fdb698cc607f856137c90647472c9ba0979f1d40625580b4fbc185f9a1', 0, 0, 0, 'Anonymous', 'User', '$2a$12$c61lw2nM4.AFpMvSrayJp.zP48PUJTd5xNXaqScM64dN0e8Wc6nn.', 'M', 100),
+(477, 'ad61cb125c7be37b25b755e01f23e8b98fbc4328732c63e949fbb579fb035492', 0, 0, 0, 'Anonymous', 'User', '$2a$12$pwFyNO8k5MDjCwwub6kqwutekQZSnJEGMpn/MfoDpX4WIyQJVjxtG', 'M', 105),
+(478, 'b525a4c3fd7f81c7cb6b72e097f52a1435a233926719467e57c406d636b5f7c3', 0, 0, 0, 'Nick', 'Jacob', '$2a$12$n/ga3OLfs1W3zkh0VoUTJ.JnHtllI3CkU/X55p83PmrOYhecz095G', 'N', 100),
+(480, '2ed5cac1ad3046b69abc5b0c93bf0716a952e9aec1c619f873398cf9f534b666', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$HHR3PRq4Ap9tcqi3ibIdg.muXqIy7Hhm6UbTrZfYjCEAoHboDqXEq', 'N', 100),
+(481, '09b7c0a5ba7f970b4128d9961293e3e35fa2a726ccf826d5c1ccd2c99e7d6adc', 0, 0, 0, 'Anonymous', 'User', '$2a$12$Huyln.96Dy6sYscD6FqKWOu.i4wstfg498UyK9n4F0U3oxxZE5jki', 'M', 165),
+(482, '2716e8998e7d0e5a04090e5818db0b1ef9de33fc3667ad6e8aa83bd1ea4c7d44', 0, 0, 0, 'Anonymous', 'User', '$2a$12$ldJ5KKIGmtTK149plb2tF.z3UFlOfLAmyq7CI9lY6kBejoOqioNMm', 'M', 110),
+(483, '4e601a69644d9aaeb8a5895b03b64f7cd15d3eaf6f5f2dc0b5325b946b667115', 0, 0, 0, 'Anonymous', 'User', '$2a$12$wjBLKNkfC1BAfqReyOLkneKxlW3Pt6K38Kdm.Nre0b6gtEbikw0/a', 'M', 305),
+(484, '33dcf610b82c297f59f3b9891b75fe96ec674cdb663a26c56b4a05707e2f3c56', 0, 0, 0, 'Anonymous', 'User', '$2a$12$v/vEmw3s./pWRmTwh4bSae9mRZgWpE/mrbsXvVXrkGHhJs3oRIste', 'M', 410),
+(485, '1666ae2527aef83fd18cfc3d548177c13f9e051cba71d93aa0324004a319f599', 0, 0, 0, 'Anonymous', 'User', '$2a$12$/pXe6vWiV5sptgLJ5lhLT.3fojS94n0Tq4SURGUPY898rKd9vO2aK', 'M', 175),
+(486, '86c73a2235211e5de14c70979051ebf4f9adcf24da70c7f41a1408952a8ba105', 0, 0, 0, 'Anonymous', 'User', '$2a$12$yAgE6q55../Q2.Zw.3r47uf7N7o9I1pKFfYAOVwHeMdIlWeJ2rOUC', 'M', 105),
+(487, '8315bd65c7a8f4646ea6f50c48ab459cd4ea6fddb52cec37268f94ecba73b0ad', 0, 0, 0, 'Anonymous', 'User', '$2a$12$W.xK6BAaPDgHXslkvqUzSug32gesfX8TeVoUc9.yE7e9ARtVf7Wky', 'M', 275),
+(488, '59da56d801d69db497a5cfb380e1797b194bcd11a31d2cb50efc129191693afa', 0, 0, 0, 'Anonymous', 'User', '$2a$12$0v/6K2GW/Agqo.OJ0jQupu7jJhUjLs8MWOKP6qmvEFMKiGzqbmz3y', 'M', 235),
+(489, '59af438af410f0cfeb98df4bdb94806c9d89ec779442e7360f574fd26a9944f9', 0, 0, 0, 'Anonymous', 'User', '$2a$12$I0rYAYuFyPjzfdPydr3r3.CyX1F7pcqpRoEQAJ4tJF5C2HruhzEhe', 'M', 115),
+(490, 'd472fe37e62adbb0716f73b29c4a7dfac3a583b051750a059d8bd387be817b5c', 0, 0, 0, 'Anonymous', 'User', '$2a$12$xm4i1Ugn8SPP2mwLdij0be/A9NSQZnqWzLFFHIHIQtsaKoP/JUorG', 'M', 100),
+(491, '03d60545c7a4096560b5bef0aa11886e1984d7980aeadf63b478ac35d804c56d', 0, 0, 0, 'Nick Jr.', 'Piscopio', '$2a$12$Kq5ZyYJG8wFZM5aHjeY8iuFKI9Z.aXzHQr5aiKu382LFiigpzzS8u', 'N', 100),
+(493, '4879d5ad710f7f00323dfd437ceed8a1265fa34d314d7b1d0945ef1ae63e9f7f', 0, 0, 0, 'Nick', 'Piscopio', '$2a$12$45ZEUIAEGg.PNHXCCOBFW.27UT24XVt.iLR2FDeOWE6c3pbZjub6S', 'N', 100),
+(494, '5cc675f4412a8be0bed9da80aac6f7fbbc9f0c32f6a75eb568feaea7949eb9bb', 0, 0, 0, 'Hnfhnh', 'Gthggrg', '$2a$12$xVpw/ALxdXDdlZUX5I0ZUu3S3GDQDU13iy/ljAgCzfL3Ea9WxdD6y', 'N', 100),
+(498, 'efbf7ca92f8bdf24ec7c427d433b488d0da7b3132f70ce510262ed9f13acf87c', 0, 0, 0, 'John\'', 'Smith\'-.', '$2a$12$FwLknVrTtF2j7WtV0uCYL.Ot5UMscyr.ciIfVhXHejm1zAPkCh/jy', 'N', 120),
+(497, '0c804d9f29bf67eb993c1f486fc35ade8469899a0abead2edc0aa5ba6d796986', 0, 0, 0, 'John\'', 'Smith', '$2a$12$qBS3lo6cXD4otSwic.gci.VZERBbxH4hdFmyOgQV6fKGkmZMXtY/u', 'N', 100),
+(43440, '0cc2315de6964cd12b70b0f135a139706c64def448e0c57fd373753abda1e55a', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$mcTWlupKGGQUOnRYZSKkIenMVqIial.yS0guLDO83yBvup8nWhB7S', 'N', 100),
+(43439, '845714552e1537be747faa3d1d159add58d93d6a4530a4f8ad6d5ebfdc4e6e72', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$5sPjh2/VfHqP6OZz5R0F6upa78KOERTohz9J4s5RFUZayy/HuilCK', 'N', 100),
+(43438, '63aff4f7d8e6343fe5d1a803fe26fc79fed85311472e88ed4c15d3792a08441b', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$TMpMSVmrI.UmCSRfWI4olOG6TbqNySkDtms4bsyhsA9yqxP//0JPW', 'N', 100),
+(43437, 'eb743a7bad8407605f0bcbfb8663b7a814d4b4487521f0c54ad2ce23b234deda', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$D5QZwsnTmr4oyoNEcClzPeBrbKH1.NsZ3ZRyNWElreOn2CooFcmgq', 'N', 100),
+(43436, 'eb743a7bad8407605f0bcbfb8663b7a814d4b4487521f0c54ad2ce23b234deda', 2147483647, 2147483647, NULL, 'John', 'Smith', '$2a$12$D5QZwsnTmr4oyoNEcClzPeBrbKH1.NsZ3ZRyNWElreOn2CooFcmgq', 'N', 100),
+(43441, 'c924155b6311f84b33979c1b970c9677d972cb70d61be7347e188480386ddfd9', 1492367318070, 1492367318070, NULL, 'John', 'Smith', '$2a$12$IcKNhe.zvyTi2U8Amx4rzOv//b4KvVuOorzT6yxad2u2Z8IlFH7M.', 'N', 100),
+(43442, 'd1e0b7cbf9ac5020b7a7b1b554415f7ad6c5ad9c616be5012c8db424ac8f0769', 1492367607130, 1492367607130, NULL, 'Anonymous', 'User', '$2a$12$isYkaC2qeDLV./0Cmvxyx.Jjw6tE9V7dKdcuFYDqeKjV/oA8U79Kq', 'M', 100),
+(43443, '2812d83bcdb3e675fb0895a3f9a17790ba08a431b90c5afcaf6170c43fefe6a8', 1492367749470, 1492367749470, NULL, 'Nick', 'Piscopio', '$2a$12$Fore9hK3INhaYBHAKQRdJu0Kj8rwsOYCsvghHyg0ijRmfFguHJHn2', 'N', 100),
+(43444, '0507a8d0bee02f0eda78b2298e8dc9d5fb027e04353b1cb3edffad1763255db8', 1492369117770, 1492369117770, NULL, 'Anonymous', 'User', '$2a$12$01MxHrLvmY0Vg/sPbWq3J..kJeun5JD7O7pSibX/658stlNKtVwyi', 'M', 100),
+(43445, '22f0fd07dc3f46fbf51d5bf8545f2903ced2ce51daf3ffff92352c64a149dbaf', 1492369197420, 1492369197420, NULL, 'Anonymous', 'User', '$2a$12$PTXSGLbUxSi2im/k1Ly4ne3.TWhJyFCaouuzSKeHL1s54g61/o/iK', 'M', 100),
+(43446, '91b373dd34f62bd56529e3273adaf5917718a321ad8631d9d91bf27d0b2a4225', 1492370040640, 1492370040640, NULL, 'Anonymous', 'User', '$2a$12$uRMPH1EI7kwSCkl.jx6Cb.ZjfKSqxhGpTmNijdSglUmkFy8RLAaHy', 'M', 100),
+(43447, 'f4b12120c193029c2843beecb30510fcb4a7a2ff21cc5c5431a5fd90ada4edaa', 1492370429680, 1492370429680, NULL, 'Anonymous', 'User', '$2a$12$AgF3A.hOkQLVJlw.Q0l.YO8wCk9XwTVfLpO5lBKHgwm98lXOM.c.W', 'M', 100),
+(43448, 'c93536333c980a82e4ec7e1633bfa4708b860b134b21db42db6b67fbddd30e23', 1492372051040, 1492372051040, NULL, 'Anonymous', 'User', '$2a$12$rBe0ohTu0.MrB3BIN704cuIF31nGUvFxLLS7qDE/3bs3IlE3gWHje', 'M', 100),
+(43449, '59946ebe4f3c88929efa9c06e184469f9be6b3c959cb9a11a57be36989494c94', 1492372118720, 1492372118720, NULL, 'Nick', 'Bob', '$2a$12$HljthNeGuR01/BXDKiYDyuI6Lcrdd1CcDYnL30rnvFR8sTlE1alSC', 'N', 100),
+(43450, '9d851b435ed96bbeab1e2b90d5b4adc57db8ecf096f1745ed1c1057ac54f313e', 1492484884330, 1492484884330, NULL, 'Anonymous', 'User', '$2a$12$9XwUBr6H9p4t/rj9Rvjqq.clRc4d9wUOr./HWPr7eZ/i0DlVDd/ia', 'M', 100),
+(43451, '0352d995c68f67deaf1b0c99225b6750f9d7bdad46a9efddbf1ff4ca0891f0d4', 1492484906000, 1492484906000, NULL, 'Anonymous', 'User', '$2a$12$XAZJ79DhViEsyfYR2/1Phef0lc.A5vRguznSqRCPMTkfJl9HOKQVC', 'M', 100),
+(43452, '065edddefa41ecc123a24f174b61fec5dd2ed0a74376b336803ae801988b4999', 1492484980810, 1492484980810, NULL, 'Anonymous', 'User', '$2a$12$Mk5oHK44VLpmD7fklGZjpu4Cyk1KLdOvEw/lI2cwjXuG2qTjrgYie', 'M', 100),
+(43453, 'd1fda1a082416cf1cca41290e0e908df91b3384e6e97ed241920e59356423607', 1492485128180, 1492485128180, NULL, 'Anonymous', 'User', '$2a$12$5i06gmNfFIk4dC4c0psTfOOPH4Kfo.iP1Uamz9.S.mO6f3dSdNv0O', 'M', 100),
+(43454, '77f321742eaccc7d90c63d6ac08542e7789aa01714969ac2eb2c072fd2b06531', 1492485183290, 1492485183290, NULL, 'Anonymous', 'User', '$2a$12$oqPWN3k9z/PmR6MdXCEbfOExfF6okNgeuhDlsN2xHep38Nmw5/CpC', 'M', 100),
+(43455, '5b76001fe01f26e5fe9604a5d280f0a1d944eb0c7fd187689a41968149e74d1e', 1492531442000, 1492531442000, NULL, 'Anonymous', 'User', '$2a$12$kl0.yTFBLp8biJihP.bJAecXUfQWsHcuO0cAqZBv2/XKFrZyFgonG', 'M', 100),
+(43456, '741e2b9c10bca9ca9bbb8f56bac1209d32c0c47cafe3829423b60dcc0c051443', 1492531571200, 1492531571200, NULL, 'Anonymous', 'User', '$2a$12$zdsDErGgm2CzgDqKFISRVOczrFFIsVe/9gL3c.V/4vrZFkR0tlDQG', 'M', 100),
+(43457, '73d202f596157ae01ea1e4ff724b6bb87b28324c061ed5adf88ac7d1e341f06d', 1492531642140, 1492531642140, NULL, 'Anonymous', 'User', '$2a$12$XLW9l.1rAq/KD1AwXHEkB.zaruYTbTfHNzsEwEW.8Llz3ooCsPyX.', 'M', 100),
+(43458, 'ea1a8a2c6033b0f97236cee3aaf3f93c7bd185302013c530f6d7ad7170564585', 1492531701040, 1492531701040, NULL, 'Anonymous', 'User', '$2a$12$/YjNz13DohYtotfO/mlvTuFJof/Bvf/9JiLq2A9a7R3cMKAoI3vd6', 'M', 100),
+(43459, 'f45dfd2455a6285a5ffa09fbf831a8d097c76ee6e0c7e6b270788e7638bfa089', 1492565884200, 1492565884200, NULL, 'Anonymous', 'User', '$2a$12$lO24hGNqS5tU5Qv6/CUvleqnvn9L9XLNHDGHgtssiDf2Ks.fEtb..', 'M', 100),
+(43460, 'd5dc8a3d9ae69733a8018dc15782058e7473daee7bef6238f039be3a59a7143c', 1492617728210, 1492617728210, NULL, 'Nick', 'Piscopio', '$2a$12$.chTz7ZgRba1uYyUx.mD..xrqto8HiTDFQY64JKUmzlAm9PBPYqsa', 'N', 100),
+(43461, 'a9c7b50cc914c723e5a1818626ffecdead190e4c20091c62972d72be0739f0e3', 1492653657780, 1492653657780, NULL, 'Anonymous', 'User', '$2a$12$GmELbFkqkbvJ9/t2ULB2Puwu8CFhAHP5mBPAWPjEZ6JtisQ3kZYre', 'M', 100),
+(43462, '07eeda906b1c6637e5d10c4eafea30318694a4b44b3a5afd862a1475ebcef039', 1492653867720, 1492653867720, NULL, 'Anonymous', 'User', '$2a$12$FucI//PmsGZ2QwuLIYmf5.gUxq4fqnJ8ZF4VhSrsPPkTWbctXZlDe', 'M', 100),
+(43463, '9c2b94930192446785ef2928e60b9a3b70467cb69c7016edee7f49e66fd73a1a', 1492654022950, 1492654022950, NULL, 'Anonymous', 'User', '$2a$12$i0tNfMury6r75qooil6Xbes/2N46gftmYpE/KcVk4kPXJJmq3fxIe', 'M', 100),
+(43464, '44e728dc27f60ca71c30d839709d6deb2ff017f0fa60c899500306ef7ede0da4', 1492654095880, 1492654095880, NULL, 'Anonymous', 'User', '$2a$12$A5l./7tBEcghtyJIB3iI9u0yMam6gf2tQepKW44pbUxvOJrgdqYsS', 'M', 100),
+(43465, '4845e3ee74c9cafbe568d7ac97a2e390297a7d593b662ee315b842d737367456', 1492654185330, 1492654185330, NULL, 'Nick', 'Piscopio', '$2a$12$bZkwNIlWBjuutaWCN0Kl2.JoNU8WR5eQKspqUxrWTihefq7FjOES2', 'N', 100),
+(43466, '53c85544e572903190027b7b6cef322df9859ebd10d6d49e3203510fda8f0bf6', 1492664126890, 1492664126890, NULL, 'Anonymous', 'User', '$2a$12$8p9WVMlcECrQk4hWvvRrae6cPhshfy27dC8jDF9zLlmpjQJDmqsAa', 'M', 100),
+(43469, 'db4918b97ddea8ab3e07c19f762533be8bf573aeaf6b2476c3d9cd35f59b023a', 1492789029230, 1492789029230, NULL, 'Anonymous', 'User', '$2a$12$bPbG8jlkHqu.PMENIusZgOQFM8Lv0SZa5hTc/T4oqkrfh.oZLJd.O', 'M', 100),
+(43470, 'e396ee928ebca300f821d9b3d00a14c6a08b3a4961203aff0d81ba9f3ec816f6', 1492962104250, 1492962104250, NULL, 'John', 'Smith', '$2a$12$CNzR8XLBR5iMM/JD96MiUOZJkqja3Ebg4steqwCjejjKqB..7OtCa', 'N', 100),
+(43471, 'f85b94f14dcfa00b59095e08d3e852df2c840144ebbbea6124bb160196d0b430', 1492962125560, 1495296111540, NULL, 'John', 'Smith', '$2a$12$9XXqo9sDeUooGuc2bYxL3ef2K.xBY0lRsOiVc87dNWwyGgPCNRsPC', 'N', 100),
+(43475, '83c59a2f85e9d75dcee047a55538df85f1b61e1d5aefa6bda7a3d6ef419ec835', 1493580622850, 1494037599630, NULL, 'Greg', 'Dalfonso', '$2a$12$ZU9HACKQzNVL02eZNyvS5.Fe5/GyNvoTPXXMyU4Gsp792Hf1OSyvi', 'N', 100),
+(43481, '752773cdfa3fd36c3057136747e74dbf860d1d6589149151d43753544f0e5c9b', 1495310057000, 1495310057000, NULL, 'Anonymous', 'User', '$2a$12$ZSuYaijM/6fxrqUwoRePuONMvX.SrB03Pipa9X.B2fhlaQab3n9Iu', 'M', 100),
+(43482, 'd7436efda37322aa4dce834f2bc5a78c5138000ed99f3fa820fd3950f84da270', 1495310128070, 1495310128070, NULL, 'Anonymous', 'User', '$2a$12$oMdb0vfizEK8Ukc2d/MPc.jykreO57ELYZJZkHyC/0INFBHmdydbS', 'M', 100),
+(43483, 'e60eb8b8c50c045cb2560385a82586c0d30062daa1a75d49e35c7ef6045ad56d', 1495310209930, 1495310209930, NULL, 'Anonymous', 'User', '$2a$12$j0Gw95SNEklQSH85AwuCheCSuwZQIKaOvIjBXG3ZtlxbqphqhzIte', 'M', 100),
+(43484, '7afbd3380ee9edc6d0de8f327e55ce155b8c2f272628fdf3ac06cd1f8e78d73a', 1495310263680, 1495310263680, NULL, 'Anonymous', 'User', '$2a$12$t6eB69wzn088tNlw/c7OVu8BK49km1DVD8sX8cQVFvflXmoCAzwy6', 'M', 100),
+(43485, 'acaaa40b507f5d08c662ae8936d19f0f66430b63c76205197b72324b17749356', 1495310395490, 1495310395490, NULL, 'Anonymous', 'User', '$2a$12$PrPAZuSf69r2Nx13hB0qwuL4EggZBGlOMTEJPQ7tzgbfJhCZQXyeC', 'M', 100),
+(43486, '09322c1bf9206fa09417473e417d0b949a5af92c9cd1bd4facdc5936c3c8ec84', 1495310530860, 1495310530860, NULL, 'Anonymous', 'User', '$2a$12$7dEdrhRQcWuDK0eMjDGet.HnKFa6appTTVscho5MH8WS876CvttgO', 'M', 100),
+(43490, 'f8bcc26c691fc634dfe3a5cfdf3d53a2bb1def800faa36fe3c8509791af57d4d', 1495311419870, 1495311419870, NULL, 'Anonymous', 'User', '$2a$12$yY.zL8nEVRUmtXHx264SLOiwtxMBGJvsZI8spqSybUqn9A5kSjRI2', 'M', 100);
 
 -- --------------------------------------------------------
 
@@ -15931,14 +15991,13 @@ INSERT INTO `User` (`ID`, `Email`, `CreatedDate`, `LastLoginDate`, `EarnedFitnes
 -- Table structure for table `UserEquipment`
 --
 
-CREATE TABLE IF NOT EXISTS `UserEquipment` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `UserEquipment` (
+  `ID` int(11) NOT NULL,
   `DisplayName` varchar(30) NOT NULL,
   `Location` varchar(125) NOT NULL DEFAULT 'Default',
   `EquipmentName` varchar(75) NOT NULL,
-  `UserId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12365 ;
+  `UserId` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `UserEquipment`
@@ -16204,7 +16263,952 @@ INSERT INTO `UserEquipment` (`ID`, `DisplayName`, `Location`, `EquipmentName`, `
 (12361, '', 'Default', 'Squat Machine', 567),
 (12362, '', 'Default', 'Step', 567),
 (12363, '', 'Default', 'Treadmill', 567),
-(12364, '', 'Default', 'Wall', 567);
+(12364, '', 'Default', 'Wall', 567),
+(12365, '', 'Default', 'Barbell', 43438),
+(12366, '', 'Default', 'Bench', 43438),
+(12367, '', 'Default', 'Bench Rack', 43438),
+(12368, '', 'Default', 'Bike', 43438),
+(12369, '', 'Default', 'Cable Pull', 43438),
+(12370, '', 'Default', 'Cable Row Machine', 43438),
+(12371, '', 'Default', 'Chair', 43438),
+(12372, '', 'Default', 'Dumbbells', 43438),
+(12373, '', 'Default', 'Elliptical', 43438),
+(12374, '', 'Default', 'Exercise Box', 43438),
+(12375, '', 'Default', 'Leg Curl Machine', 43438),
+(12376, '', 'Default', 'Leg Extension Machine', 43438),
+(12377, '', 'Default', 'Leg Press Machine', 43438),
+(12378, '', 'Default', 'Preacher Curl Bench', 43438),
+(12379, '', 'Default', 'Preacher Curl Machine', 43438),
+(12380, '', 'Default', 'Pull Down Machine', 43438),
+(12381, '', 'Default', 'Pull Up Bar', 43438),
+(12382, '', 'Default', 'Roman Chair', 43438),
+(12383, '', 'Default', 'Shoulder Press Machine', 43438),
+(12384, '', 'Default', 'Squat Machine', 43438),
+(12385, '', 'Default', 'Step', 43438),
+(12386, '', 'Default', 'Treadmill', 43438),
+(12387, '', 'Default', 'Wall', 43438),
+(12388, '', 'Default', 'Barbell', 43439),
+(12389, '', 'Default', 'Bench', 43439),
+(12390, '', 'Default', 'Bench Rack', 43439),
+(12391, '', 'Default', 'Bike', 43439),
+(12392, '', 'Default', 'Cable Pull', 43439),
+(12393, '', 'Default', 'Cable Row Machine', 43439),
+(12394, '', 'Default', 'Chair', 43439),
+(12395, '', 'Default', 'Dumbbells', 43439),
+(12396, '', 'Default', 'Elliptical', 43439),
+(12397, '', 'Default', 'Exercise Box', 43439),
+(12398, '', 'Default', 'Leg Curl Machine', 43439),
+(12399, '', 'Default', 'Leg Extension Machine', 43439),
+(12400, '', 'Default', 'Leg Press Machine', 43439),
+(12401, '', 'Default', 'Preacher Curl Bench', 43439),
+(12402, '', 'Default', 'Preacher Curl Machine', 43439),
+(12403, '', 'Default', 'Pull Down Machine', 43439),
+(12404, '', 'Default', 'Pull Up Bar', 43439),
+(12405, '', 'Default', 'Roman Chair', 43439),
+(12406, '', 'Default', 'Shoulder Press Machine', 43439),
+(12407, '', 'Default', 'Squat Machine', 43439),
+(12408, '', 'Default', 'Step', 43439),
+(12409, '', 'Default', 'Treadmill', 43439),
+(12410, '', 'Default', 'Wall', 43439),
+(12411, '', 'Default', 'Barbell', 43440),
+(12412, '', 'Default', 'Bench', 43440),
+(12413, '', 'Default', 'Bench Rack', 43440),
+(12414, '', 'Default', 'Bike', 43440),
+(12415, '', 'Default', 'Cable Pull', 43440),
+(12416, '', 'Default', 'Cable Row Machine', 43440),
+(12417, '', 'Default', 'Chair', 43440),
+(12418, '', 'Default', 'Dumbbells', 43440),
+(12419, '', 'Default', 'Elliptical', 43440),
+(12420, '', 'Default', 'Exercise Box', 43440),
+(12421, '', 'Default', 'Leg Curl Machine', 43440),
+(12422, '', 'Default', 'Leg Extension Machine', 43440),
+(12423, '', 'Default', 'Leg Press Machine', 43440),
+(12424, '', 'Default', 'Preacher Curl Bench', 43440),
+(12425, '', 'Default', 'Preacher Curl Machine', 43440),
+(12426, '', 'Default', 'Pull Down Machine', 43440),
+(12427, '', 'Default', 'Pull Up Bar', 43440),
+(12428, '', 'Default', 'Roman Chair', 43440),
+(12429, '', 'Default', 'Shoulder Press Machine', 43440),
+(12430, '', 'Default', 'Squat Machine', 43440),
+(12431, '', 'Default', 'Step', 43440),
+(12432, '', 'Default', 'Treadmill', 43440),
+(12433, '', 'Default', 'Wall', 43440),
+(12434, '', 'Default', 'Barbell', 43441),
+(12435, '', 'Default', 'Bench', 43441),
+(12436, '', 'Default', 'Bench Rack', 43441),
+(12437, '', 'Default', 'Bike', 43441),
+(12438, '', 'Default', 'Cable Pull', 43441),
+(12439, '', 'Default', 'Cable Row Machine', 43441),
+(12440, '', 'Default', 'Chair', 43441),
+(12441, '', 'Default', 'Dumbbells', 43441),
+(12442, '', 'Default', 'Elliptical', 43441),
+(12443, '', 'Default', 'Exercise Box', 43441),
+(12444, '', 'Default', 'Leg Curl Machine', 43441),
+(12445, '', 'Default', 'Leg Extension Machine', 43441),
+(12446, '', 'Default', 'Leg Press Machine', 43441),
+(12447, '', 'Default', 'Preacher Curl Bench', 43441),
+(12448, '', 'Default', 'Preacher Curl Machine', 43441),
+(12449, '', 'Default', 'Pull Down Machine', 43441),
+(12450, '', 'Default', 'Pull Up Bar', 43441),
+(12451, '', 'Default', 'Roman Chair', 43441),
+(12452, '', 'Default', 'Shoulder Press Machine', 43441),
+(12453, '', 'Default', 'Squat Machine', 43441),
+(12454, '', 'Default', 'Step', 43441),
+(12455, '', 'Default', 'Treadmill', 43441),
+(12456, '', 'Default', 'Wall', 43441),
+(12457, '', 'Default', 'Barbell', 43442),
+(12458, '', 'Default', 'Bench', 43442),
+(12459, '', 'Default', 'Bench Rack', 43442),
+(12460, '', 'Default', 'Bike', 43442),
+(12461, '', 'Default', 'Cable Pull', 43442),
+(12462, '', 'Default', 'Cable Row Machine', 43442),
+(12463, '', 'Default', 'Chair', 43442),
+(12464, '', 'Default', 'Dumbbells', 43442),
+(12465, '', 'Default', 'Elliptical', 43442),
+(12466, '', 'Default', 'Exercise Box', 43442),
+(12467, '', 'Default', 'Leg Curl Machine', 43442),
+(12468, '', 'Default', 'Leg Extension Machine', 43442),
+(12469, '', 'Default', 'Leg Press Machine', 43442),
+(12470, '', 'Default', 'Preacher Curl Bench', 43442),
+(12471, '', 'Default', 'Preacher Curl Machine', 43442),
+(12472, '', 'Default', 'Pull Down Machine', 43442),
+(12473, '', 'Default', 'Pull Up Bar', 43442),
+(12474, '', 'Default', 'Roman Chair', 43442),
+(12475, '', 'Default', 'Shoulder Press Machine', 43442),
+(12476, '', 'Default', 'Squat Machine', 43442),
+(12477, '', 'Default', 'Step', 43442),
+(12478, '', 'Default', 'Treadmill', 43442),
+(12479, '', 'Default', 'Wall', 43442),
+(12480, '', 'Default', 'Barbell', 43443),
+(12481, '', 'Default', 'Bench', 43443),
+(12482, '', 'Default', 'Bench Rack', 43443),
+(12483, '', 'Default', 'Bike', 43443),
+(12484, '', 'Default', 'Cable Pull', 43443),
+(12485, '', 'Default', 'Cable Row Machine', 43443),
+(12486, '', 'Default', 'Chair', 43443),
+(12487, '', 'Default', 'Dumbbells', 43443),
+(12488, '', 'Default', 'Elliptical', 43443),
+(12489, '', 'Default', 'Exercise Box', 43443),
+(12490, '', 'Default', 'Leg Curl Machine', 43443),
+(12491, '', 'Default', 'Leg Extension Machine', 43443),
+(12492, '', 'Default', 'Leg Press Machine', 43443),
+(12493, '', 'Default', 'Preacher Curl Bench', 43443),
+(12494, '', 'Default', 'Preacher Curl Machine', 43443),
+(12495, '', 'Default', 'Pull Down Machine', 43443),
+(12496, '', 'Default', 'Pull Up Bar', 43443),
+(12497, '', 'Default', 'Roman Chair', 43443),
+(12498, '', 'Default', 'Shoulder Press Machine', 43443),
+(12499, '', 'Default', 'Squat Machine', 43443),
+(12500, '', 'Default', 'Step', 43443),
+(12501, '', 'Default', 'Treadmill', 43443),
+(12502, '', 'Default', 'Wall', 43443),
+(12503, '', 'Default', 'Barbell', 43444),
+(12504, '', 'Default', 'Bench', 43444),
+(12505, '', 'Default', 'Bench Rack', 43444),
+(12506, '', 'Default', 'Bike', 43444),
+(12507, '', 'Default', 'Cable Pull', 43444),
+(12508, '', 'Default', 'Cable Row Machine', 43444),
+(12509, '', 'Default', 'Chair', 43444),
+(12510, '', 'Default', 'Dumbbells', 43444),
+(12511, '', 'Default', 'Elliptical', 43444),
+(12512, '', 'Default', 'Exercise Box', 43444),
+(12513, '', 'Default', 'Leg Curl Machine', 43444),
+(12514, '', 'Default', 'Leg Extension Machine', 43444),
+(12515, '', 'Default', 'Leg Press Machine', 43444),
+(12516, '', 'Default', 'Preacher Curl Bench', 43444),
+(12517, '', 'Default', 'Preacher Curl Machine', 43444),
+(12518, '', 'Default', 'Pull Down Machine', 43444),
+(12519, '', 'Default', 'Pull Up Bar', 43444),
+(12520, '', 'Default', 'Roman Chair', 43444),
+(12521, '', 'Default', 'Shoulder Press Machine', 43444),
+(12522, '', 'Default', 'Squat Machine', 43444),
+(12523, '', 'Default', 'Step', 43444),
+(12524, '', 'Default', 'Treadmill', 43444),
+(12525, '', 'Default', 'Wall', 43444),
+(12526, '', 'Default', 'Barbell', 43445),
+(12527, '', 'Default', 'Bench', 43445),
+(12528, '', 'Default', 'Bench Rack', 43445),
+(12529, '', 'Default', 'Bike', 43445),
+(12530, '', 'Default', 'Cable Pull', 43445),
+(12531, '', 'Default', 'Cable Row Machine', 43445),
+(12532, '', 'Default', 'Chair', 43445),
+(12533, '', 'Default', 'Dumbbells', 43445),
+(12534, '', 'Default', 'Elliptical', 43445),
+(12535, '', 'Default', 'Exercise Box', 43445),
+(12536, '', 'Default', 'Leg Curl Machine', 43445),
+(12537, '', 'Default', 'Leg Extension Machine', 43445),
+(12538, '', 'Default', 'Leg Press Machine', 43445),
+(12539, '', 'Default', 'Preacher Curl Bench', 43445),
+(12540, '', 'Default', 'Preacher Curl Machine', 43445),
+(12541, '', 'Default', 'Pull Down Machine', 43445),
+(12542, '', 'Default', 'Pull Up Bar', 43445),
+(12543, '', 'Default', 'Roman Chair', 43445),
+(12544, '', 'Default', 'Shoulder Press Machine', 43445),
+(12545, '', 'Default', 'Squat Machine', 43445),
+(12546, '', 'Default', 'Step', 43445),
+(12547, '', 'Default', 'Treadmill', 43445),
+(12548, '', 'Default', 'Wall', 43445),
+(12549, '', 'Default', 'Barbell', 43446),
+(12550, '', 'Default', 'Bench', 43446),
+(12551, '', 'Default', 'Bench Rack', 43446),
+(12552, '', 'Default', 'Bike', 43446),
+(12553, '', 'Default', 'Cable Pull', 43446),
+(12554, '', 'Default', 'Cable Row Machine', 43446),
+(12555, '', 'Default', 'Chair', 43446),
+(12556, '', 'Default', 'Dumbbells', 43446),
+(12557, '', 'Default', 'Elliptical', 43446),
+(12558, '', 'Default', 'Exercise Box', 43446),
+(12559, '', 'Default', 'Leg Curl Machine', 43446),
+(12560, '', 'Default', 'Leg Extension Machine', 43446),
+(12561, '', 'Default', 'Leg Press Machine', 43446),
+(12562, '', 'Default', 'Preacher Curl Bench', 43446),
+(12563, '', 'Default', 'Preacher Curl Machine', 43446),
+(12564, '', 'Default', 'Pull Down Machine', 43446),
+(12565, '', 'Default', 'Pull Up Bar', 43446),
+(12566, '', 'Default', 'Roman Chair', 43446),
+(12567, '', 'Default', 'Shoulder Press Machine', 43446),
+(12568, '', 'Default', 'Squat Machine', 43446),
+(12569, '', 'Default', 'Step', 43446),
+(12570, '', 'Default', 'Treadmill', 43446),
+(12571, '', 'Default', 'Wall', 43446),
+(12572, '', 'Default', 'Barbell', 43447),
+(12573, '', 'Default', 'Bench', 43447),
+(12574, '', 'Default', 'Bench Rack', 43447),
+(12575, '', 'Default', 'Bike', 43447),
+(12576, '', 'Default', 'Cable Pull', 43447),
+(12577, '', 'Default', 'Cable Row Machine', 43447),
+(12578, '', 'Default', 'Chair', 43447),
+(12579, '', 'Default', 'Dumbbells', 43447),
+(12580, '', 'Default', 'Elliptical', 43447),
+(12581, '', 'Default', 'Exercise Box', 43447),
+(12582, '', 'Default', 'Leg Curl Machine', 43447),
+(12583, '', 'Default', 'Leg Extension Machine', 43447),
+(12584, '', 'Default', 'Leg Press Machine', 43447),
+(12585, '', 'Default', 'Preacher Curl Bench', 43447),
+(12586, '', 'Default', 'Preacher Curl Machine', 43447),
+(12587, '', 'Default', 'Pull Down Machine', 43447),
+(12588, '', 'Default', 'Pull Up Bar', 43447),
+(12589, '', 'Default', 'Roman Chair', 43447),
+(12590, '', 'Default', 'Shoulder Press Machine', 43447),
+(12591, '', 'Default', 'Squat Machine', 43447),
+(12592, '', 'Default', 'Step', 43447),
+(12593, '', 'Default', 'Treadmill', 43447),
+(12594, '', 'Default', 'Wall', 43447),
+(12595, '', 'Default', 'Barbell', 43448),
+(12596, '', 'Default', 'Bench', 43448),
+(12597, '', 'Default', 'Bench Rack', 43448),
+(12598, '', 'Default', 'Bike', 43448),
+(12599, '', 'Default', 'Cable Pull', 43448),
+(12600, '', 'Default', 'Cable Row Machine', 43448),
+(12601, '', 'Default', 'Chair', 43448),
+(12602, '', 'Default', 'Dumbbells', 43448),
+(12603, '', 'Default', 'Elliptical', 43448),
+(12604, '', 'Default', 'Exercise Box', 43448),
+(12605, '', 'Default', 'Leg Curl Machine', 43448),
+(12606, '', 'Default', 'Leg Extension Machine', 43448),
+(12607, '', 'Default', 'Leg Press Machine', 43448),
+(12608, '', 'Default', 'Preacher Curl Bench', 43448),
+(12609, '', 'Default', 'Preacher Curl Machine', 43448),
+(12610, '', 'Default', 'Pull Down Machine', 43448),
+(12611, '', 'Default', 'Pull Up Bar', 43448),
+(12612, '', 'Default', 'Roman Chair', 43448),
+(12613, '', 'Default', 'Shoulder Press Machine', 43448),
+(12614, '', 'Default', 'Squat Machine', 43448),
+(12615, '', 'Default', 'Step', 43448),
+(12616, '', 'Default', 'Treadmill', 43448),
+(12617, '', 'Default', 'Wall', 43448),
+(12618, '', 'Default', 'Barbell', 43449),
+(12619, '', 'Default', 'Bench', 43449),
+(12620, '', 'Default', 'Bench Rack', 43449),
+(12621, '', 'Default', 'Bike', 43449),
+(12622, '', 'Default', 'Cable Pull', 43449),
+(12623, '', 'Default', 'Cable Row Machine', 43449),
+(12624, '', 'Default', 'Chair', 43449),
+(12625, '', 'Default', 'Dumbbells', 43449),
+(12626, '', 'Default', 'Elliptical', 43449),
+(12627, '', 'Default', 'Exercise Box', 43449),
+(12628, '', 'Default', 'Leg Curl Machine', 43449),
+(12629, '', 'Default', 'Leg Extension Machine', 43449),
+(12630, '', 'Default', 'Leg Press Machine', 43449),
+(12631, '', 'Default', 'Preacher Curl Bench', 43449),
+(12632, '', 'Default', 'Preacher Curl Machine', 43449),
+(12633, '', 'Default', 'Pull Down Machine', 43449),
+(12634, '', 'Default', 'Pull Up Bar', 43449),
+(12635, '', 'Default', 'Roman Chair', 43449),
+(12636, '', 'Default', 'Shoulder Press Machine', 43449),
+(12637, '', 'Default', 'Squat Machine', 43449),
+(12638, '', 'Default', 'Step', 43449),
+(12639, '', 'Default', 'Treadmill', 43449),
+(12640, '', 'Default', 'Wall', 43449),
+(12641, '', 'Default', 'Barbell', 43450),
+(12642, '', 'Default', 'Bench', 43450),
+(12643, '', 'Default', 'Bench Rack', 43450),
+(12644, '', 'Default', 'Bike', 43450),
+(12645, '', 'Default', 'Cable Pull', 43450),
+(12646, '', 'Default', 'Cable Row Machine', 43450),
+(12647, '', 'Default', 'Chair', 43450),
+(12648, '', 'Default', 'Dumbbells', 43450),
+(12649, '', 'Default', 'Elliptical', 43450),
+(12650, '', 'Default', 'Exercise Box', 43450),
+(12651, '', 'Default', 'Leg Curl Machine', 43450),
+(12652, '', 'Default', 'Leg Extension Machine', 43450),
+(12653, '', 'Default', 'Leg Press Machine', 43450),
+(12654, '', 'Default', 'Preacher Curl Bench', 43450),
+(12655, '', 'Default', 'Preacher Curl Machine', 43450),
+(12656, '', 'Default', 'Pull Down Machine', 43450),
+(12657, '', 'Default', 'Pull Up Bar', 43450),
+(12658, '', 'Default', 'Roman Chair', 43450),
+(12659, '', 'Default', 'Shoulder Press Machine', 43450),
+(12660, '', 'Default', 'Squat Machine', 43450),
+(12661, '', 'Default', 'Step', 43450),
+(12662, '', 'Default', 'Treadmill', 43450),
+(12663, '', 'Default', 'Wall', 43450),
+(12664, '', 'Default', 'Barbell', 43451),
+(12665, '', 'Default', 'Bench', 43451),
+(12666, '', 'Default', 'Bench Rack', 43451),
+(12667, '', 'Default', 'Bike', 43451),
+(12668, '', 'Default', 'Cable Pull', 43451),
+(12669, '', 'Default', 'Cable Row Machine', 43451),
+(12670, '', 'Default', 'Chair', 43451),
+(12671, '', 'Default', 'Dumbbells', 43451),
+(12672, '', 'Default', 'Elliptical', 43451),
+(12673, '', 'Default', 'Exercise Box', 43451),
+(12674, '', 'Default', 'Leg Curl Machine', 43451),
+(12675, '', 'Default', 'Leg Extension Machine', 43451),
+(12676, '', 'Default', 'Leg Press Machine', 43451),
+(12677, '', 'Default', 'Preacher Curl Bench', 43451),
+(12678, '', 'Default', 'Preacher Curl Machine', 43451),
+(12679, '', 'Default', 'Pull Down Machine', 43451),
+(12680, '', 'Default', 'Pull Up Bar', 43451),
+(12681, '', 'Default', 'Roman Chair', 43451),
+(12682, '', 'Default', 'Shoulder Press Machine', 43451),
+(12683, '', 'Default', 'Squat Machine', 43451),
+(12684, '', 'Default', 'Step', 43451),
+(12685, '', 'Default', 'Treadmill', 43451),
+(12686, '', 'Default', 'Wall', 43451),
+(12687, '', 'Default', 'Barbell', 43452),
+(12688, '', 'Default', 'Bench', 43452),
+(12689, '', 'Default', 'Bench Rack', 43452),
+(12690, '', 'Default', 'Bike', 43452),
+(12691, '', 'Default', 'Cable Pull', 43452),
+(12692, '', 'Default', 'Cable Row Machine', 43452),
+(12693, '', 'Default', 'Chair', 43452),
+(12694, '', 'Default', 'Dumbbells', 43452),
+(12695, '', 'Default', 'Elliptical', 43452),
+(12696, '', 'Default', 'Exercise Box', 43452),
+(12697, '', 'Default', 'Leg Curl Machine', 43452),
+(12698, '', 'Default', 'Leg Extension Machine', 43452),
+(12699, '', 'Default', 'Leg Press Machine', 43452),
+(12700, '', 'Default', 'Preacher Curl Bench', 43452),
+(12701, '', 'Default', 'Preacher Curl Machine', 43452),
+(12702, '', 'Default', 'Pull Down Machine', 43452),
+(12703, '', 'Default', 'Pull Up Bar', 43452),
+(12704, '', 'Default', 'Roman Chair', 43452),
+(12705, '', 'Default', 'Shoulder Press Machine', 43452),
+(12706, '', 'Default', 'Squat Machine', 43452),
+(12707, '', 'Default', 'Step', 43452),
+(12708, '', 'Default', 'Treadmill', 43452),
+(12709, '', 'Default', 'Wall', 43452),
+(12710, '', 'Default', 'Barbell', 43453),
+(12711, '', 'Default', 'Bench', 43453),
+(12712, '', 'Default', 'Bench Rack', 43453),
+(12713, '', 'Default', 'Bike', 43453),
+(12714, '', 'Default', 'Cable Pull', 43453),
+(12715, '', 'Default', 'Cable Row Machine', 43453),
+(12716, '', 'Default', 'Chair', 43453),
+(12717, '', 'Default', 'Dumbbells', 43453),
+(12718, '', 'Default', 'Elliptical', 43453),
+(12719, '', 'Default', 'Exercise Box', 43453),
+(12720, '', 'Default', 'Leg Curl Machine', 43453),
+(12721, '', 'Default', 'Leg Extension Machine', 43453),
+(12722, '', 'Default', 'Leg Press Machine', 43453),
+(12723, '', 'Default', 'Preacher Curl Bench', 43453),
+(12724, '', 'Default', 'Preacher Curl Machine', 43453),
+(12725, '', 'Default', 'Pull Down Machine', 43453),
+(12726, '', 'Default', 'Pull Up Bar', 43453),
+(12727, '', 'Default', 'Roman Chair', 43453),
+(12728, '', 'Default', 'Shoulder Press Machine', 43453),
+(12729, '', 'Default', 'Squat Machine', 43453),
+(12730, '', 'Default', 'Step', 43453),
+(12731, '', 'Default', 'Treadmill', 43453),
+(12732, '', 'Default', 'Wall', 43453),
+(12733, '', 'Default', 'Barbell', 43454),
+(12734, '', 'Default', 'Bench', 43454),
+(12735, '', 'Default', 'Bench Rack', 43454),
+(12736, '', 'Default', 'Bike', 43454),
+(12737, '', 'Default', 'Cable Pull', 43454),
+(12738, '', 'Default', 'Cable Row Machine', 43454),
+(12739, '', 'Default', 'Chair', 43454),
+(12740, '', 'Default', 'Dumbbells', 43454),
+(12741, '', 'Default', 'Elliptical', 43454),
+(12742, '', 'Default', 'Exercise Box', 43454),
+(12743, '', 'Default', 'Leg Curl Machine', 43454),
+(12744, '', 'Default', 'Leg Extension Machine', 43454),
+(12745, '', 'Default', 'Leg Press Machine', 43454),
+(12746, '', 'Default', 'Preacher Curl Bench', 43454),
+(12747, '', 'Default', 'Preacher Curl Machine', 43454),
+(12748, '', 'Default', 'Pull Down Machine', 43454),
+(12749, '', 'Default', 'Pull Up Bar', 43454),
+(12750, '', 'Default', 'Roman Chair', 43454),
+(12751, '', 'Default', 'Shoulder Press Machine', 43454),
+(12752, '', 'Default', 'Squat Machine', 43454),
+(12753, '', 'Default', 'Step', 43454),
+(12754, '', 'Default', 'Treadmill', 43454),
+(12755, '', 'Default', 'Wall', 43454),
+(12756, '', 'Default', 'Barbell', 43455),
+(12757, '', 'Default', 'Bench', 43455),
+(12758, '', 'Default', 'Bench Rack', 43455),
+(12759, '', 'Default', 'Bike', 43455),
+(12760, '', 'Default', 'Cable Pull', 43455),
+(12761, '', 'Default', 'Cable Row Machine', 43455),
+(12762, '', 'Default', 'Chair', 43455),
+(12763, '', 'Default', 'Dumbbells', 43455),
+(12764, '', 'Default', 'Elliptical', 43455),
+(12765, '', 'Default', 'Exercise Box', 43455),
+(12766, '', 'Default', 'Leg Curl Machine', 43455),
+(12767, '', 'Default', 'Leg Extension Machine', 43455),
+(12768, '', 'Default', 'Leg Press Machine', 43455),
+(12769, '', 'Default', 'Preacher Curl Bench', 43455),
+(12770, '', 'Default', 'Preacher Curl Machine', 43455),
+(12771, '', 'Default', 'Pull Down Machine', 43455),
+(12772, '', 'Default', 'Pull Up Bar', 43455),
+(12773, '', 'Default', 'Roman Chair', 43455),
+(12774, '', 'Default', 'Shoulder Press Machine', 43455),
+(12775, '', 'Default', 'Squat Machine', 43455),
+(12776, '', 'Default', 'Step', 43455),
+(12777, '', 'Default', 'Treadmill', 43455),
+(12778, '', 'Default', 'Wall', 43455),
+(12779, '', 'Default', 'Barbell', 43456),
+(12780, '', 'Default', 'Bench', 43456),
+(12781, '', 'Default', 'Bench Rack', 43456),
+(12782, '', 'Default', 'Bike', 43456),
+(12783, '', 'Default', 'Cable Pull', 43456),
+(12784, '', 'Default', 'Cable Row Machine', 43456),
+(12785, '', 'Default', 'Chair', 43456),
+(12786, '', 'Default', 'Dumbbells', 43456),
+(12787, '', 'Default', 'Elliptical', 43456),
+(12788, '', 'Default', 'Exercise Box', 43456),
+(12789, '', 'Default', 'Leg Curl Machine', 43456),
+(12790, '', 'Default', 'Leg Extension Machine', 43456),
+(12791, '', 'Default', 'Leg Press Machine', 43456),
+(12792, '', 'Default', 'Preacher Curl Bench', 43456),
+(12793, '', 'Default', 'Preacher Curl Machine', 43456),
+(12794, '', 'Default', 'Pull Down Machine', 43456),
+(12795, '', 'Default', 'Pull Up Bar', 43456),
+(12796, '', 'Default', 'Roman Chair', 43456),
+(12797, '', 'Default', 'Shoulder Press Machine', 43456),
+(12798, '', 'Default', 'Squat Machine', 43456),
+(12799, '', 'Default', 'Step', 43456),
+(12800, '', 'Default', 'Treadmill', 43456),
+(12801, '', 'Default', 'Wall', 43456),
+(12802, '', 'Default', 'Barbell', 43457),
+(12803, '', 'Default', 'Bench', 43457),
+(12804, '', 'Default', 'Bench Rack', 43457),
+(12805, '', 'Default', 'Bike', 43457),
+(12806, '', 'Default', 'Cable Pull', 43457),
+(12807, '', 'Default', 'Cable Row Machine', 43457),
+(12808, '', 'Default', 'Chair', 43457),
+(12809, '', 'Default', 'Dumbbells', 43457),
+(12810, '', 'Default', 'Elliptical', 43457),
+(12811, '', 'Default', 'Exercise Box', 43457),
+(12812, '', 'Default', 'Leg Curl Machine', 43457),
+(12813, '', 'Default', 'Leg Extension Machine', 43457),
+(12814, '', 'Default', 'Leg Press Machine', 43457),
+(12815, '', 'Default', 'Preacher Curl Bench', 43457),
+(12816, '', 'Default', 'Preacher Curl Machine', 43457),
+(12817, '', 'Default', 'Pull Down Machine', 43457),
+(12818, '', 'Default', 'Pull Up Bar', 43457),
+(12819, '', 'Default', 'Roman Chair', 43457),
+(12820, '', 'Default', 'Shoulder Press Machine', 43457),
+(12821, '', 'Default', 'Squat Machine', 43457),
+(12822, '', 'Default', 'Step', 43457),
+(12823, '', 'Default', 'Treadmill', 43457),
+(12824, '', 'Default', 'Wall', 43457),
+(12825, '', 'Default', 'Barbell', 43458),
+(12826, '', 'Default', 'Bench', 43458),
+(12827, '', 'Default', 'Bench Rack', 43458),
+(12828, '', 'Default', 'Bike', 43458),
+(12829, '', 'Default', 'Cable Pull', 43458),
+(12830, '', 'Default', 'Cable Row Machine', 43458),
+(12831, '', 'Default', 'Chair', 43458),
+(12832, '', 'Default', 'Dumbbells', 43458),
+(12833, '', 'Default', 'Elliptical', 43458),
+(12834, '', 'Default', 'Exercise Box', 43458),
+(12835, '', 'Default', 'Leg Curl Machine', 43458),
+(12836, '', 'Default', 'Leg Extension Machine', 43458),
+(12837, '', 'Default', 'Leg Press Machine', 43458),
+(12838, '', 'Default', 'Preacher Curl Bench', 43458),
+(12839, '', 'Default', 'Preacher Curl Machine', 43458),
+(12840, '', 'Default', 'Pull Down Machine', 43458),
+(12841, '', 'Default', 'Pull Up Bar', 43458),
+(12842, '', 'Default', 'Roman Chair', 43458),
+(12843, '', 'Default', 'Shoulder Press Machine', 43458),
+(12844, '', 'Default', 'Squat Machine', 43458),
+(12845, '', 'Default', 'Step', 43458),
+(12846, '', 'Default', 'Treadmill', 43458),
+(12847, '', 'Default', 'Wall', 43458),
+(12848, '', 'Default', 'Barbell', 43459),
+(12849, '', 'Default', 'Bench', 43459),
+(12850, '', 'Default', 'Bench Rack', 43459),
+(12851, '', 'Default', 'Bike', 43459),
+(12852, '', 'Default', 'Cable Pull', 43459),
+(12853, '', 'Default', 'Cable Row Machine', 43459),
+(12854, '', 'Default', 'Chair', 43459),
+(12855, '', 'Default', 'Dumbbells', 43459),
+(12856, '', 'Default', 'Elliptical', 43459),
+(12857, '', 'Default', 'Exercise Box', 43459),
+(12858, '', 'Default', 'Leg Curl Machine', 43459),
+(12859, '', 'Default', 'Leg Extension Machine', 43459),
+(12860, '', 'Default', 'Leg Press Machine', 43459),
+(12861, '', 'Default', 'Preacher Curl Bench', 43459),
+(12862, '', 'Default', 'Preacher Curl Machine', 43459),
+(12863, '', 'Default', 'Pull Down Machine', 43459),
+(12864, '', 'Default', 'Pull Up Bar', 43459),
+(12865, '', 'Default', 'Roman Chair', 43459),
+(12866, '', 'Default', 'Shoulder Press Machine', 43459),
+(12867, '', 'Default', 'Squat Machine', 43459),
+(12868, '', 'Default', 'Step', 43459),
+(12869, '', 'Default', 'Treadmill', 43459),
+(12870, '', 'Default', 'Wall', 43459),
+(12871, '', 'Default', 'Barbell', 43460),
+(12872, '', 'Default', 'Bench', 43460),
+(12873, '', 'Default', 'Bench Rack', 43460),
+(12874, '', 'Default', 'Bike', 43460),
+(12875, '', 'Default', 'Cable Pull', 43460),
+(12876, '', 'Default', 'Cable Row Machine', 43460),
+(12877, '', 'Default', 'Chair', 43460),
+(12878, '', 'Default', 'Dumbbells', 43460),
+(12879, '', 'Default', 'Elliptical', 43460),
+(12880, '', 'Default', 'Exercise Box', 43460),
+(12881, '', 'Default', 'Leg Curl Machine', 43460),
+(12882, '', 'Default', 'Leg Extension Machine', 43460),
+(12883, '', 'Default', 'Leg Press Machine', 43460),
+(12884, '', 'Default', 'Preacher Curl Bench', 43460),
+(12885, '', 'Default', 'Preacher Curl Machine', 43460),
+(12886, '', 'Default', 'Pull Down Machine', 43460),
+(12887, '', 'Default', 'Pull Up Bar', 43460),
+(12888, '', 'Default', 'Roman Chair', 43460),
+(12889, '', 'Default', 'Shoulder Press Machine', 43460),
+(12890, '', 'Default', 'Squat Machine', 43460),
+(12891, '', 'Default', 'Step', 43460),
+(12892, '', 'Default', 'Treadmill', 43460),
+(12893, '', 'Default', 'Wall', 43460),
+(12894, '', 'Default', 'Barbell', 43461),
+(12895, '', 'Default', 'Bench', 43461),
+(12896, '', 'Default', 'Bench Rack', 43461),
+(12897, '', 'Default', 'Bike', 43461),
+(12898, '', 'Default', 'Cable Pull', 43461),
+(12899, '', 'Default', 'Cable Row Machine', 43461),
+(12900, '', 'Default', 'Chair', 43461),
+(12901, '', 'Default', 'Dumbbells', 43461),
+(12902, '', 'Default', 'Elliptical', 43461),
+(12903, '', 'Default', 'Exercise Box', 43461),
+(12904, '', 'Default', 'Leg Curl Machine', 43461),
+(12905, '', 'Default', 'Leg Extension Machine', 43461),
+(12906, '', 'Default', 'Leg Press Machine', 43461),
+(12907, '', 'Default', 'Preacher Curl Bench', 43461),
+(12908, '', 'Default', 'Preacher Curl Machine', 43461),
+(12909, '', 'Default', 'Pull Down Machine', 43461),
+(12910, '', 'Default', 'Pull Up Bar', 43461),
+(12911, '', 'Default', 'Roman Chair', 43461),
+(12912, '', 'Default', 'Shoulder Press Machine', 43461),
+(12913, '', 'Default', 'Squat Machine', 43461),
+(12914, '', 'Default', 'Step', 43461),
+(12915, '', 'Default', 'Treadmill', 43461),
+(12916, '', 'Default', 'Wall', 43461),
+(12917, '', 'Default', 'Barbell', 43462),
+(12918, '', 'Default', 'Bench', 43462),
+(12919, '', 'Default', 'Bench Rack', 43462),
+(12920, '', 'Default', 'Bike', 43462),
+(12921, '', 'Default', 'Cable Pull', 43462),
+(12922, '', 'Default', 'Cable Row Machine', 43462),
+(12923, '', 'Default', 'Chair', 43462),
+(12924, '', 'Default', 'Dumbbells', 43462),
+(12925, '', 'Default', 'Elliptical', 43462),
+(12926, '', 'Default', 'Exercise Box', 43462),
+(12927, '', 'Default', 'Leg Curl Machine', 43462),
+(12928, '', 'Default', 'Leg Extension Machine', 43462),
+(12929, '', 'Default', 'Leg Press Machine', 43462),
+(12930, '', 'Default', 'Preacher Curl Bench', 43462),
+(12931, '', 'Default', 'Preacher Curl Machine', 43462),
+(12932, '', 'Default', 'Pull Down Machine', 43462),
+(12933, '', 'Default', 'Pull Up Bar', 43462),
+(12934, '', 'Default', 'Roman Chair', 43462),
+(12935, '', 'Default', 'Shoulder Press Machine', 43462),
+(12936, '', 'Default', 'Squat Machine', 43462),
+(12937, '', 'Default', 'Step', 43462),
+(12938, '', 'Default', 'Treadmill', 43462),
+(12939, '', 'Default', 'Wall', 43462),
+(12940, '', 'Default', 'Barbell', 43463),
+(12941, '', 'Default', 'Bench', 43463),
+(12942, '', 'Default', 'Bench Rack', 43463),
+(12943, '', 'Default', 'Bike', 43463),
+(12944, '', 'Default', 'Cable Pull', 43463),
+(12945, '', 'Default', 'Cable Row Machine', 43463),
+(12946, '', 'Default', 'Chair', 43463),
+(12947, '', 'Default', 'Dumbbells', 43463),
+(12948, '', 'Default', 'Elliptical', 43463),
+(12949, '', 'Default', 'Exercise Box', 43463),
+(12950, '', 'Default', 'Leg Curl Machine', 43463),
+(12951, '', 'Default', 'Leg Extension Machine', 43463),
+(12952, '', 'Default', 'Leg Press Machine', 43463),
+(12953, '', 'Default', 'Preacher Curl Bench', 43463),
+(12954, '', 'Default', 'Preacher Curl Machine', 43463),
+(12955, '', 'Default', 'Pull Down Machine', 43463),
+(12956, '', 'Default', 'Pull Up Bar', 43463),
+(12957, '', 'Default', 'Roman Chair', 43463),
+(12958, '', 'Default', 'Shoulder Press Machine', 43463),
+(12959, '', 'Default', 'Squat Machine', 43463),
+(12960, '', 'Default', 'Step', 43463),
+(12961, '', 'Default', 'Treadmill', 43463),
+(12962, '', 'Default', 'Wall', 43463),
+(12963, '', 'Default', 'Barbell', 43464),
+(12964, '', 'Default', 'Bench', 43464),
+(12965, '', 'Default', 'Bench Rack', 43464),
+(12966, '', 'Default', 'Bike', 43464),
+(12967, '', 'Default', 'Cable Pull', 43464),
+(12968, '', 'Default', 'Cable Row Machine', 43464),
+(12969, '', 'Default', 'Chair', 43464),
+(12970, '', 'Default', 'Dumbbells', 43464),
+(12971, '', 'Default', 'Elliptical', 43464),
+(12972, '', 'Default', 'Exercise Box', 43464),
+(12973, '', 'Default', 'Leg Curl Machine', 43464),
+(12974, '', 'Default', 'Leg Extension Machine', 43464),
+(12975, '', 'Default', 'Leg Press Machine', 43464),
+(12976, '', 'Default', 'Preacher Curl Bench', 43464),
+(12977, '', 'Default', 'Preacher Curl Machine', 43464),
+(12978, '', 'Default', 'Pull Down Machine', 43464),
+(12979, '', 'Default', 'Pull Up Bar', 43464),
+(12980, '', 'Default', 'Roman Chair', 43464),
+(12981, '', 'Default', 'Shoulder Press Machine', 43464),
+(12982, '', 'Default', 'Squat Machine', 43464),
+(12983, '', 'Default', 'Step', 43464),
+(12984, '', 'Default', 'Treadmill', 43464),
+(12985, '', 'Default', 'Wall', 43464),
+(12986, '', 'Default', 'Barbell', 43465),
+(12987, '', 'Default', 'Bench', 43465),
+(12988, '', 'Default', 'Bench Rack', 43465),
+(12989, '', 'Default', 'Bike', 43465),
+(12990, '', 'Default', 'Cable Pull', 43465),
+(12991, '', 'Default', 'Cable Row Machine', 43465),
+(12992, '', 'Default', 'Chair', 43465),
+(12993, '', 'Default', 'Dumbbells', 43465),
+(12994, '', 'Default', 'Elliptical', 43465),
+(12995, '', 'Default', 'Exercise Box', 43465),
+(12996, '', 'Default', 'Leg Curl Machine', 43465),
+(12997, '', 'Default', 'Leg Extension Machine', 43465),
+(12998, '', 'Default', 'Leg Press Machine', 43465),
+(12999, '', 'Default', 'Preacher Curl Bench', 43465),
+(13000, '', 'Default', 'Preacher Curl Machine', 43465),
+(13001, '', 'Default', 'Pull Down Machine', 43465),
+(13002, '', 'Default', 'Pull Up Bar', 43465),
+(13003, '', 'Default', 'Roman Chair', 43465),
+(13004, '', 'Default', 'Shoulder Press Machine', 43465),
+(13005, '', 'Default', 'Squat Machine', 43465),
+(13006, '', 'Default', 'Step', 43465),
+(13007, '', 'Default', 'Treadmill', 43465),
+(13008, '', 'Default', 'Wall', 43465),
+(13009, '', 'Default', 'Barbell', 43466),
+(13010, '', 'Default', 'Bench', 43466),
+(13011, '', 'Default', 'Bench Rack', 43466),
+(13012, '', 'Default', 'Bike', 43466),
+(13013, '', 'Default', 'Cable Pull', 43466),
+(13014, '', 'Default', 'Cable Row Machine', 43466),
+(13015, '', 'Default', 'Chair', 43466),
+(13016, '', 'Default', 'Dumbbells', 43466),
+(13017, '', 'Default', 'Elliptical', 43466),
+(13018, '', 'Default', 'Exercise Box', 43466),
+(13019, '', 'Default', 'Leg Curl Machine', 43466),
+(13020, '', 'Default', 'Leg Extension Machine', 43466),
+(13021, '', 'Default', 'Leg Press Machine', 43466),
+(13022, '', 'Default', 'Preacher Curl Bench', 43466),
+(13023, '', 'Default', 'Preacher Curl Machine', 43466),
+(13024, '', 'Default', 'Pull Down Machine', 43466),
+(13025, '', 'Default', 'Pull Up Bar', 43466),
+(13026, '', 'Default', 'Roman Chair', 43466),
+(13027, '', 'Default', 'Shoulder Press Machine', 43466),
+(13028, '', 'Default', 'Squat Machine', 43466),
+(13029, '', 'Default', 'Step', 43466),
+(13030, '', 'Default', 'Treadmill', 43466),
+(13031, '', 'Default', 'Wall', 43466),
+(13562, '', 'Default', 'Step', 43476),
+(13563, '', 'Default', 'Treadmill', 43476),
+(13564, '', 'Default', 'Wall', 43476),
+(13560, '', 'Default', 'Shoulder Press Machine', 43476),
+(13561, '', 'Default', 'Squat Machine', 43476),
+(13558, '', 'Default', 'Pull Up Bar', 43476),
+(13559, '', 'Default', 'Roman Chair', 43476),
+(13556, '', 'Default', 'Preacher Curl Machine', 43476),
+(13557, '', 'Default', 'Pull Down Machine', 43476),
+(13552, '', 'Default', 'Leg Curl Machine', 43476),
+(13553, '', 'Default', 'Leg Extension Machine', 43476),
+(13554, '', 'Default', 'Leg Press Machine', 43476),
+(13196, '', '36496 Shelley Ct, Newark, CA 94560, USA', 'Bike', 43471),
+(13555, '', 'Default', 'Preacher Curl Bench', 43476),
+(13672, '', 'Default', 'Pull Down Machine', 43481),
+(13671, '', 'Default', 'Preacher Curl Machine', 43481),
+(13670, '', 'Default', 'Preacher Curl Bench', 43481),
+(13669, '', 'Default', 'Leg Press Machine', 43481),
+(13668, '', 'Default', 'Leg Extension Machine', 43481),
+(13667, '', 'Default', 'Leg Curl Machine', 43481),
+(13666, '', 'Default', 'Exercise Box', 43481),
+(13665, '', 'Default', 'Elliptical', 43481),
+(13664, '', 'Default', 'Dumbbells', 43481),
+(13663, '', 'Default', 'Chair', 43481),
+(13662, '', 'Default', 'Cable Row Machine', 43481),
+(13661, '', 'Default', 'Cable Pull', 43481),
+(13660, '', 'Default', 'Bike', 43481),
+(13659, '', 'Default', 'Bench Rack', 43481),
+(13658, '', 'Default', 'Bench', 43481),
+(13657, '', 'Default', 'Barbell', 43481),
+(13078, '', 'Default', 'Barbell', 43469),
+(13079, '', 'Default', 'Bench', 43469),
+(13080, '', 'Default', 'Bench Rack', 43469),
+(13081, '', 'Default', 'Bike', 43469),
+(13082, '', 'Default', 'Cable Pull', 43469),
+(13083, '', 'Default', 'Cable Row Machine', 43469),
+(13084, '', 'Default', 'Chair', 43469),
+(13085, '', 'Default', 'Dumbbells', 43469),
+(13086, '', 'Default', 'Elliptical', 43469),
+(13087, '', 'Default', 'Exercise Box', 43469),
+(13088, '', 'Default', 'Leg Curl Machine', 43469),
+(13089, '', 'Default', 'Leg Extension Machine', 43469),
+(13090, '', 'Default', 'Leg Press Machine', 43469),
+(13091, '', 'Default', 'Preacher Curl Bench', 43469),
+(13092, '', 'Default', 'Preacher Curl Machine', 43469),
+(13093, '', 'Default', 'Pull Down Machine', 43469),
+(13094, '', 'Default', 'Pull Up Bar', 43469),
+(13095, '', 'Default', 'Roman Chair', 43469),
+(13096, '', 'Default', 'Shoulder Press Machine', 43469),
+(13097, '', 'Default', 'Squat Machine', 43469),
+(13098, '', 'Default', 'Step', 43469),
+(13099, '', 'Default', 'Treadmill', 43469),
+(13100, '', 'Default', 'Wall', 43469),
+(13101, '', 'Default', 'Barbell', 43470),
+(13102, '', 'Default', 'Bench', 43470),
+(13103, '', 'Default', 'Bench Rack', 43470),
+(13104, '', 'Default', 'Bike', 43470),
+(13105, '', 'Default', 'Cable Pull', 43470),
+(13106, '', 'Default', 'Cable Row Machine', 43470),
+(13107, '', 'Default', 'Chair', 43470),
+(13108, '', 'Default', 'Dumbbells', 43470),
+(13109, '', 'Default', 'Elliptical', 43470),
+(13110, '', 'Default', 'Exercise Box', 43470),
+(13111, '', 'Default', 'Leg Curl Machine', 43470),
+(13112, '', 'Default', 'Leg Extension Machine', 43470),
+(13113, '', 'Default', 'Leg Press Machine', 43470),
+(13114, '', 'Default', 'Preacher Curl Bench', 43470),
+(13115, '', 'Default', 'Preacher Curl Machine', 43470),
+(13116, '', 'Default', 'Pull Down Machine', 43470),
+(13117, '', 'Default', 'Pull Up Bar', 43470),
+(13118, '', 'Default', 'Roman Chair', 43470),
+(13119, '', 'Default', 'Shoulder Press Machine', 43470),
+(13120, '', 'Default', 'Squat Machine', 43470),
+(13121, '', 'Default', 'Step', 43470),
+(13122, '', 'Default', 'Treadmill', 43470),
+(13123, '', 'Default', 'Wall', 43470),
+(13550, '', 'Default', 'Elliptical', 43476),
+(13551, '', 'Default', 'Exercise Box', 43476),
+(13548, '', 'Default', 'Chair', 43476),
+(13549, '', 'Default', 'Dumbbells', 43476),
+(13546, '', 'Default', 'Cable Pull', 43476),
+(13547, '', 'Default', 'Cable Row Machine', 43476),
+(13544, '', 'Default', 'Bench Rack', 43476),
+(13545, '', 'Default', 'Bike', 43476),
+(13542, '', 'Default', 'Barbell', 43476),
+(13543, '', 'Default', 'Bench', 43476),
+(13541, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Wall', 43475),
+(13540, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Treadmill', 43475),
+(13539, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Step', 43475),
+(13538, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Squat Machine', 43475),
+(13537, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Shoulder Press Machine', 43475),
+(13536, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Roman Chair', 43475),
+(13535, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Pull Up Bar', 43475),
+(13534, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Pull Down Machine', 43475),
+(13533, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Preacher Curl Machine', 43475),
+(13530, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Leg Extension Machine', 43475),
+(13531, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Leg Press Machine', 43475),
+(13532, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Preacher Curl Bench', 43475),
+(13529, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Leg Curl Machine', 43475),
+(13528, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Exercise Box', 43475),
+(13527, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Elliptical', 43475),
+(13526, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Dumbbells', 43475),
+(13525, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Chair', 43475),
+(13524, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Cable Row Machine', 43475),
+(13523, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Cable Pull', 43475),
+(13522, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Bike', 43475),
+(13521, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Bench Rack', 43475),
+(13520, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Bench', 43475),
+(13519, '', '205 E Riverside Dr, Austin, TX 78704, USA', 'Barbell', 43475),
+(13565, '', 'Default', 'Barbell', 43477),
+(13566, '', 'Default', 'Bench', 43477),
+(13567, '', 'Default', 'Bench Rack', 43477),
+(13568, '', 'Default', 'Bike', 43477),
+(13569, '', 'Default', 'Cable Pull', 43477),
+(13570, '', 'Default', 'Cable Row Machine', 43477),
+(13571, '', 'Default', 'Chair', 43477),
+(13572, '', 'Default', 'Dumbbells', 43477),
+(13573, '', 'Default', 'Elliptical', 43477),
+(13574, '', 'Default', 'Exercise Box', 43477),
+(13575, '', 'Default', 'Leg Curl Machine', 43477),
+(13576, '', 'Default', 'Leg Extension Machine', 43477),
+(13577, '', 'Default', 'Leg Press Machine', 43477),
+(13578, '', 'Default', 'Preacher Curl Bench', 43477),
+(13579, '', 'Default', 'Preacher Curl Machine', 43477),
+(13580, '', 'Default', 'Pull Down Machine', 43477),
+(13581, '', 'Default', 'Pull Up Bar', 43477),
+(13582, '', 'Default', 'Roman Chair', 43477),
+(13583, '', 'Default', 'Shoulder Press Machine', 43477),
+(13584, '', 'Default', 'Squat Machine', 43477),
+(13585, '', 'Default', 'Step', 43477),
+(13586, '', 'Default', 'Treadmill', 43477),
+(13587, '', 'Default', 'Wall', 43477),
+(13693, '', 'Default', 'Preacher Curl Bench', 43482),
+(13692, '', 'Default', 'Leg Press Machine', 43482),
+(13691, '', 'Default', 'Leg Extension Machine', 43482),
+(13690, '', 'Default', 'Leg Curl Machine', 43482),
+(13688, '', 'Default', 'Elliptical', 43482),
+(13689, '', 'Default', 'Exercise Box', 43482),
+(13686, '', 'Default', 'Chair', 43482),
+(13687, '', 'Default', 'Dumbbells', 43482),
+(13685, '', 'Default', 'Cable Row Machine', 43482),
+(13683, '', 'Default', 'Bike', 43482),
+(13684, '', 'Default', 'Cable Pull', 43482),
+(13682, '', 'Default', 'Bench Rack', 43482),
+(13681, '', 'Default', 'Bench', 43482),
+(13680, '', 'Default', 'Barbell', 43482),
+(13678, '', 'Default', 'Treadmill', 43481),
+(13679, '', 'Default', 'Wall', 43481),
+(13677, '', 'Default', 'Step', 43481),
+(13676, '', 'Default', 'Squat Machine', 43481),
+(13675, '', 'Default', 'Shoulder Press Machine', 43481),
+(13674, '', 'Default', 'Roman Chair', 43481),
+(13673, '', 'Default', 'Pull Up Bar', 43481),
+(13694, '', 'Default', 'Preacher Curl Machine', 43482),
+(13695, '', 'Default', 'Pull Down Machine', 43482),
+(13696, '', 'Default', 'Pull Up Bar', 43482);
+INSERT INTO `UserEquipment` (`ID`, `DisplayName`, `Location`, `EquipmentName`, `UserId`) VALUES
+(13697, '', 'Default', 'Roman Chair', 43482),
+(13698, '', 'Default', 'Shoulder Press Machine', 43482),
+(13699, '', 'Default', 'Squat Machine', 43482),
+(13700, '', 'Default', 'Step', 43482),
+(13701, '', 'Default', 'Treadmill', 43482),
+(13702, '', 'Default', 'Wall', 43482),
+(13703, '', 'Default', 'Barbell', 43483),
+(13704, '', 'Default', 'Bench', 43483),
+(13705, '', 'Default', 'Bench Rack', 43483),
+(13706, '', 'Default', 'Bike', 43483),
+(13707, '', 'Default', 'Cable Pull', 43483),
+(13708, '', 'Default', 'Cable Row Machine', 43483),
+(13709, '', 'Default', 'Chair', 43483),
+(13710, '', 'Default', 'Dumbbells', 43483),
+(13711, '', 'Default', 'Elliptical', 43483),
+(13712, '', 'Default', 'Exercise Box', 43483),
+(13713, '', 'Default', 'Leg Curl Machine', 43483),
+(13714, '', 'Default', 'Leg Extension Machine', 43483),
+(13715, '', 'Default', 'Leg Press Machine', 43483),
+(13716, '', 'Default', 'Preacher Curl Bench', 43483),
+(13717, '', 'Default', 'Preacher Curl Machine', 43483),
+(13718, '', 'Default', 'Pull Down Machine', 43483),
+(13719, '', 'Default', 'Pull Up Bar', 43483),
+(13720, '', 'Default', 'Roman Chair', 43483),
+(13721, '', 'Default', 'Shoulder Press Machine', 43483),
+(13722, '', 'Default', 'Squat Machine', 43483),
+(13723, '', 'Default', 'Step', 43483),
+(13724, '', 'Default', 'Treadmill', 43483),
+(13725, '', 'Default', 'Wall', 43483),
+(13726, '', 'Default', 'Barbell', 43484),
+(13727, '', 'Default', 'Bench', 43484),
+(13728, '', 'Default', 'Bench Rack', 43484),
+(13729, '', 'Default', 'Bike', 43484),
+(13730, '', 'Default', 'Cable Pull', 43484),
+(13731, '', 'Default', 'Cable Row Machine', 43484),
+(13732, '', 'Default', 'Chair', 43484),
+(13733, '', 'Default', 'Dumbbells', 43484),
+(13734, '', 'Default', 'Elliptical', 43484),
+(13735, '', 'Default', 'Exercise Box', 43484),
+(13736, '', 'Default', 'Leg Curl Machine', 43484),
+(13737, '', 'Default', 'Leg Extension Machine', 43484),
+(13738, '', 'Default', 'Leg Press Machine', 43484),
+(13739, '', 'Default', 'Preacher Curl Bench', 43484),
+(13740, '', 'Default', 'Preacher Curl Machine', 43484),
+(13741, '', 'Default', 'Pull Down Machine', 43484),
+(13742, '', 'Default', 'Pull Up Bar', 43484),
+(13743, '', 'Default', 'Roman Chair', 43484),
+(13744, '', 'Default', 'Shoulder Press Machine', 43484),
+(13745, '', 'Default', 'Squat Machine', 43484),
+(13746, '', 'Default', 'Step', 43484),
+(13747, '', 'Default', 'Treadmill', 43484),
+(13748, '', 'Default', 'Wall', 43484),
+(13749, '', 'Default', 'Barbell', 43485),
+(13750, '', 'Default', 'Bench', 43485),
+(13751, '', 'Default', 'Bench Rack', 43485),
+(13752, '', 'Default', 'Bike', 43485),
+(13753, '', 'Default', 'Cable Pull', 43485),
+(13754, '', 'Default', 'Cable Row Machine', 43485),
+(13755, '', 'Default', 'Chair', 43485),
+(13756, '', 'Default', 'Dumbbells', 43485),
+(13757, '', 'Default', 'Elliptical', 43485),
+(13758, '', 'Default', 'Exercise Box', 43485),
+(13759, '', 'Default', 'Leg Curl Machine', 43485),
+(13760, '', 'Default', 'Leg Extension Machine', 43485),
+(13761, '', 'Default', 'Leg Press Machine', 43485),
+(13762, '', 'Default', 'Preacher Curl Bench', 43485),
+(13763, '', 'Default', 'Preacher Curl Machine', 43485),
+(13764, '', 'Default', 'Pull Down Machine', 43485),
+(13765, '', 'Default', 'Pull Up Bar', 43485),
+(13766, '', 'Default', 'Roman Chair', 43485),
+(13767, '', 'Default', 'Shoulder Press Machine', 43485),
+(13768, '', 'Default', 'Squat Machine', 43485),
+(13769, '', 'Default', 'Step', 43485),
+(13770, '', 'Default', 'Treadmill', 43485),
+(13771, '', 'Default', 'Wall', 43485),
+(13772, '', 'Default', 'Barbell', 43486),
+(13773, '', 'Default', 'Bench', 43486),
+(13774, '', 'Default', 'Bench Rack', 43486),
+(13775, '', 'Default', 'Bike', 43486),
+(13776, '', 'Default', 'Cable Pull', 43486),
+(13777, '', 'Default', 'Cable Row Machine', 43486),
+(13778, '', 'Default', 'Chair', 43486),
+(13779, '', 'Default', 'Dumbbells', 43486),
+(13780, '', 'Default', 'Elliptical', 43486),
+(13781, '', 'Default', 'Exercise Box', 43486),
+(13782, '', 'Default', 'Leg Curl Machine', 43486),
+(13783, '', 'Default', 'Leg Extension Machine', 43486),
+(13784, '', 'Default', 'Leg Press Machine', 43486),
+(13785, '', 'Default', 'Preacher Curl Bench', 43486),
+(13786, '', 'Default', 'Preacher Curl Machine', 43486),
+(13787, '', 'Default', 'Pull Down Machine', 43486),
+(13788, '', 'Default', 'Pull Up Bar', 43486),
+(13789, '', 'Default', 'Roman Chair', 43486),
+(13790, '', 'Default', 'Shoulder Press Machine', 43486),
+(13791, '', 'Default', 'Squat Machine', 43486),
+(13792, '', 'Default', 'Step', 43486),
+(13793, '', 'Default', 'Treadmill', 43486),
+(13794, '', 'Default', 'Wall', 43486),
+(13885, '', 'Default', 'Treadmill', 43490),
+(13884, '', 'Default', 'Step', 43490),
+(13883, '', 'Default', 'Squat Machine', 43490),
+(13882, '', 'Default', 'Shoulder Press Machine', 43490),
+(13880, '', 'Default', 'Pull Up Bar', 43490),
+(13881, '', 'Default', 'Roman Chair', 43490),
+(13879, '', 'Default', 'Pull Down Machine', 43490),
+(13878, '', 'Default', 'Preacher Curl Machine', 43490),
+(13877, '', 'Default', 'Preacher Curl Bench', 43490),
+(13876, '', 'Default', 'Leg Press Machine', 43490),
+(13875, '', 'Default', 'Leg Extension Machine', 43490),
+(13874, '', 'Default', 'Leg Curl Machine', 43490),
+(13873, '', 'Default', 'Exercise Box', 43490),
+(13871, '', 'Default', 'Dumbbells', 43490),
+(13872, '', 'Default', 'Elliptical', 43490),
+(13870, '', 'Default', 'Chair', 43490),
+(13869, '', 'Default', 'Cable Row Machine', 43490),
+(13868, '', 'Default', 'Cable Pull', 43490),
+(13867, '', 'Default', 'Bike', 43490),
+(13866, '', 'Default', 'Bench Rack', 43490),
+(13865, '', 'Default', 'Bench', 43490),
+(13864, '', 'Default', 'Barbell', 43490),
+(13886, '', 'Default', 'Wall', 43490);
 
 -- --------------------------------------------------------
 
@@ -16212,14 +17216,13 @@ INSERT INTO `UserEquipment` (`ID`, `DisplayName`, `Location`, `EquipmentName`, `
 -- Table structure for table `UserMuscleGroupRoutine`
 --
 
-CREATE TABLE IF NOT EXISTS `UserMuscleGroupRoutine` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `UserMuscleGroupRoutine` (
+  `ID` int(11) NOT NULL,
   `UserId` int(11) NOT NULL,
   `MuscleGroupName` varchar(25) NOT NULL,
   `RoutineNumber` int(11) NOT NULL,
-  `DisplayName` varchar(100) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=961 ;
+  `DisplayName` varchar(100) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `UserMuscleGroupRoutine`
@@ -16299,8 +17302,233 @@ INSERT INTO `UserMuscleGroupRoutine` (`ID`, `UserId`, `MuscleGroupName`, `Routin
 (937, 10, 'Quads', 25, 'Abs & Legs'),
 (938, 10, 'Glutes', 25, 'Abs & Legs'),
 (939, 10, 'Abs', 25, 'Abs & Legs'),
-(940, 10, 'Obliques', 25, 'Abs & Legs');
+(940, 10, 'Obliques', 25, 'Abs & Legs'),
+(977, 43471, 'Upper Inner Back', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(978, 43471, 'Upper Outer Back', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(979, 43471, 'Triceps', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(980, 43471, 'Lower Back', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(981, 43471, 'Traps', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(982, 43471, 'Neck', 9, 'Lower Back, Shoulders, Triceps, & Upper Back'),
+(983, 43471, 'Shoulders', 9, 'Lower Back, Shoulders, Triceps, & Upper Back');
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Badge`
+--
+ALTER TABLE `Badge`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CompletedExercise`
+--
+ALTER TABLE `CompletedExercise`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CompletedMuscleGroup`
+--
+ALTER TABLE `CompletedMuscleGroup`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CompletedRoutine`
+--
+ALTER TABLE `CompletedRoutine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `CustomRoutineMuscleGroup`
+--
+ALTER TABLE `CustomRoutineMuscleGroup`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Direction`
+--
+ALTER TABLE `Direction`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Equipment`
+--
+ALTER TABLE `Equipment`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Exclusion`
+--
+ALTER TABLE `Exclusion`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Exercise`
+--
+ALTER TABLE `Exercise`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `ExerciseNameVariant`
+--
+ALTER TABLE `ExerciseNameVariant`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ExerciseName` (`ExerciseName`);
+
+--
+-- Indexes for table `ExercisePriority`
+--
+ALTER TABLE `ExercisePriority`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Following`
+--
+ALTER TABLE `Following`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Muscle`
+--
+ALTER TABLE `Muscle`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `MuscleGroup`
+--
+ALTER TABLE `MuscleGroup`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `MuscleGroupRoutine`
+--
+ALTER TABLE `MuscleGroupRoutine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `Routine`
+--
+ALTER TABLE `Routine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `User`
+--
+ALTER TABLE `User`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `UserEquipment`
+--
+ALTER TABLE `UserEquipment`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `UserMuscleGroupRoutine`
+--
+ALTER TABLE `UserMuscleGroupRoutine`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `Badge`
+--
+ALTER TABLE `Badge`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1806;
+--
+-- AUTO_INCREMENT for table `CompletedExercise`
+--
+ALTER TABLE `CompletedExercise`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6723;
+--
+-- AUTO_INCREMENT for table `CompletedMuscleGroup`
+--
+ALTER TABLE `CompletedMuscleGroup`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15216;
+--
+-- AUTO_INCREMENT for table `CompletedRoutine`
+--
+ALTER TABLE `CompletedRoutine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+--
+-- AUTO_INCREMENT for table `CustomRoutineMuscleGroup`
+--
+ALTER TABLE `CustomRoutineMuscleGroup`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `Direction`
+--
+ALTER TABLE `Direction`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=723;
+--
+-- AUTO_INCREMENT for table `Equipment`
+--
+ALTER TABLE `Equipment`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=312;
+--
+-- AUTO_INCREMENT for table `Exclusion`
+--
+ALTER TABLE `Exclusion`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=886;
+--
+-- AUTO_INCREMENT for table `Exercise`
+--
+ALTER TABLE `Exercise`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
+--
+-- AUTO_INCREMENT for table `ExerciseNameVariant`
+--
+ALTER TABLE `ExerciseNameVariant`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+--
+-- AUTO_INCREMENT for table `ExercisePriority`
+--
+ALTER TABLE `ExercisePriority`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=810;
+--
+-- AUTO_INCREMENT for table `Following`
+--
+ALTER TABLE `Following`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
+--
+-- AUTO_INCREMENT for table `Muscle`
+--
+ALTER TABLE `Muscle`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=682;
+--
+-- AUTO_INCREMENT for table `MuscleGroup`
+--
+ALTER TABLE `MuscleGroup`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=432;
+--
+-- AUTO_INCREMENT for table `MuscleGroupRoutine`
+--
+ALTER TABLE `MuscleGroupRoutine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `Routine`
+--
+ALTER TABLE `Routine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3518;
+--
+-- AUTO_INCREMENT for table `User`
+--
+ALTER TABLE `User`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43491;
+--
+-- AUTO_INCREMENT for table `UserEquipment`
+--
+ALTER TABLE `UserEquipment`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13887;
+--
+-- AUTO_INCREMENT for table `UserMuscleGroupRoutine`
+--
+ALTER TABLE `UserMuscleGroupRoutine`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=984;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -15,7 +15,7 @@ ALTER TABLE CompletedExercise DROP COLUMN Email;
 ALTER TABLE CompletedExercise DROP COLUMN Date;
 ALTER TABLE CompletedExercise DROP COLUMN Time;
 ALTER TABLE CompletedExercise
-ADD COLUMN Date int AFTER SessionId;
+ADD COLUMN Date bigint AFTER SessionId;
 UPDATE CompletedExercise SET Date=0;
 ALTER TABLE CompletedExercise
 ADD COLUMN ExerciseId int AFTER Date;
@@ -129,11 +129,13 @@ ALTER TABLE User DROP COLUMN LastLoginDate;
 ALTER TABLE User DROP COLUMN EarnedFitnessPointsDate;
 
 ALTER TABLE User
-ADD COLUMN CreatedDate int AFTER Email;
+ADD COLUMN CreatedDate bigint AFTER Email;
 ALTER TABLE User
-ADD COLUMN LastLoginDate int AFTER CreatedDate;
+ADD COLUMN LastLoginDate bigint AFTER CreatedDate;
 ALTER TABLE User
 ADD COLUMN EarnedFitnessPointsDate int AFTER LastLoginDate;
 UPDATE User SET CreatedDate=0;
 UPDATE User SET LastLoginDate=0;
 UPDATE User SET EarnedFitnessPointsDate=0;
+
+run services/mobile/encode_emails.php

@@ -6,39 +6,42 @@
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
-	include_once '../PasswordHash.php';
+	include_once '../status_codes.php';
+	include_once '../TextHash.php';
+	include_once '../Response.php';
 
-	define("RESPONSE_PASSWORD_ERROR", "Invalid password");
+	// Utility class to create a JSON response.
+	$response = new Response();
 
-	$email = strtolower($_POST['email']);
-	$password = $_POST['oldPassword'];
+	$userId = strtolower($_POST['user_id']);
+	$password = $_POST['old_password'];
 	$new = $_POST['password'];
 	
-	//Check to see if the email is already in use.
-	$query = mysqli_query($conn, "SELECT " . COLUMN_EMAIL . ", " . COLUMN_PASSWORD . " FROM " . TABLE_USER . " WHERE " . COLUMN_EMAIL . " = '" . $email . "'");
+	// Get the user from the database.
+	$query = mysqli_query($conn, "SELECT " . COLUMN_ID . ", " . COLUMN_PASSWORD . " FROM " . TABLE_USER . " WHERE " . COLUMN_ID . " = " . $userId);
 	
-	//Get any data that came back from the database.
+	// Get any data that came back from the database.
 	$row = mysqli_fetch_assoc($query);	
 
-	$phpass = new PasswordHash(12, false);
+	$phpass = new TextHash(12, false);
 	
-	if($phpass->CheckPassword($password, $row[COLUMN_PASSWORD]))
+	if($phpass->CheckText($password, $row[COLUMN_PASSWORD]))
 	{	
-		$hash = $phpass->HashPassword($new);
+		$hash = $phpass->HashText($new);
 		
-		$query = mysqli_query($conn, "UPDATE User SET Password = '" . $hash . "' WHERE Email = '" . $email . "'");
+		$query = mysqli_query($conn, "UPDATE " . TABLE_USER . " SET " . COLUMN_PASSWORD . " = '" . $hash . "' WHERE " . COLUMN_ID . " = " . $userId);
 	
 		if($query)
 		{
-			print json_encode(SUCCESS);
+			$response->send(STATUS_CODE_SUCCESS_PASSWORD_CHANGED, NULL);
 		}
 		else
 		{
-			print json_encode(FAILURE);
+			$response->send(STATUS_CODE_FAILURE_PASSWORD_CHANGE, NULL);
 		}
 	}
 	else
 	{			
-		print json_encode(RESPONSE_PASSWORD_ERROR);
+		$response->send(STATUS_CODE_FAILURE_PASSWORD_INVALID, NULL);
 	}
 ?>

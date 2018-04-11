@@ -12,7 +12,7 @@
 	 * 		where(0-n)		Where to insert the data.
 	 * 						This has to be [ColumnName]=[Value] in the string.
 	 * 
-	 * EXAMPLE URL	http://intencityapp.com/services/complex_update.php?statements=2email=dev@gmail.com&table0=ExerciseWeek&set0=ExerciseWeight=120,ExerciseDuration=5&where0=ID=51
+	 * EXAMPLE URL	http://intencity.fit/services/complex_update.php?statements=2email=dev@gmail.com&table0=ExerciseWeek&set0=ExerciseWeight=120,ExerciseDuration=5&where0=ID=51
  																										&table1=ExerciseWeek&set1=ExerciseWeight=140,ExerciseDuration=6&where1=ID=52
  																										&table2=ExerciseWeek&set2=ExerciseWeight=150,ExerciseDuration=7&where2=ID=53
 	 * 
@@ -27,16 +27,17 @@
 		WHERE Email = 'dev@gmail.com' && ID = 53;
 	 */
 
-	//Includes the database connection information.
+	// Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
+	include_once '../status_codes.php';
+	include_once '../Response.php';
 
-	define("SUCCESS", "SUCCESS");
-	define("FAILURE", "FAILURE");
+	$response = new Response();
 	
-	//NEEDS TO BE CHANGED TO A POST.
+	// NEEDS TO BE CHANGED TO A POST.
 	$statements = $_POST['statements'];
-	$email = $_POST['email'];
+	$userId = $_POST['user_id'];
 	$table = "";
 	$set = "";
 
@@ -54,19 +55,18 @@
 			$where = " && " . $_POST['where' . (string)$i];
 		}
 
-		$update .= "UPDATE " . $table . " SET " . $set . " WHERE " . COLUMN_EMAIL . " = '" . $email . "'" . $where . "; ";
+		$update .= "UPDATE " . $table . " SET " . $set . " WHERE " . COLUMN_USER_ID . " = '" . $userId . "'" . $where . "; ";
 	}
 	
-	//Check to see if the email is already in use.
 	$query = mysqli_multi_query($conn, $update);
 	
-	//Check if the query was successful.
+	// Check if the query was successful.
 	if($query)
 	{		
-		print json_encode(SUCCESS);
+		$response->send(STATUS_CODE_SUCCESS_UPDATE, NULL);
 	}
 	else
 	{
-		print json_encode(FAILURE);
+		$response->send(STATUS_CODE_FAILURE_UPDATE, NULL);
 	}
 ?>
