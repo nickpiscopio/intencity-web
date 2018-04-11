@@ -142,6 +142,23 @@ p {
     margin-right: 20px;
 }
 
+.section .section-icon, .section .layout, .section p {
+    display: table-cell;
+    vertical-align: middle;
+    border-collapse: separate;
+    border-spacing: 20px 0;
+}
+
+.section #description {
+    margin-left: -20px;
+}
+
+.section ul {
+    margin-top: -10px;
+    margin-left: 115px;
+    margin-bottom: 0;
+}
+
 .section-icon, .section-icon img, .icon {
     width: 75px;
 }
@@ -237,11 +254,22 @@ p {
 #table-pricing {
     /* We subtract 4 from the bottom padding because the shadow height is 4px tall in .shadow-top. */
     padding-bottom: 44px;
+    border-collapse: separate;
+    border-spacing: 5px 0;
 }
 
-#table-pricing {
+#table-pricing .header-row {
+    text-align: right !important;
+    margin-right: 18px;
+}
+
+#table-pricing .table-cell {
     text-align: center;
-    font-size: 20px;
+}
+
+#table-pricing .icon {
+    margin: 0 auto;
+    display: block;
 }
 
 #table-pricing .gym {
@@ -506,19 +534,7 @@ ul > li {
 }
 
 /*http://getbootstrap.com/css/*/
-@media only screen and (min-width: 0) and (max-width: 421px) {
-    #app-2 p {
-        margin-top: 10px !important;
-    }
-}
-
-@media only screen and and (min-width: 422px) and (max-width: 432px) {
-    #app-0 p, #app-1 p {
-        margin-top: 10px !important;
-    }
-}
-
-@media only screen and (max-width: 749px) {
+@media (max-width: 749px) {
     .text-small {
         font-size: 14px;
     }
@@ -550,13 +566,9 @@ ul > li {
     .section .image, #wrapper-icon {
         margin-bottom: 40px
     }
-
-    #app-0 p, #app-1 p, #app-2 p {
-        margin-top: 26px;
-    }
 }
 
-@media only screen and (min-width: 750px) {
+@media (min-width: 750px) {
     .info p {
         font-size: 26px;
     }
@@ -572,30 +584,11 @@ ul > li {
     body {
         font-size: 30px;
     }
-
-    #app-0 p, #app-1 p, #app-2 p {
-        margin-top: -8px;
-    }
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
+@media (min-width: 992px) {
     body, .text-small {
         font-size: 30px;
-    }
-
-    #app-0 p {
-        margin-top: -8px;
-    }
-
-    #app-1 p, #app-2 p {
-        margin-top: 15px;
-    }
-}
-
-/* Large devices (desktops, 992px and up) */
-@media only screen and (min-width: 1200px) {
-    #app-0 p, #app-1 p, #app-2 p {
-        margin-top: 15px;
     }
 }
