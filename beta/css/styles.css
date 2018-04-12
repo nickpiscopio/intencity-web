@@ -77,6 +77,10 @@ p {
     padding: 40px;
 }
 
+.section .image {
+    width: 100%;
+}
+
 .section p {
     font-weight: 600;
 }
