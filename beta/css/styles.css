@@ -205,16 +205,31 @@ p {
     margin: 0 auto;
     list-style: inside;
     font-weight: 300;
+    text-align: left;
 }
 
 .info ul li {
     display: list-item;
     padding-top: 4px;
+    list-style-position: inside;
+}
+
+.question .container {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.question i {
+    color: #F99E1A;
 }
 
 .question p {
-    margin: 50px 0;
+    margin-left: 12px;
     font-weight: 600
+}
+
+.question i, .question p {
+    display: inline;
 }
 
 .description {
@@ -244,7 +259,7 @@ p {
 }
 
 #fitness-goals {
-    padding-bottom: 50px;
+    padding-bottom: 100px;
 }
 
 #fitness-goals, #table-pricing {
@@ -282,19 +297,19 @@ p {
 }
 
 #table-pricing .gym {
-    background-color: rgb(48, 157, 219, .2);
+    background-color: rgb(122, 0, 134, .2);
 }
 
 #table-pricing .gym-bold {
-    background-color: rgb(48, 157, 219, .4);
+    background-color: rgb(122, 0, 134, .4);
 }
 
 #table-pricing .trainer {
-    background-color: rgb(69, 178, 157, .2);
+    background-color: rgb(37, 0, 99, .2);
 }
 
 #table-pricing .trainer-bold {
-    background-color: rgb(69, 178, 157, .4);
+    background-color: rgb(37, 0, 99, .4);
 }
 
 #table-pricing .gym-bold, #table-pricing .trainer-bold, .bold {
@@ -317,11 +332,23 @@ p {
 }
 
 #app-1 {
-    background: #647082;
+    background: #F6F6FF;
 }
 
 #app-2 {
-    background: #45B29D;
+    background: #F6F6FF;
+}
+
+#app-0 #description p {
+    color: #309DDB;
+}
+
+#app-1 #description p {
+    color: #647082;
+}
+
+#app-2 #description p {
+    color: #45B29D;
 }
 
 #promise {
@@ -479,13 +506,13 @@ footer {
 }
 
 .divider {
-    margin-top: 50px;
+    margin-top: 0;
     margin-bottom: 0;
 }
 
 #divider-info {
     width: 75%;
-    border-top: 1px solid #45B29D;
+    border-top: 1px solid #309DDB;
 }
 
 #divider-sign-up {
@@ -527,6 +554,10 @@ ul li:before {
 
 .list-style-grey li:before {
     content: url(../images/ic_check_grey.svg);
+}
+
+.list-style-grey-blue li:before {
+    content: url(../images/ic_check_grey_blue.svg);
 }
 
 ul > li {
@@ -591,6 +622,11 @@ ul > li {
         padding-left: 16px;
         padding-right: 16px;
     }
+
+    .info ul li {
+        text-indent: -26px;
+        padding-left: 26px;
+    }
 }
 
 @media (min-width: 750px) {
@@ -621,6 +657,11 @@ ul > li {
     #header-gym {
         padding-left: 22px;
         padding-right: 22px;
+    }
+
+    .info ul li {
+        text-indent: -31px;
+        padding-left: 31px;
     }
 }
 
