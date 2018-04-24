@@ -41,6 +41,10 @@ body {
     line-height: 1.5;
 }
 
+h1 {
+   line-height: 1.3; 
+}
+
 p {
     margin-bottom: 0;
 }
@@ -210,7 +214,7 @@ p {
 }
 
 .section #description ul {
-    margin-top: -10px;
+    /*margin-top: -6px;*/
     margin-left: 115px;
     margin-bottom: 0;
 }
@@ -474,7 +478,7 @@ footer h1, footer h5 {
 }
 
 .social-link {
-    padding: 3px 0 36px 0;
+    padding: 0 0 36px 0;
 }
 
 .subscribe-info #title-subscribe {
@@ -622,7 +626,11 @@ ul > li {
         font-size: 14px;
     }
 
-    body, h1, .info p, .info ul{
+    h1 {
+        font-size: 22px;
+    }
+
+    body, .info p, .info ul{
         font-size: 18px;
     }
 
