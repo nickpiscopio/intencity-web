@@ -152,8 +152,21 @@ p {
     text-align: right;
 }
 
-.hero #percent img {
-    /*height: 100%;*/
+.hero #wrapper-icon {
+    display: inline-flex;
+    margin-left: 75px;
+    margin-right: 22px;
+}
+
+.hero #wrapper-icon img {
+    min-width: 200px;
+    width: 100%;
+}
+
+.hero #divider {
+    margin-right: 22px;
+    width: 1px;
+    background: #309DDB;
 }
 
 .hero #wrapper-text {
@@ -214,7 +227,6 @@ p {
 }
 
 .section #description ul {
-    /*margin-top: -6px;*/
     margin-left: 115px;
     margin-bottom: 0;
 }
@@ -243,7 +255,7 @@ p {
     letter-spacing: 1.5px;
 }
 
-.layout {
+.layout-flex {
     display: flex;
 }
 
@@ -460,7 +472,7 @@ button {
     border: 0;
 }
 
-.copyright {
+.copyright, #references {
     font-size: 12px;
 }
 
@@ -481,19 +493,20 @@ footer h1, footer h5 {
     padding: 0 0 36px 0;
 }
 
-.subscribe-info #title-subscribe {
+.subscribe-info h3 {
     margin-top: 0;
-    margin-bottom: 20px;
 }
 
-.subscribe-info #description-subscribe {
-    margin-bottom: 16px;
+.subscribe-info p {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 16px;
 }
 
 .social [class*="fa fa-"] {
-    background-color: #CCCCCC;
+    background-color: #647082;
     border-radius: 30px;
-    color: #414042;
+    color: #fff;
     display: inline-block;
     height: 30px;
     line-height: 30px;
@@ -504,16 +517,16 @@ footer h1, footer h5 {
 }
 
 .social [class*="fa fa-"]:hover {
-    background-color: #fff;
+    background-color: #309DDB;
 }
 
 #references a {
-    color: #CCCCCC;
+    color: #647082;
     margin-top: 50px; 
 }
 
 #references a:hover {
-    color: #fff;
+    color: #309DDB;
     text-decoration: none;
 }
 
@@ -655,7 +668,7 @@ ul > li {
     }
 
     .section .image, #wrapper-icon {
-        margin-bottom: 40px
+        margin-bottom: 40px;
     }
 
     .header-row {
@@ -678,6 +691,21 @@ ul > li {
 
     #divider-footer-1 {
         display: block;
+    }
+
+    .hero #info, .hero #wrapper-icon {
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .hero #divider {
+        margin-left: 2px;
+    }
+
+    .hero #desc-3 {
+        margin-top: 0;
     }
 }
 
