@@ -81,7 +81,7 @@
                                             <div id="divider"></div>
                                             <div class="match-parent">
                                                 <p class="text-color-white text-spacing-more text-small-x">OF AMERICANS</p>
-                                                <p class="text-color-white text-spacing-more">DON'T GET THE RECOMMENDED AMOUNT OF EXERCISE</p>
+                                                <p id="desc-2"class="text-color-white text-spacing-more">DON'T GET THE RECOMMENDED <span>AMOUNT OF EXERCISE</span></p>
                                                 <p id="desc-3"class="text-color-white text-spacing-more text-small-x">EACH WEEK</p>
                                             </div>
                                         </div>
@@ -100,20 +100,21 @@
                 </div>
             </div>
 
-            <div id="recommendation" class="info shadow">
-                <div class="container">
-                    <p class="text-uppercase text-center text-color-white">recommended amount of exercise for American adults</p>
-                    <ul class="text-center text-color-white">
-                        <li>
-                            Two days of strength training that exercises all major muscle groups
-                        </li>
-                        <li>
-                            A mixture of moderate aerobic exercises
-                        </li>
-                    </ul>
+            <div id="recommendation">
+                <div class="relative shadow-top"></div>
+                <div class="info shadow">                
+                    <div class="container">
+                        <p class="text-uppercase text-center text-color-white">recommended amount of exercise for American adults</p>
+                        <ul class="text-center text-color-white">
+                            <li>
+                                Two days of strength training that exercises all major muscle groups
+                            </li>
+                            <li>
+                                A mixture of moderate aerobic exercises
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="absolute shadow-top"></div>
             </div>
 
             <div>
@@ -168,7 +169,7 @@
                                 </td> 
                                 <td>
                                     <img class="icon" src="images/ic_fitness_trainer.svg"/>
-                                    <p class="table-cell">FITNESS TRAINER</p>
+                                    <p id="header-trainer"class="table-cell">FITNESS TRAINER</p>
                                 </td>
                             </tr>
                             <tr>
@@ -194,10 +195,8 @@
                         </table>
                     </div>
 
-                    <div class="row">
-                        <div class="description col-xs-12 col-xs-offset-0 col-md-6 col-md-push-3">
-                            <p>Prices in this table are based on the Philadelphia, PA region in April of 2018. Prices may vary based on location, gym, personal trainer, and time of year.</p>
-                        </div>
+                    <div class="description col-xs-12 col-xs-offset-0 col-md-6 col-md-push-3">
+                        <p>Prices in this table are based on the Philadelphia, PA region in April of 2018. Prices may vary based on location, gym, personal trainer, and time of year.</p>
                     </div>
                 </div>
             </div>
@@ -224,7 +223,7 @@
                 <div class="container section">
 
                     <div class="row section-vertical-align">
-                        <div class="col-xs-12 col-sm-4 col-md-7">
+                        <div class="col-sm-4 col-md-7 visible-sm visible-md visible-lg">
                             <img class="image" src="images/mock_up_ai_in_intencity_ai.png"/>
                         </div>
                         
@@ -248,11 +247,14 @@
                             </div>
 
                         </div>
+
+                        <div class="col-xs-12 visible-xs">
+                            <img class="image image-xs-visible" src="images/mock_up_ai_in_intencity_ai.png"/>
+                        </div>
                     </div>
                 </div>
+                <hr id="divider-info" class="divider"></hr>
             </div>
-
-            <hr id="divider-info" class="divider"></hr>
 
             <div id="app-1">
                 <div class="container section">
@@ -280,20 +282,19 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-4 col-md-7">
-                            <img class="image" src="images/mock_up_ai_in_intencity_fitness_log.png"/>
+                            <img class="image image-xs-visible" src="images/mock_up_ai_in_intencity_fitness_log.png"/>
                         </div>
 
                     </div>
                 </div>
+                <hr id="divider-info" class="divider"></hr>
             </div>
-
-            <hr id="divider-info" class="divider"></hr>
 
             <div id="app-2">
                 <div class="container section">
                     <div class="row section-vertical-align">
 
-                        <div class="col-xs-12 col-sm-4 col-md-7">
+                        <div class="col-sm-4 col-md-7 visible-sm visible-md visible-lg">
                             <img class="image" src="images/mock_up_ai_in_intencity_rewards.png"/>
                         </div>
                         
@@ -318,6 +319,10 @@
 
                         </div>
 
+                        <div class="col-xs-12 visible-xs">
+                            <img class="image image-xs-visible" src="images/mock_up_ai_in_intencity_rewards.png"/>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -336,7 +341,6 @@
                                     <button class="btn btn-medium btn-rounded btn-dark-solid text-uppercase">SIGN UP</button>
                                 </form>
                             </div>
-                            <!-- <p id="promise">We promise not to spam you.</p> -->
                         </div>
                     </div>
                 </div>
@@ -351,28 +355,39 @@
                             <a href='https://play.google.com/store/apps/details?id=com.intencity.intencity' target="_blank"><img alt='Get it on Google Play' src='images/google_play_badge.svg'/></a>
                         </div>
                         <div class="col-xs-12 col-sm-6">
-                            <div id="divider-footer-1" class="divider divider-footer"></div>
-                            <h1 class="text-small-x">SHARE ON YOUR FAVORITE SOCIAL MEDIA!</h1>
+                            <div class="divider divider-footer visible-xs"></div>
+                            <h1 class="text-small-x">SHARE ON SOCIAL MEDIA</h1>
 
                             <div class="social-link">
-                                <a class="icon social" href="https://twitter.com/intent/tweet?hashtags=Fitness,App,Intencity&original_referer=https%3A%2F%2Fpublish.twitter.com%2F&ref_src=twsrc%5Etfw&url=http://beta.intencity.fit" target="_blank"><i class="fa fa-twitter"></i></a>
-                                <a class="icon social" href="https://www.facebook.com/sharer/sharer.php?u=beta.intencity.fit" target="_blank"><i class="fa fa-facebook"></i></a>
-                                <a class="icon social" href="https://plus.google.com/share?url=http://beta.intencity.fit" target="_blank"><i class="fa fa-google-plus"></i></a>
-                                <a class="icon social" href="https://www.linkedin.com/shareArticle?mini=true&url=http://beta.intencity.fit" target="_blank"><i class="fa fa-linkedin"></i></a>
-                                <a class="icon social" href="https://www.reddit.com/submit?url=http%3A%2F%2Fbeta.intencity.fit&resubmit=true&title=Fitness+Application+Utilizes+AI" target="_blank"><i class="fa fa-reddit-alien"></i></a>
+                                <a class="social" href="https://twitter.com/intent/tweet?hashtags=Fitness,App,Intencity&original_referer=https%3A%2F%2Fpublish.twitter.com%2F&ref_src=twsrc%5Etfw&url=http://beta.intencity.fit" target="_blank"><i class="fa fa-twitter"></i></a>
+                                <a class="social" href="https://www.facebook.com/sharer/sharer.php?u=beta.intencity.fit" target="_blank"><i class="fa fa-facebook"></i></a>
+                                <a class="social" href="https://plus.google.com/share?url=http://beta.intencity.fit" target="_blank"><i class="fa fa-google-plus"></i></a>
+                                <a class="social" href="https://www.linkedin.com/shareArticle?mini=true&url=http://beta.intencity.fit" target="_blank"><i class="fa fa-linkedin"></i></a>
+                                <a class="social" href="https://www.reddit.com/submit?url=http%3A%2F%2Fbeta.intencity.fit&resubmit=true&title=Fitness+Application+Utilizes+AI" target="_blank"><i class="fa fa-reddit-alien"></i></a>
                             </div>
-                            <copyright class="copyright">
-                                &copy; Intencity 2018. All Rights Reserved.
-                            </copyright>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
                             <div id="divider-footer-2" class="divider divider-footer"></div>
                             <div id="references">
                                 <h5>REFERENCES</h5>
 
-                                <p><a href="https://www.cbsnews.com/news/cdc-80-percent-of-american-adults-dont-get-recommended-exercise" target="_blank">Section 1</a></p>
-                                <p><a href="https://www.cdc.gov/physicalactivity/basics/adults/index.htm" target="_blank">Section 2</a></p>
+                                <p>
+                                    <a href="https://www.cbsnews.com/news/cdc-80-percent-of-american-adults-dont-get-recommended-exercise" target="_blank">
+                                        https://www.cbsnews.com<wbr>/news/<wbr>cdc<wbr>-80<wbr>-percent<wbr>-of<wbr>-american<wbr>-adults<wbr>-dont<wbr>-get<wbr>-recommended<wbr>-exercise
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="https://www.cdc.gov/physicalactivity/basics/adults/index.htm" target="_blank">
+                                        https://www.cdc.gov<wbr>/physicalactivity<wbr>/basics<wbr>/adults<wbr>/index.htm
+                                    </a>
+                                </p>
                             </div>
                         </div>
-                        
+                        <copyright class="col-xs-12">
+                            &copy; Intencity 2018. All Rights Reserved.
+                        </copyright>
                     </div>
                 </div>
             </footer>
