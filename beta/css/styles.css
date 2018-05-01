@@ -498,6 +498,7 @@ footer img {
 
 footer h1, footer h5 {
     font-family: "Open Sans Bold Italic", sans-serif;
+    margin-top: 0;
 }
 
 .subscribe-info h3 {
