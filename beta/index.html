@@ -48,6 +48,40 @@
 
         <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
 
+        <!-- Facebook Pixel Code -->
+        <script>
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '1001006570064392');
+          fbq('track', 'PageView');
+        </script>
+
+        <script>
+            $('#btn-sign-up').click(function() {
+                !function(f,b,e,v,n,t,s)
+                  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                  n.queue=[];t=b.createElement(e);t.async=!0;
+                  t.src=v;s=b.getElementsByTagName(e)[0];
+                  s.parentNode.insertBefore(t,s)}(window, document,'script',
+                  'https://connect.facebook.net/en_US/fbevents.js');
+                  fbq('init', '1001006570064392');
+                  fbq('track', 'CompleteRegistration');
+            });
+          
+        </script>
+        <noscript><img height="1" width="1" style="display:none"
+          src="https://www.facebook.com/tr?id=1001006570064392&ev=PageView&noscript=1"
+        /></noscript>
+        <!-- End Facebook Pixel Code -->
+
     </head>
 
     <body>
@@ -338,7 +372,7 @@
                             <div class="subscribe-form">
                                 <form class="form-inline" action="https://fit.us18.list-manage.com/subscribe/post?u=050ae5adb8197be06cad07ab9&amp;id=1a65a0129f" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
                                     <input type="email" value="" name="EMAIL" class="form-control" id="mce-EMAIL"type="text" class="form-control">
-                                    <button class="btn btn-medium btn-rounded btn-dark-solid text-uppercase">SIGN UP</button>
+                                    <button id="btn-sign-up" class="btn btn-medium btn-rounded btn-dark-solid text-uppercase">SIGN UP</button>
                                 </form>
                             </div>
                         </div>
