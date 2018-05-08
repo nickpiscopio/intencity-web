@@ -21,6 +21,12 @@ $(document).ready(function() {
             scrollTop: $("#survey").offset().top - navHeight
         }, scrollSpeed);
     });
+
+	// This is the button click for the sign up button.
+    $('#btn-sign-up').click(function() {
+    	// This registers that the complete registration was clicked.
+        fbq('track', 'CompleteRegistration');
+    });
 });
 
 $(function() {
