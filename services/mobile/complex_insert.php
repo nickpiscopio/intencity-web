@@ -14,24 +14,25 @@
  	 *		The auto incremented IDs of the inserted rows.
  	 *		If there are multiple IDs, it gets the first one then increments in the PHP file.
 	 * 
-	 * EXAMPLE URL	http://intencity.fit/dev2/services/complex_insert.php?statements=2&email=dev@gmail.com&table0=Routine&columns0=RoutineName,ExerciseDay,ExerciseName&inserts0=test,2,Pullups&
+	 * EXAMPLE URL	http://intencityapp.com/dev2/services/complex_insert.php?statements=2&email=dev@gmail.com&table0=Routine&columns0=RoutineName,ExerciseDay,ExerciseName&inserts0=test,2,Pullups&
 	  				table1=Routine&columns1=RoutineName,ExerciseDay,ExerciseName&inserts1=test,2,Bench&
 	  				table2=Routine&columns2=RoutineName,ExerciseDay,ExerciseName&inserts2=test,2,Pushups
 	 * 
-	 * EXAMPLE SQL	INSERT INTO Routine(UserId,RoutineName,ExerciseDay,ExerciseName)VALUES(100,'test',1,'Pull Ups');
+	 * EXAMPLE SQL	INSERT INTO Routine(Email,RoutineName,ExerciseDay,ExerciseName)VALUES('dev@gmail.com','test',1,'Pull Ups');
+					INSERT INTO Routine(Email,RoutineName,ExerciseDay,ExerciseName)VALUES('dev@gmail.com','test',1,'Pushups');
+					INSERT INTO Routine(Email,RoutineName,ExerciseDay,ExerciseName)VALUES('dev@gmail.com','test',1,'Bench');
 	 */
 
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
-	include_once '../status_codes.php';
-	include_once '../Response.php';
 
-	$response = new Response();
+	define("SUCCESS", "SUCCESS");
+	define("FAILURE", "FAILURE");
 	
 	//NEEDS TO BE CHANGED TO A POST.
 	$statements = $_POST['statements'];
-	$userId = $_POST['user_id'];
+	$email = $_POST['email'];
 	$table = "";
 	$columns = "";
 	$inserts = "";
@@ -58,12 +59,12 @@
 			}
 		}
 		
-		$insertQuery .= "INSERT INTO " . $table . " (" . COLUMN_USER_ID . ", " . $columns . ") VALUES ('" . $userId . "'" . $insertString . "); ";
+		$insertQuery .= "INSERT INTO " . $table . " (" . COLUMN_EMAIL . ", " . $columns . ") VALUES ('" . $email . "'" . $insertString . "); ";
 	}
 
 	$query = mysqli_multi_query($conn, $insertQuery);
 
-	// Check if the query was successful.
+	//Check if the query was successful.
 	if($query)
 	{
 		// Get the first ID that was inserted.
@@ -75,11 +76,11 @@
 			// Add an incremented ID for each statement. This way we get every ID added.
 			$ids[] = $firstId + $i;
 		}
-
-		$response->send(STATUS_CODE_SUCCESS_INSERT, $ids);
+		
+		print json_encode($ids);
 	}
 	else
 	{
-		$response->send(STATUS_CODE_FAILURE_INSERT, NULL);
+		print json_encode(FAILURE);
 	}
 ?>

@@ -7,20 +7,17 @@
 	 * 		v	This is the variable that will be sent into the stored procedure.		
 	 * 
 	 * EXAMPLE URL	
-	 * http://intencity.fit/dev/services/mobile/stored_procedure.php?d=removeAccount&v=43472
+	 * http://intencityapp.com/dev/services/mobile/stored_procedure.php?d=getAllDisplayMuscleGroups&v=dev@gmail.com
 	 */
 
+	//Includes the database connection information.
 	include_once '../db_connection.php';
-	include_once '../status_codes.php';
-	include_once '../Response.php';
-
-	$response = new Response();
 	
 	//NEEDS TO BE CHANGED TO A POST.
 	$storedProcedure = $_POST['d'];
 	$urlV  = $_POST['v'];
 	$v = addslashes($urlV);
-	$variables = explode('|', $v);
+	$variables = explode(',', $v);
 	$varLength = count($variables);
 
 	$parameters = "";
@@ -35,18 +32,11 @@
 
 	$query = mysqli_query($conn, "CALL " . $storedProcedure . "(" . $parameters . ")");
 
-	if ($query)
+	while($entry = mysqli_fetch_assoc($query))
 	{
-		while($entry = mysqli_fetch_assoc($query))
-		{
-			$output[] = $entry;
-		}
-		
-		// Return the information from the stored procedure.
-		$response->send(STATUS_CODE_SUCCESS_STORED_PROCEDURE, $output);	
+		$output[] = $entry;
 	}
-	else
-	{
-		$response->send(STATUS_CODE_FAILURE_STORED_PROCEDURE, NULL);	
-	}
+	
+	//Return user data.
+	print json_encode($output);
 ?>

@@ -2,34 +2,25 @@
 	/**
 	 * This file updates the last time the user logged in.
 	 * 
-	 * URL GET EXAMPLE		http://intencity.fit/dev/services/mobile/update_user_login.php?id=10
+	 * URL GET EXAMPLE		http://intencityapp.com/dev/services/mobile/update_user_login.php?email=john.smith@gmail.com
 	 * 						This example does not work when we are using $_POST. We ARE using $_POST.
 	 */
 
 	//Includes the database connection information.
 	include_once '../db_connection.php';
 	include_once '../db_asset_names.php';
-	include_once '../Time.php';
-	include_once '../status_codes.php';
-	include_once '../Response.php';
 
-	// Utility class to create a JSON response.
-	$response = new Response();
+	//Constants for the response from the database.
+	define(RESPONSE_UPDATED_LOGIN, "Updated user login");
 
-	$userId = $_POST['user_id'];
-
-	$time = new Time();
-	$now = $time->getMillis();
+	$email = $_POST['email'];
 
 	// Query to update the user's login date.
-	$updateLogin =  "UPDATE " . TABLE_USER . " SET " . COLUMN_LAST_LOGIN_DATE . " = " . $now . " WHERE " . COLUMN_ID . " = " . $userId;
+	$updateLogin =  "UPDATE " . TABLE_USER . " SET " . COLUMN_LAST_LOGIN_DATE . " = CURDATE() WHERE Email = '" . $email . "'";
 	
-	if (mysqli_query($conn, $updateLogin))
-	{
-		$response->send(STATUS_CODE_SUCCESS_DATE_LOGIN_UPDATED, NULL);
-	}
-	else
-	{
-		$response->send(STATUS_CODE_FAILURE_DATE_LOGIN_UPDATE, NULL);
-	}
+	//Create the account.
+	mysqli_query($conn, $updateLogin);
+
+	//Return the account was created.
+	print json_encode(RESPONSE_UPDATED_LOGIN);
 ?>

@@ -49,12 +49,10 @@
 	define("COLUMN_SHOW_WELCOME", "ShowWelcome");
 	
 	define("COLUMN_ID", "ID");
-	define("COLUMN_USER_ID", "UserId");
 	define("COLUMN_MUSCLE_GROUP_NAME", "MuscleGroupName");
 	define("COLUMN_ROUTINE_NUMBER", "RoutineNumber");
 	define("COLUMN_ROUTINE_NAME", "RoutineName");
 	define("COLUMN_DISPLAY_NAME", "DisplayName");
-	define("COLUMN_EXERCISE_ID", "ExerciseId");
 	define("COLUMN_EXERCISE_NAME", "ExerciseName");
 	define("COLUMN_LOCATION", "Location");
 	define("COLUMN_PRIORITY", "Priority");
